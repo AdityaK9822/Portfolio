@@ -113,22 +113,24 @@ function renderPosts() {
             )
             .join('');
 
-    /* home teaser — latest dated posts as cards */
-    const teaser = document.getElementById('journal-teaser');
-    if (teaser) {
-        const recent = POSTS.filter((p) => p.date).slice(0, 2);
-        teaser.innerHTML = recent.length
-            ? `<div class="card-grid">${recent
-                  .map(
-                      (p) => `<a class="card reveal" href="posts/${p.slug}.html">
-              <div class="card-top"><div class="card-name">${p.title}</div>
-              <span class="card-arrow" aria-hidden="true">↗</span></div>
-              <p class="card-desc">${p.excerpt}</p>
-              <div class="card-tags">${postTags(p) || `<span class="tag">${fmtDate(p.date)}</span>`}</div>
-            </a>`
-                  )
-                  .join('')}</div>`
-            : '<div class="note-box">First post drops soon — see <code>posts/</code>.</div>';
+    /* home teaser — auto-scrolling headline banner (marquee) */
+    const track = document.getElementById('teaser-track');
+    if (track) {
+        const teaserCard = (p) => `<a class="card reveal teaser-card" href="posts/${p.slug}.html">
+          <div class="card-top"><div class="card-name">${p.title}</div>
+          <span class="card-arrow" aria-hidden="true">↗</span></div>
+          <p class="card-desc">${p.excerpt}</p>
+          <div class="card-tags">${postTags(p)}</div>
+        </a>`;
+        let items = POSTS.slice(0, 4).map(teaserCard).join('');
+        const fill = items.length < 3200
+            ? `<div class="card teaser-card ghost-card">
+                 <div class="card-name">+ more soon</div>
+                 <p class="card-desc">next drop gets announced here first — watch this banner.</p></div>`
+            : '';
+        const half = `<div class="teaser-half">${items + fill}</div>`;
+        /* visual duplicates are hidden from assistive tech */
+        track.innerHTML = half + `<div class="teaser-half" aria-hidden="true">${items + fill}</div>`;
     }
 
     const blur = document.getElementById('journal-blurb');

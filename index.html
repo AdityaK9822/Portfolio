@@ -53,19 +53,19 @@
     <header class="hero">
         <canvas id="hero-canvas" aria-hidden="true"></canvas>
         <div class="hero-inner container">
-            <p class="hero-prompt">whoami</p>
-            <h1 class="hero-name">Aditya&nbsp;<span>Kadam</span></h1>
-            <p class="hero-sub">Web3 Developer<span class="sep">·</span>Open Source Contributor<span class="sep">·</span>AI-Integrated
+            <p class="hero-prompt" data-rise>whoami</p>
+            <h1 class="hero-name" data-rise>Aditya&nbsp;<span>Kadam</span></h1>
+            <p class="hero-sub" data-rise>Web3 Developer<span class="sep">·</span>Open Source Contributor<span class="sep">·</span>AI-Integrated
                 Systems</p>
-            <p class="hero-bio">CS student at <b>ITM Kharghar</b> specializing in the <b>Stellar blockchain
+            <p class="hero-bio" data-rise>CS student at <b>ITM Kharghar</b> specializing in the <b>Stellar blockchain
                     ecosystem</b> — from gasless transaction infrastructure to decentralized payroll platforms —
                 using <b>TypeScript, Rust, and Claude AI</b>.</p>
-            <div class="hero-cta">
+            <div class="hero-cta" data-rise>
                 <a class="btn btn-solid" href="work.html">view work →</a>
                 <a class="btn btn-ghost" href="contact.html">get in touch</a>
             </div>
         </div>
-        <div class="hero-scroll" aria-hidden="true">── scroll ──</div>
+        <div class="hero-scroll" data-rise aria-hidden="true">── scroll ──</div>
     </header>
 
     <main id="main" class="container">
@@ -99,13 +99,15 @@
             <div class="marquee-track" id="skills-track"></div>
         </section>
 
-        <!-- JOURNAL TEASER -->
+        <!-- JOURNAL TEASER (auto-scrolling headline banner) -->
         <section class="reveal" style="margin-top: var(--section-pad);" aria-label="Latest posts">
             <div class="section-head">
                 <h2 class="section-title">journal.latest</h2>
                 <a class="section-link" href="journal.html">→ all posts</a>
             </div>
-            <div id="journal-teaser"></div>
+            <div class="teaser-marquee">
+                <div class="teaser-track" id="teaser-track"></div>
+            </div>
         </section>
 
         <!-- CTA -->
