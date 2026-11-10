@@ -86,6 +86,11 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
+
+    /* sticky footer: flex column so the footer sits at the page bottom
+       (no empty space after it on short pages) */
+    display: flex;
+    flex-direction: column;
 }
 
 img {
@@ -150,10 +155,20 @@ h1, h2, h3 {
 /* section numbering — blueprint registration rhythm */
 main {
     counter-reset: sect 0;
+
+    /* vertical justification: main takes all leftover height and
+       spreads its sections across it (footer pushes to the bottom) */
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 main > section {
     counter-increment: sect;
+    /* natural height only — the leftover space goes between sections */
+    flex: 0 0 auto;
+    margin-block: 0;
 }
 
 .page {
