@@ -264,8 +264,14 @@
 }
 
 /* ── HOME: CTA BOX ── */
+/* taller by design (~38vh capped), content centered — not stretched to
+   fill every leftover pixel, just a substantial closing block */
 .cta-box {
     text-align: center;
+    min-height: clamp(240px, 38vh, 440px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     padding: clamp(2.4rem, 6vw, 4rem) 24px;
     border: 1px solid var(--border);
     border-radius: var(--radius);

@@ -171,6 +171,30 @@ main > section {
     margin-block: 0;
 }
 
+/* home: opted-in sections stretch to claim a share of the height.
+   status.read · featured.repos · journal.latest grow with their content
+   basis, head pinned top, their grid/banner centered in the leftover. */
+main > section.stretch {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+main > section.stretch > .section-head {
+    flex: 0 0 auto;
+}
+
+main > section.stretch > :last-child {
+    flex: 1 1 auto;
+    align-content: center;
+}
+
+/* the banner keeps its marquee intact while centering in its grown box */
+main > section.stretch > .teaser-marquee {
+    display: flex;
+    align-items: center;
+}
+
 .page {
     padding-top: calc(var(--nav-h) + clamp(3rem, 8vw, 5rem));
     min-height: 60vh;
