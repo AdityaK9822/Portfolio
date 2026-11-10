@@ -160,24 +160,19 @@ function renderPosts() {
             )
             .join('');
 
-    /* home teaser — auto-scrolling headline banner (marquee) */
+    /* home headline band — journal.latest under the hero: titles only,
+       repeated so the marquee track always fills the width */
     const track = document.getElementById('teaser-track');
     if (track) {
-        const teaserCard = (p) => `<a class="card reveal teaser-card" href="posts/${p.slug}.html">
-          <div class="card-top"><div class="card-name">${p.title}</div>
-          <span class="card-arrow" aria-hidden="true">↗</span></div>
-          <p class="card-desc">${p.excerpt}</p>
-          <div class="card-tags">${postTags(p)}</div>
-        </a>`;
-        let items = POSTS.slice(0, 4).map(teaserCard).join('');
-        const fill = items.length < 3200
-            ? `<div class="card teaser-card ghost-card">
-                 <div class="card-name">+ more soon</div>
-                 <p class="card-desc">next drop gets announced here first — watch this banner.</p></div>`
-            : '';
-        const half = `<div class="teaser-half">${items + fill}</div>`;
+        const headline = (p) =>
+            `<a class="headline-item" href="posts/${p.slug}.html">${p.title}<span class="headline-arrow" aria-hidden="true">↗</span></a>`;
+        const unique = POSTS.slice(0, 4);
+        /* repeat the set until the half plausibly fills any width (cap 10) */
+        let items = '';
+        for (let i = 0; i < 10; i++) items += headline(unique[i % unique.length]);
+        const half = `<div class="teaser-half">${items}</div>`;
         /* visual duplicates are hidden from assistive tech */
-        track.innerHTML = half + `<div class="teaser-half" aria-hidden="true">${items + fill}</div>`;
+        track.innerHTML = half + `<div class="teaser-half" aria-hidden="true">${items}</div>`;
     }
 
     const blur = document.getElementById('journal-blurb');

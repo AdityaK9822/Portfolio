@@ -162,73 +162,11 @@ main > section {
     counter-increment: sect;
 }
 
-/* ── CONTENT.md layout: console — main column + identity rail ──
-   AI tier leads in the main column; status/about/availability/skills
-   trail in a narrower sidebar (order by importance). */
-.console {
-    margin-top: calc(var(--gap) * 1.2);
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 21rem;
-    gap: calc(var(--gap) * 1.6);
-    align-items: start;
-}
-
-@media (max-width: 1060px) {
-    .console {
-        grid-template-columns: 1fr;
-    }
-
-    .console-side {
-        order: 2;
-    }
-}
-
-.console-main > section + section {
-    margin-top: var(--section-pad);
-}
-
-/* sidebar: space-grouped panels, sticky so the status rail follows scroll */
-.console-side {
-    display: grid;
-    gap: var(--gap);
-    position: sticky;
-    top: calc(var(--nav-h) + 20px);
-}
-
-@media (max-width: 1060px) {
-    .console-side {
-        position: static;
-    }
-}
-
 .side-panel {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: clamp(1.2rem, 2.5vw, 1.6rem);
-}
-
-.side-about {
-    color: var(--muted);
-    font-size: 0.98rem;
-    line-height: 1.65;
-}
-
-.side-about b {
-    color: var(--text);
-}
-
-/* compact 2×2 stat tiles inside the sidebar panel */
-.stats-compact {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.stats-compact .stat {
-    padding: 12px 14px;
-}
-
-.stats-compact .stat-num {
-    font-size: clamp(1.25rem, 2vw, 1.5rem);
 }
 
 /* skills grouped — space between groups, no box-per-item */
@@ -299,8 +237,96 @@ main > section {
     margin-top: clamp(2.6rem, 6vw, 4.4rem);
 }
 
-/* ── CONTENT.md layout: console — main column + identity rail ──
+/* ── CONTENT.md home wireframe: left hero + status, headline band,
+   3/4 + 1/4 split, CTA, footer ─────────────────────────────────
+   Hero text is left-aligned; status.read sits inside the hero.
+   journal.latest is a slim headline band directly under the hero.
+   Everything below runs with minimal gutters (.home-main). */
 
+.home-main {
+    padding-inline: clamp(8px, 1vw, 16px);
+}
+
+/* journal.latest headline band: title-only items, reduced height */
+.headline-band {
+    margin-block: var(--gap) calc(var(--gap) * 1.4);
+    border-block: 1px solid var(--border);
+    padding: 10px 0;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
+}
+
+/* 3/4 + 1/4 split — both columns stretch to equal vertical length */
+.home-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
+    gap: var(--gap);
+    align-items: stretch;
+}
+
+.home-col {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--section-pad);
+}
+
+.home-side {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap);
+}
+
+/* equal vertical length: panels share the leftover height */
+.home-side .side-panel {
+    flex: 1 1 auto;
+}
+
+@media (max-width: 1060px) {
+    .home-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* full-width CTA at the shell edge (no 72rem read cap here) */
+.home-cta {
+    margin-top: var(--section-pad);
+}
+
+/* status.read inline in the hero: mono stat strip under the CTAs */
+.hero-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 26px;
+    margin-top: 34px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+}
+
+.hs-label {
+    color: var(--muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.hs-item {
+    color: var(--text);
+}
+
+.stat-n {
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05em;
+}
+
+/* section-head note + page-level intro line (grouping with space, not lines) */
+
+/* sub-pages: clear the fixed nav and breathe */
 .page {
     padding-top: calc(var(--nav-h) + clamp(3rem, 8vw, 5rem));
     min-height: 60vh;

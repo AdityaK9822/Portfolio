@@ -18,6 +18,7 @@
 .hero-sub[data-rise]    { animation-delay: 0.3s; }
 .hero-bio[data-rise]    { animation-delay: 0.4s; }
 .hero-cta[data-rise]    { animation-delay: 0.5s; }
+.hero-status[data-rise] { animation-delay: 0.55s; }
 .hero-scroll[data-rise] { animation-delay: 0.95s; }
 
 @keyframes riseIn {
@@ -43,15 +44,7 @@
 }
 
 /* ── JOURNAL TEASER: auto-scrolling headline banner ── */
-.teaser-marquee {
-    overflow: hidden;
-    border-top: 1px solid var(--border);
-    border-bottom: 1px solid var(--border);
-    padding: 18px 0;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
-}
-
+.headline-band .teaser-track,
 .teaser-track {
     display: flex;
     gap: 14px;
@@ -60,8 +53,8 @@
 }
 
 /* freeze while reading */
-.teaser-marquee:hover .teaser-track,
-.teaser-marquee:focus-within .teaser-track {
+.headline-band:hover .teaser-track,
+.headline-band:focus-within .teaser-track {
     animation-play-state: paused;
 }
 
@@ -70,15 +63,44 @@
     gap: 14px;
 }
 
-.teaser-card {
+/* ── HOME: JOURNAL.HEADLINE BAND ──
+   title-only marquee items right under the hero: reduced height,
+   no per-article headings or descriptions — headlines only */
+.headline-item {
     flex: none;
-    width: clamp(300px, 30vw, 400px);
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.02rem, 2vw, 1.3rem);
+    white-space: nowrap;
+    transition: color var(--dur);
 }
 
-.ghost-card {
-    border-style: dashed;
+.headline-item .headline-arrow {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+}
+
+.headline-item .headline-date {
     color: var(--muted);
-    justify-content: center;
+    font-family: var(--font-mono);
+    font-weight: 400;
+    font-size: var(--fs-small);
+    letter-spacing: 0.02em;
+}
+
+@media (hover: hover) {
+    .headline-item:hover {
+        color: var(--accent);
+    }
+
+    .headline-item:hover .headline-arrow {
+        color: var(--accent);
+    }
 }
 
 @keyframes marquee {
@@ -88,7 +110,7 @@
 /* reduced motion: static, horizontally scrollable instead of moving */
 @media (prefers-reduced-motion: reduce) {
     .teaser-track { animation: none; }
-    .teaser-marquee { overflow-x: auto; }
+    .headline-band { overflow-x: auto; }
 }
 
 /* ── GRID STAGGER (cards reveal one after another, 100ms apart) ── */
@@ -326,10 +348,10 @@
 }
 
 /* reading caps: these run one per line — cap them near the 45–75ch band
-   instead of stretching across the whole shell */
+   instead of stretching across the whole shell.
+   (home CTA is intentionally NOT capped: it spans the shell per wireframe) */
 .post-featured,
-#post-list,
-.cta-box {
+#post-list {
     max-width: var(--read-w);
     margin-inline: auto;
 }
