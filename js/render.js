@@ -184,44 +184,6 @@ function renderPosts() {
     if (blur) blur.textContent = JOURNAL_META.blurb;
 }
 
-/* ── filter bar (work page) ── */
-function setupFilters() {
-    const bar = document.getElementById('filters');
-    const grid = document.getElementById('work-grid');
-    if (!bar || !grid) return;
-
-    const cats = {
-        all: 'All',
-        'open-source': 'Open Source',
-        project: 'Own Projects',
-        web3: 'Web3',
-    };
-    const count = (cat) =>
-        cat === 'all'
-            ? REPOS.length
-            : cat === 'web3'
-            ? REPOS.filter((r) => r.web3).length
-            : REPOS.filter((r) => r.category === cat).length;
-
-    bar.innerHTML = Object.entries(cats)
-        .map(
-            ([key, label]) =>
-                `<button class="filter-btn${key === 'all' ? ' active' : ''}" data-cat="${key}">${label}<span class="count">${count(key)}</span></button>`
-        )
-        .join('');
-
-    bar.addEventListener('click', (e) => {
-        const btn = e.target.closest('.filter-btn');
-        if (!btn) return;
-        const cat = btn.dataset.cat;
-        bar.querySelectorAll('.filter-btn').forEach((b) => b.classList.toggle('active', b === btn));
-        grid.querySelectorAll('[data-cat]').forEach((card) => {
-            const show = cat === 'all' || card.dataset.cat.split(' ').includes(cat);
-            card.style.display = show ? '' : 'none';
-        });
-    });
-}
-
 /* ── skills marquee (home band) + grouped sidebar ── */
 function renderSkills() {
     const track = document.getElementById('skills-track');
@@ -262,4 +224,3 @@ renderCerts();
 renderPosts();
 renderSkills();
 renderOpenList();
-setupFilters();
