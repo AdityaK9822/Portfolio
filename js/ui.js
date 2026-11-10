@@ -57,7 +57,7 @@
     if (!hidden.length) return;
     const begin = () => {
         hidden.forEach((el, i) => {
-            el.style.transitionDelay = `${Math.min(i * 50, 300)}ms`;
+            el.style.transitionDelay = `${Math.min(i * 100, 500)}ms`;
             el.classList.add('in');
             el.addEventListener(
                 'transitionend',

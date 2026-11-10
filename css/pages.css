@@ -7,21 +7,28 @@
    content rises in on a cascade; canvas fades in behind it */
 .hero [data-rise] {
     opacity: 0;
-    transform: translateY(18px);
-    animation: riseIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transform: translateY(12px);
+    animation: riseIn 0.3s ease-out both;
 }
 
-.hero-prompt[data-rise] { animation-delay: 0.08s; }
-.hero-name[data-rise]   { animation-delay: 0.16s; }
-.hero-sub[data-rise]    { animation-delay: 0.24s; }
-.hero-bio[data-rise]    { animation-delay: 0.32s; }
-.hero-cta[data-rise]    { animation-delay: 0.42s; }
+/* one-time entrance: chunks staggered 100ms apart */
+.hero-prompt[data-rise] { animation-delay: 0s; }
+.hero-name[data-rise]   { animation-delay: 0.1s; }
+.hero-sub[data-rise]    { animation-delay: 0.2s; }
+.hero-bio[data-rise]    { animation-delay: 0.3s; }
+.hero-cta[data-rise]    { animation-delay: 0.4s; }
 .hero-scroll[data-rise] { animation-delay: 0.9s; }
 
 @keyframes riseIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+        filter: blur(4px);
+    }
     to {
         opacity: 1;
         transform: none;
+        filter: blur(0);
     }
 }
 
@@ -83,15 +90,12 @@
     .teaser-marquee { overflow-x: auto; }
 }
 
-/* ── GRID STAGGER (cards reveal one after another) ── */
-.card-grid .reveal:nth-child(2) { transition-delay: 70ms; }
-.card-grid .reveal:nth-child(3) { transition-delay: 140ms; }
-.card-grid .reveal:nth-child(4) { transition-delay: 210ms; }
-.card-grid .reveal:nth-child(5) { transition-delay: 280ms; }
-.card-grid .reveal:nth-child(6) { transition-delay: 350ms; }
-.card-grid .reveal:nth-child(7) { transition-delay: 420ms; }
-.card-grid .reveal:nth-child(8) { transition-delay: 490ms; }
-.card-grid .reveal:nth-child(n + 9) { transition-delay: 490ms; }
+/* ── GRID STAGGER (cards reveal one after another, 100ms apart) ── */
+.card-grid .reveal:nth-child(2) { transition-delay: 100ms; }
+.card-grid .reveal:nth-child(3) { transition-delay: 200ms; }
+.card-grid .reveal:nth-child(4) { transition-delay: 300ms; }
+.card-grid .reveal:nth-child(5) { transition-delay: 400ms; }
+.card-grid .reveal:nth-child(n + 6) { transition-delay: 500ms; }
 
 /* ── HOME: HERO ── */
 .hero {
@@ -323,18 +327,25 @@
     border-radius: 999px;
     padding: 8px 16px;
     cursor: pointer;
-    transition: color var(--dur), border-color var(--dur), background var(--dur);
+    transition: transform 150ms ease-out, color var(--dur), border-color var(--dur), background var(--dur);
+    -webkit-tap-highlight-color: transparent;
 }
 
-.filter-btn:hover {
-    color: var(--text);
-    border-color: var(--border-strong);
+@media (hover: hover) {
+    .filter-btn:hover {
+        color: var(--text);
+        border-color: var(--border-strong);
+    }
 }
 
 .filter-btn.active {
     color: var(--accent);
     border-color: rgba(34, 197, 94, 0.5);
     background: var(--accent-dim);
+}
+
+.filter-btn:not(:disabled):active {
+    transform: scale(0.96);
 }
 
 .filter-btn .count {
@@ -392,9 +403,11 @@
     color: var(--text);
 }
 
-.post-featured:hover {
-    transform: translateY(-2px);
-    text-decoration: none;
+@media (hover: hover) {
+    .post-featured:hover {
+        transform: translateY(-2px);
+        text-decoration: none;
+    }
 }
 
 .post-featured .post-title {
@@ -421,12 +434,14 @@
     cursor: pointer;
 }
 
-.post-row:hover {
-    text-decoration: none;
-}
+@media (hover: hover) {
+    .post-row:hover {
+        text-decoration: none;
+    }
 
-.post-row:hover .post-title {
-    color: var(--accent);
+    .post-row:hover .post-title {
+        color: var(--accent);
+    }
 }
 
 .post-row .post-date {
@@ -530,12 +545,19 @@
     padding: 6px 12px;
     border-radius: 6px;
     cursor: pointer;
-    transition: color var(--dur), border-color var(--dur);
+    transition: transform 150ms ease-out, color var(--dur), border-color var(--dur);
+    -webkit-tap-highlight-color: transparent;
 }
 
-.copy-btn:hover {
-    color: var(--accent);
-    border-color: rgba(34, 197, 94, 0.5);
+@media (hover: hover) {
+    .copy-btn:hover {
+        color: var(--accent);
+        border-color: rgba(34, 197, 94, 0.5);
+    }
+}
+
+.copy-btn:not(:disabled):active {
+    transform: scale(0.96);
 }
 
 /* Form */
