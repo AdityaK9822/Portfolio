@@ -56,13 +56,36 @@ async function ghLiveStats() {
     /* 2. aggregate stats box (home) */
     const sum = (key) =>
         [...repoData.values()].reduce((acc, r) => acc + (r[key] || 0), 0);
+    const failStat = (id) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = '—';
+    };
     const setStat = (id, value) => {
         const el = document.getElementById(id);
-        if (el && typeof value === 'number') el.textContent = value.toLocaleString();
+        if (!el || typeof value !== 'number') return;
+        /* reduced motion or tiny value: set directly */
+        if (
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+            value < 12
+        ) {
+            el.textContent = value.toLocaleString();
+            return;
+        }
+        /* count-up on arrival (ease-out cubic) */
+        const start = performance.now();
+        const DUR = 900;
+        const step = (now) => {
+            const k = Math.min((now - start) / DUR, 1);
+            const eased = 1 - Math.pow(1 - k, 3);
+            el.textContent = Math.round(value * eased).toLocaleString();
+            if (k < 1) requestAnimationFrame(step);
+        };
+        requestAnimationFrame(step);
     };
 
-    setStat('stat-stars', sum('stargazers_count'));
-    setStat('stat-forks', sum('forks_count'));
+    /* sums stay at "—" instead of a lying 0 when the API served nothing */
+    setStat('stat-stars', repoData.size ? sum('stargazers_count') : failStat('stat-stars'));
+    setStat('stat-forks', repoData.size ? sum('forks_count') : failStat('stat-forks'));
 
     if (document.getElementById('stat-followers') || document.getElementById('stat-repos')) {
         try {
@@ -70,7 +93,8 @@ async function ghLiveStats() {
             setStat('stat-followers', user.followers);
             setStat('stat-repos', user.public_repos);
         } catch (_) {
-            /* stats stay at placeholder */
+            failStat('stat-followers');
+            failStat('stat-repos');
         }
     }
 }

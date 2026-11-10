@@ -77,6 +77,21 @@
     );
 })();
 
+/* ── pointer glow: track cursor over cards (delegated, passive) ── */
+(function pointerGlow() {
+    document.addEventListener(
+        'pointermove',
+        (e) => {
+            const card = e.target.closest?.('.card');
+            if (!card) return;
+            const r = card.getBoundingClientRect();
+            card.style.setProperty('--mx', `${e.clientX - r.left}px`);
+            card.style.setProperty('--my', `${e.clientY - r.top}px`);
+        },
+        { passive: true }
+    );
+})();
+
 /* ── toast ── */
 function toast(msg, tone = 'ok') {
     let t = document.querySelector('.toast');
