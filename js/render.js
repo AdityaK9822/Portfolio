@@ -48,11 +48,11 @@ const visible = REPOS.filter((r) => !r.hidden);
 function renderFeatured() {
     const grid = document.getElementById('featured-grid');
     if (!grid) return;
-    /* home shows the AI tier first (CONTENT.md navigation rule),
-       2×3 grid of the six AI & R&D projects */
+    /* home shows the AI tier first (CONTENT.md navigation rule):
+       3-across, using the short blurb — work.html carries the full copy */
     grid.innerHTML = visible
         .filter((r) => r.tier === 'ai' && r.featured)
-        .map((r) => repoCard(r))
+        .map((r) => repoCard({ ...r, desc: r.short || r.desc }))
         .join('');
 }
 

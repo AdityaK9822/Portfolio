@@ -87,6 +87,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
+        short: 'An LLM assistant wired into the physical world — SEE, SENSE, ACT, NETWORK, BUILD. The body is whatever is reachable on the network right now.',
     },
     {
         id: 'synopsi',
@@ -101,6 +102,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
+        short: 'Paste messy lecture notes, get a structured study pack — summary, key concepts, revision quizzes. Runs gemma4 on Ollama Cloud; fact-check mode included.',
     },
     {
         id: 'polyagent',
@@ -115,6 +117,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
+        short: 'MCP server that lets Claude delegate specialized work to six providers — with pipeline modes, loop prevention, and human approval gates.',
     },
     /* hidden until AXIOM-Firmware is public — flip hidden: false when live */
     {
@@ -130,6 +133,7 @@ const REPOS = [
         featured: true,
         hidden: true,
         fallback: { stars: null, forks: null },
+        short: 'ESP32-S3 lab-controller firmware — the pocket-sized Wi-Fi bridge APRIL plugs compliance-tested radios and sensors into.',
     },
     {
         id: 'claude-skills',
@@ -144,6 +148,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
+        short: 'Practical behavioral add-ons for AI coding agents — self-contained patterns that stop skipped verification and over-eager refactors.',
     },
     {
         id: 'codegraph',
@@ -158,6 +163,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
+        short: 'Pre-indexed code knowledge graph wired into the APRIL stack — instant, accurate retrieval for coding agents instead of stale grep.',
     },
 
     /* ── SECTION B — Open Source · Stellar Ecosystem ── */

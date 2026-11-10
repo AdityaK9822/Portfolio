@@ -232,6 +232,40 @@ main > section {
     }
 }
 
+/* home featured: 3-across (wireframe revision) + compact cards —
+   shorter blocks so the split's equal-height stretch carries less
+   dead whitespace in the right column. Full copy stays on work.html */
+@media (min-width: 701px) {
+    #featured-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+#featured-grid .card {
+    padding: 18px 20px;
+}
+
+#featured-grid .ai-card .card-name {
+    font-size: clamp(1.15rem, 1.8vw, 1.45rem);
+}
+
+#featured-grid .card-desc {
+    font-size: 0.95rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+#featured-grid .card-badges {
+    margin-top: 10px;
+}
+
+#featured-grid .badge-chip {
+    font-size: 0.72rem;
+    padding: 2px 7px;
+}
+
 /* work sections breathe (gap between groups ≥ 2× gap inside) */
 .work-section + .work-section {
     margin-top: clamp(2.6rem, 6vw, 4.4rem);
@@ -244,7 +278,7 @@ main > section {
    Everything below runs with minimal gutters (.home-main). */
 
 .home-main {
-    padding-inline: clamp(8px, 1vw, 16px);
+    padding-inline: clamp(4px, 0.5vw, 8px);
 }
 
 /* journal.latest headline band: title-only items, reduced height */
