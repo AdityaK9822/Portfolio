@@ -327,10 +327,18 @@
     border: 1px solid var(--border);
     border-radius: 999px;
     padding: 8px 16px;
-    min-height: 44px;
+    position: relative;
     cursor: pointer;
     transition: transform 150ms ease-out, color var(--dur), border-color var(--dur), background var(--dur);
     -webkit-tap-highlight-color: transparent;
+}
+
+/* invisible hit pad — ≥44px touch area, chip stays its original size */
+.filter-btn::after {
+    content: '';
+    position: absolute;
+    inset: -5px -7px;
+}
 }
 
 @media (hover: hover) {
@@ -545,11 +553,17 @@
     font-family: var(--font-mono);
     font-size: 0.75rem;
     padding: 6px 12px;
-    min-height: 44px;
+    position: relative;
     border-radius: 6px;
     cursor: pointer;
     transition: transform 150ms ease-out, color var(--dur), border-color var(--dur);
     -webkit-tap-highlight-color: transparent;
+}
+
+.copy-btn::after {
+    content: '';
+    position: absolute;
+    inset: -6px -4px;
 }
 
 @media (hover: hover) {

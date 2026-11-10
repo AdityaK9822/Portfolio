@@ -60,10 +60,7 @@
     font-family: var(--font-mono);
     font-size: var(--fs-small);
     color: var(--muted);
-    padding: 7px 13px;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
+    padding: 10px 13px;
     border-radius: var(--radius-sm);
     transition: color var(--dur), background var(--dur);
     cursor: pointer;
@@ -133,11 +130,15 @@
     font-family: var(--font-mono);
     font-size: 0.95rem;
     padding: 7px 12px;
-    min-height: 44px;
-    min-width: 44px;
-    align-items: center;
-    justify-content: center;
+    position: relative;
     cursor: pointer;
+}
+
+/* invisible hit pad — real touch area ≥44px without resizing the visible chip */
+.nav-burger::after {
+    content: '';
+    position: absolute;
+    inset: -6px;
 }
 
 @media (max-width: 900px) {
