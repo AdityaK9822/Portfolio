@@ -132,7 +132,7 @@
 
 .hero-prompt {
     color: var(--accent);
-    font-size: 0.95rem;
+    font-size: 1.05rem;
     margin-bottom: 14px;
 }
 
@@ -166,7 +166,7 @@
 .hero-bio {
     max-width: 62ch;
     color: var(--muted);
-    font-size: 0.92rem;
+    font-size: 1rem;
     margin-bottom: 28px;
 }
 
@@ -259,7 +259,7 @@
 
 .marquee-track span {
     color: var(--muted);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     white-space: nowrap;
 }
 
@@ -429,7 +429,7 @@
 
 .post-title {
     font-family: var(--font-display);
-    font-size: 1.15rem;
+    font-size: 1.25rem;
     font-weight: 700;
 }
 
@@ -540,7 +540,7 @@
 
 .email-row code {
     color: var(--accent2);
-    font-size: 0.88rem;
+    font-size: 0.95rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -551,7 +551,7 @@
     border: 1px solid var(--border-strong);
     color: var(--muted);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     padding: 6px 12px;
     position: relative;
     border-radius: 6px;
@@ -597,7 +597,7 @@
 .form-field input,
 .form-field textarea {
     font-family: var(--font-mono);
-    font-size: 0.92rem;
+    font-size: 1rem;
     color: var(--text);
     background: rgba(8, 12, 20, 0.6);
     border: 1px solid var(--border);
