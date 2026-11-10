@@ -311,6 +311,15 @@
     margin-bottom: 22px;
 }
 
+/* reading caps: these run one per line — cap them near the 45–75ch band
+   instead of stretching across the whole shell */
+.post-featured,
+#post-list,
+.cta-box {
+    max-width: var(--read-w);
+    margin-inline: auto;
+}
+
 /* ── WORK: FILTERS ── */
 .filters {
     display: flex;

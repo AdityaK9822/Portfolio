@@ -6,10 +6,10 @@
 .nav {
     position: fixed;
     top: 14px;
-    /* edge-aligned with .container's fluid padding */
-    left: var(--edge-pad);
-    right: var(--edge-pad);
-    width: auto;
+    /* floats centered over the same shell width as .container */
+    left: 50%;
+    transform: translateX(-50%);
+    width: min(var(--shell-w), calc(100% - 16px));
     z-index: var(--z-nav);
     display: flex;
     align-items: center;

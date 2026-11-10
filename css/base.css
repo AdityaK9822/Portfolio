@@ -32,7 +32,9 @@
     /* Rhythm */
     --radius: 14px;
     --radius-sm: 8px;
-    --edge-pad: clamp(10px, 1vw, 18px);
+    --edge-pad: clamp(20px, 3.5vw, 48px);
+    --shell-w: 90rem;
+    --read-w: 72rem;
     --gap: clamp(1rem, 2.5vw, 1.75rem);
     --section-pad: clamp(3rem, 7vw, 5.5rem);
     --nav-h: 64px;
@@ -141,10 +143,11 @@ h1, h2, h3 {
     background: var(--accent);
 }
 
-/* Layout helpers — full-bleed: the page owns the entire screen */
+/* Layout helpers — capped shell: content breathes with real margins,
+   page bands stay edge-to-edge */
 .container {
-    max-width: none;
-    margin: 0 auto;
+    max-width: var(--shell-w);
+    margin-inline: auto;
     padding: 0 var(--edge-pad);
     position: relative;
     z-index: var(--z-content);
