@@ -64,7 +64,8 @@
 
 .teaser-card {
     flex: none;
-    width: clamp(280px, 30vw, 360px);
+    /* long cards: the banner rows stretch across the full tab width */
+    width: clamp(340px, 32vw, 480px);
 }
 
 .ghost-card {
@@ -264,14 +265,11 @@
 }
 
 /* ── HOME: CTA BOX ── */
-/* taller by design (~38vh capped), content centered — not stretched to
-   fill every leftover pixel, just a substantial closing block */
+/* horizontal length only: the "ready to collaborate?" line gets the
+   big display treatment (clamped so it never overflows); the box
+   itself keeps its natural height — not stretched */
 .cta-box {
     text-align: center;
-    min-height: clamp(240px, 38vh, 440px);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
     padding: clamp(2.4rem, 6vw, 4rem) 24px;
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -282,8 +280,9 @@
 
 .cta-box .cta-line {
     font-family: var(--font-display);
-    font-size: var(--fs-h2);
-    font-weight: 700;
+    font-size: clamp(2rem, 5.5vw, 3.4rem);
+    font-weight: 800;
+    letter-spacing: -0.02em;
     margin-bottom: 6px;
 }
 

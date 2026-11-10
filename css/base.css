@@ -86,11 +86,6 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
-
-    /* sticky footer: flex column so the footer sits at the page bottom
-       (no empty space after it on short pages) */
-    display: flex;
-    flex-direction: column;
 }
 
 img {
@@ -155,53 +150,10 @@ h1, h2, h3 {
 /* section numbering — blueprint registration rhythm */
 main {
     counter-reset: sect 0;
-
-    /* vertical justification: main takes all leftover height and
-       spreads its sections across it (footer pushes to the bottom) */
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
 }
 
 main > section {
     counter-increment: sect;
-    /* natural height only — the leftover space goes between sections */
-    flex: 0 0 auto;
-    margin-block: 0;
-}
-
-/* home: opted-in sections each occupy a FULL tab when scrolled to.
-   (flex-grow alone does nothing on a page that overflows — so every
-   stretch section gets a full-viewport floor: head at top, content
-   centered in the rest.) */
-main > section.stretch {
-    flex: 1 1 auto;
-    display: flex;
-    flex-direction: column;
-    min-height: calc(100vh - var(--nav-h) - var(--section-pad));
-}
-
-main > section.stretch > .section-head {
-    flex: 0 0 auto;
-}
-
-main > section.stretch > :last-child {
-    flex: 1 1 auto;
-    align-content: center;
-}
-
-/* the CTA box stays its capped size (not fully stretched) — centered
-   in its full-tab section via auto margins instead of flex-grow */
-main > section.stretch > .cta-box {
-    flex: 0 0 auto;
-    margin: auto 0;
-}
-
-/* the banner keeps its marquee intact while centering in its grown box */
-main > section.stretch > .teaser-marquee {
-    display: flex;
-    align-items: center;
 }
 
 .page {
