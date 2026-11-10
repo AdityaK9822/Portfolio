@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polyagent: one orchestrator, many brains — Aditya Kadam</title>
+    <meta name="description" content="One agent can't do security scans, code review, and analysis equally well. An MCP orchestrator that delegates to GLM, OpenAI, Anthropic, Bedrock, Gemini and Ollama — with real loop prevention.">
+    <meta name="theme-color" content="#080c14">
+    <link rel="icon"
+        href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23080c14'/%3E%3Ctext x='7' y='22' font-family='monospace' font-size='15' fill='%2322c55e'%3E%3E_%3C/text%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../css/base.css?v=17">
+    <link rel="stylesheet" href="../css/components.css?v=17">
+    <link rel="stylesheet" href="../css/pages.css?v=17">
+</head>
+
+<body data-page="journal">
+    <a class="skip-link" href="#main">skip to content</a>
+
+    <nav class="nav" aria-label="Main">
+        <a class="nav-logo" href="../index.html">aditya<span class="path">@dev</span>:~$<span class="cursor"></span></a>
+        <div class="nav-links">
+            <a data-nav="home" href="../index.html">home</a>
+            <a data-nav="work" href="../work.html">work</a>
+            <a data-nav="certificates" href="../certificates.html">certs</a>
+            <a data-nav="journal" href="../journal.html">journal</a>
+            <a data-nav="contact" href="../contact.html">contact</a>
+        </div>
+        <span class="nav-status"><span class="dot" aria-hidden="true"></span>OPEN&nbsp;TO&nbsp;WORK</span>
+        <button class="nav-burger" aria-label="Toggle menu" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" aria-hidden="true">
+                <path d="M3 6h18M3 12h18M3 18h18" />
+            </svg>
+        </button>
+    </nav>
+
+    <main id="main" class="container page">
+        <article class="post-page">
+            <p class="post-meta">
+                <a class="tag blue" href="../journal.html">← journal</a>
+                <span>2026-10-20</span>
+            </p>
+            <h1>Polyagent: one orchestrator, many brains</h1>
+
+            <div class="post-body">
+                <p><b>Polyagent is a ready tool, not a research bet</b> — an MCP server you can register with Claude
+                    Desktop today. This post is the design rationale: why delegation beats monolithic agents, and how the
+                    loop-prevention layer makes delegation safe.</p>
+
+                <h2>The problem: one agent can't do everything equally well</h2>
+                <p>A single model instance asked to do security scans, code review, and long-context analysis will be
+                    mediocre at all three — and the token bill lands on whichever provider hosts it. Different models
+                    have different strengths and very different costs. Polyagent treats the model as a resource to
+                    <b>route</b>, not a single always-on brain.</p>
+
+                <h2>Architecture in one line</h2>
+                <p><code>Claude Desktop ⇄ MCP server (Polyagent) ⇄ external agents</code></p>
+                <p>Claude stays the coordinator; specialized work is delegated over an OpenAI-compatible endpoint to
+                    GLM, OpenAI, Anthropic, AWS Bedrock, Gemini, or Ollama Cloud. Agents are registered dynamically —
+                    add a provider config, the registry picks it up without code changes.</p>
+
+                <h2>Pipeline modes</h2>
+                <ul>
+                    <li><b>Sequential</b> — each agent refines the previous one's output; useful for scan → triage →
+                        report chains.</li>
+                    <li><b>Iterative</b> — one agent loops until confidence criteria are met.</li>
+                    <li><b>Parallel</b> — independent agents run concurrently; results are merged by the coordinator.
+                    </li>
+                </ul>
+
+                <h2>Loop prevention — the part that actually matters</h2>
+                <p>Untethered agents looping on their own output is the classic failure. Polyagent ships real gates,
+                    not vibes:</p>
+                    <ul>
+                    <li><b>Max iterations</b> per task — hard ceiling, no soft exceptions.</li>
+                    <li><b>Confidence thresholds</b> — the loop exits when quality criteria pass, not when tokens run
+                        out.</li>
+                    <li><b>Human approval gates</b> — defined actions pause for explicit approval before execution.</li>
+                </ul>
+
+                <h2>Streaming, metrics, and hardening</h2>
+                <p>Output streams back through MCP as it's produced, so delegation doesn't feel like a stall. Every call
+                    is logged with error handling and metrics — which agent, which provider, how long, what it cost in
+                    tokens. Production hardening is boring on purpose: timeouts, retries, and explicit failure states
+                    instead of silent hangs.</p>
+
+                <h2>Where it goes next</h2>
+                <p>The registry is the growth surface: more specialized agents (dynamic analysis, docs synthesis,
+                    test-generation) land as configs, not forks. If you run Claude Desktop and have a favorite provider,
+                    <a href="https://github.com/AdityaK9822/Polyagent" target="_blank" rel="noopener">the repo
+                        ↗</a> is open — issues welcome.</p>
+            </div>
+        </article>
+    </main>
+
+    <footer class="footer">
+        <div class="container footer-inner">
+            <span>exit 0 — © <span data-year>2026</span> Aditya Kadam · built in the open</span>
+            <div class="foot-socials">
+                <a href="https://github.com/AdityaK9822" target="_blank" rel="noopener" aria-label="GitHub">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23.675.84 1.08 1.385 2.805 1.385 1.695 0 2.805-1.23 3.495-.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+                    </svg>
+                </a>
+                <a href="https://www.linkedin.com/in/aditya-kadam-7a5341373" target="_blank" rel="noopener" aria-label="LinkedIn">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                    </svg>
+                </a>
+                <a href="../contact.html" aria-label="Contact page">get in touch →</a>
+            </div>
+        </div>
+    </footer>
+
+    <script defer src="../js/data.js?v=17"></script>
+    <script defer src="../js/render.js?v=17"></script>
+    <script defer src="../js/ui.js?v=17"></script>
+</body>
+
+</html>

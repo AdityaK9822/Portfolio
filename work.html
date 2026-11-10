@@ -14,9 +14,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="css/base.css?v=16">
-    <link rel="stylesheet" href="css/components.css?v=16">
-    <link rel="stylesheet" href="css/pages.css?v=16">
+    <link rel="stylesheet" href="css/base.css?v=17">
+    <link rel="stylesheet" href="css/components.css?v=17">
+    <link rel="stylesheet" href="css/pages.css?v=17">
 </head>
 
 <body data-page="work">
@@ -47,9 +47,38 @@
                 id="work-updated-at"></span></p>
         </div>
 
-        <!-- filter bar + grid (rendered from js/data.js by render.js) -->
-        <div class="filters reveal" id="filters" role="group" aria-label="Filter repositories"></div>
-        <div class="card-grid" id="work-grid"></div>
+        <!-- SECTION A — AI, Agents & R&D -->
+        <section class="work-section reveal" aria-label="AI, Agents and R&D">
+            <div class="section-head">
+                <h2 class="section-title">a/ — AI, Agents &amp; R&amp;D</h2>
+                <a class="section-link" href="https://github.com/AdityaK9822" target="_blank"
+                    rel="noopener">→ github.com/AdityaK9822</a>
+            </div>
+            <p class="section-intro">Active research and shipping. Flagship is an embodied agent; everything else is
+                infrastructure around it — orchestration, dev tooling, and applied LLM apps.</p>
+            <div class="ai-grid" id="ai-grid"></div>
+        </section>
+
+        <!-- SECTION B — Open Source · Stellar -->
+        <section class="work-section reveal" aria-label="Open source in the Stellar ecosystem">
+            <div class="section-head">
+                <h2 class="section-title">b/ — Open Source · Stellar</h2>
+                <p class="section-link">maintained via drip.network · Stellar Waves</p>
+            </div>
+            <p class="section-intro">Where I learned shipping discipline — production contracts, fee abstraction, keeper
+                bots. This is the ecosystem I currently maintain inside.</p>
+            <div class="card-grid" id="stellar-grid"></div>
+        </section>
+
+        <!-- SECTION C — Archive -->
+        <section class="work-section reveal" aria-label="Archive">
+            <div class="section-head">
+                <h2 class="section-title">c/ — Archive</h2>
+            </div>
+            <p class="section-intro">Security tooling, DSA projects, and early shipping. Smaller treatment — kept for
+                track record, not spotlight.</p>
+            <div class="archive-list" id="archive-list"></div>
+        </section>
 
         <div class="note-box reveal" style="margin-top: var(--gap);">
             Looking for collaboration or want one of these improved? <a href="contact.html">get in touch →</a>
@@ -75,10 +104,10 @@
         </div>
     </footer>
 
-    <script defer src="js/data.js?v=16"></script>
-    <script defer src="js/render.js?v=16"></script>
-    <script defer src="js/github.js?v=16"></script>
-    <script defer src="js/ui.js?v=16"></script>
+    <script defer src="js/data.js?v=17"></script>
+    <script defer src="js/render.js?v=17"></script>
+    <script defer src="js/github.js?v=17"></script>
+    <script defer src="js/ui.js?v=17"></script>
 </body>
 
 </html>

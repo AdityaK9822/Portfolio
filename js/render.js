@@ -5,12 +5,19 @@
    ============================================================ */
 
 /* ── repo card markup ──
-   cats: optional list for the work-grid filter (e.g. ['open-source','web3']) */
+   tier-aware; hidden repos never render.
+   r.badge: status strip (Flagship R&D / MCP Server / Fork …) shown
+   above the title so honest state is part of the card. */
 function repoCard(r, cats) {
     const catAttr = cats ? ` data-cat="${cats.join(' ')}"` : '';
     const orgLine = r.org ? `<span class="org">${r.org} /</span> ` : '';
     const link = r.url
         ? `<a class="stretched" href="${r.url}" target="_blank" rel="noopener" aria-label="${r.name} on GitHub">${r.name}</a>`
+        : '';
+    const badges = r.badge
+        ? `<div class="card-badges">${r.badge
+              .map((b) => `<span class="badge-chip">${b}</span>`)
+              .join('')}</div>`
         : '';
     const tags = r.tags
         .map((t) => `<span class="tag ${r.tagTone?.[t] || ''}">${t}</span>`)
@@ -22,11 +29,12 @@ function repoCard(r, cats) {
         : `<div class="card-meta"><span>${
               r.fallback.forks ? `${r.fallback.forks} forks` : 'local project'
           }</span></div>`;
-    return `<article class="card reveal"${catAttr} data-id="${r.id}">
+    return `<article class="card reveal${r.tier === 'ai' ? ' ai-card' : ''}"${catAttr} data-id="${r.id}">
       <div class="card-top">
         <div class="card-name">${orgLine}${r.name}</div>
         <span class="card-arrow" aria-hidden="true">↗</span>
       </div>
+      ${badges}
       <p class="card-desc">${r.desc}</p>
       ${meta}
       <div class="card-tags">${tags}</div>
@@ -35,17 +43,56 @@ function repoCard(r, cats) {
 }
 
 /* ── mounts ── */
+const visible = REPOS.filter((r) => !r.hidden);
+
 function renderFeatured() {
     const grid = document.getElementById('featured-grid');
     if (!grid) return;
-    grid.innerHTML = REPOS.filter((r) => r.featured).map(repoCard).join('');
+    /* home shows the AI tier first (CONTENT.md navigation rule),
+       2×3 grid of the six AI & R&D projects */
+    grid.innerHTML = visible
+        .filter((r) => r.tier === 'ai' && r.featured)
+        .map((r) => repoCard(r))
+        .join('');
+}
+
+function renderStellarStrip() {
+    const strip = document.getElementById('stellar-strip');
+    if (!strip) return;
+    /* home: Stellar is the slim support strip — one line per repo */
+    strip.innerHTML = visible
+        .filter((r) => r.tier === 'stellar')
+        .map(
+            (r) => `<a class="strip-row reveal" href="${r.url}" target="_blank" rel="noopener">
+          <span class="strip-name">${r.name}</span>
+          <span class="strip-desc">${r.desc.split('.')[0]}.</span>
+          <span class="strip-meta" aria-hidden="true">↗</span>
+        </a>`
+        )
+        .join('');
 }
 
 function renderWorkGrid() {
-    const grid = document.getElementById('work-grid');
-    if (!grid) return;
-    grid.innerHTML = REPOS.map(
-        (r) => repoCard(r, [r.category, r.web3 ? 'web3' : 'all'])
+    const ai = document.getElementById('ai-grid');
+    if (ai) ai.innerHTML = visible.filter((r) => r.tier === 'ai').map((r) => repoCard(r)).join('');
+    const stellar = document.getElementById('stellar-grid');
+    if (stellar)
+        stellar.innerHTML = visible
+            .filter((r) => r.tier === 'stellar')
+            .map((r) => repoCard(r))
+            .join('');
+}
+
+/* ── archive: compact list, one line per project, no cards —
+   kept for track record, not spotlight (CONTENT.md §3) */
+function renderArchive() {
+    const list = document.getElementById('archive-list');
+    if (!list) return;
+    list.innerHTML = ARCHIVE.map(
+        (a) => `<div class="archive-row reveal">
+          <div class="archive-name">${a.name}<span class="archive-meta"> — ${a.meta.toLowerCase()}</span></div>
+          <p class="card-desc">${a.desc}</p>
+        </div>`
     ).join('');
 }
 
@@ -175,18 +222,29 @@ function setupFilters() {
     });
 }
 
-/* ── skills marquee (home) ── */
+/* ── skills marquee (home band) + grouped sidebar ── */
 function renderSkills() {
     const track = document.getElementById('skills-track');
-    if (!track) return;
-    const items = PROFILE.skills.map((s) => `<span>${s}</span>`).join('');
-    /* duplicate content for seamless -50% marquee loop */
-    track.innerHTML = items + items;
-    track.setAttribute('aria-hidden', 'true');
-    track.parentElement.insertAdjacentHTML(
-        'beforeend',
-        `<span class="sr-only" style="position:absolute;left:-9999px;">${PROFILE.skills.join(', ')}</span>`
-    );
+    if (track) {
+        const items = SKILL_LIST.map((s) => `<span>${s}</span>`).join('');
+        /* duplicate content for seamless -50% marquee loop */
+        track.innerHTML = items + items;
+        track.setAttribute('aria-hidden', 'true');
+        track.parentElement.insertAdjacentHTML(
+            'beforeend',
+            `<span class="sr-only" style="position:absolute;left:-9999px;">${SKILL_LIST.join(', ')}</span>`
+        );
+    }
+    const groups = document.getElementById('skills-groups');
+    if (groups)
+        groups.innerHTML = SKILLS.map(
+            (g) => `<div class="skill-group">
+          <div class="skill-group-label">${g.group}</div>
+          <ul class="skill-items">
+            ${g.items.map((s) => `<li>${s}</li>`).join('')}
+          </ul>
+        </div>`
+        ).join('');
 }
 
 /* ── contact page: availability list ── */
@@ -197,7 +255,9 @@ function renderOpenList() {
 }
 
 renderFeatured();
+renderStellarStrip();
 renderWorkGrid();
+renderArchive();
 renderCerts();
 renderPosts();
 renderSkills();

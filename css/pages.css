@@ -13,11 +13,12 @@
 
 /* one-time entrance: chunks staggered 100ms apart */
 .hero-prompt[data-rise] { animation-delay: 0s; }
-.hero-name[data-rise]   { animation-delay: 0.1s; }
-.hero-sub[data-rise]    { animation-delay: 0.2s; }
-.hero-bio[data-rise]    { animation-delay: 0.3s; }
-.hero-cta[data-rise]    { animation-delay: 0.4s; }
-.hero-scroll[data-rise] { animation-delay: 0.9s; }
+.hero-role[data-rise]   { animation-delay: 0.1s; }
+.hero-name[data-rise]   { animation-delay: 0.2s; }
+.hero-sub[data-rise]    { animation-delay: 0.3s; }
+.hero-bio[data-rise]    { animation-delay: 0.4s; }
+.hero-cta[data-rise]    { animation-delay: 0.5s; }
+.hero-scroll[data-rise] { animation-delay: 0.95s; }
 
 @keyframes riseIn {
     from {
@@ -136,6 +137,25 @@
     margin-bottom: 14px;
 }
 
+/* role line: identity marker between prompt and headline */
+.hero-role {
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+}
+
+.hero-sub {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    letter-spacing: -0.02em;
+    color: var(--text);
+    max-width: 24ch;
+    margin-bottom: 16px;
+}
+
 .hero-prompt::before {
     content: '$ ';
     color: var(--muted);
@@ -152,12 +172,6 @@
     color: var(--accent);
 }
 
-.hero-sub {
-    font-size: clamp(0.95rem, 2vw, 1.15rem);
-    color: var(--text);
-    margin-bottom: 14px;
-}
-
 .hero-sub .sep {
     color: var(--muted);
     margin: 0 6px;
@@ -166,7 +180,7 @@
 .hero-bio {
     max-width: 62ch;
     color: var(--muted);
-    font-size: 1rem;
+    font-size: 1.02rem;
     margin-bottom: 28px;
 }
 
@@ -318,6 +332,84 @@
 .cta-box {
     max-width: var(--read-w);
     margin-inline: auto;
+}
+
+/* ── HOME: STELLAR STRIP (one line per repo, no cards) ── */
+.strip-row {
+    display: grid;
+    grid-template-columns: minmax(110px, 160px) minmax(0, 1fr) auto;
+    gap: 16px;
+    align-items: baseline;
+    padding: 13px 6px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    cursor: pointer;
+}
+
+@media (hover: hover) {
+    .strip-row:hover {
+        text-decoration: none;
+        background: rgba(148, 163, 184, 0.04);
+    }
+
+    .strip-row:hover .strip-name {
+        color: var(--accent);
+    }
+}
+
+.strip-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    white-space: nowrap;
+    transition: color var(--dur);
+}
+
+.strip-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+}
+
+.strip-meta {
+    color: var(--muted);
+    font-size: var(--fs-small);
+}
+
+/* ── WORK: ARCHIVE — compact track record, no card boxes ── */
+.archive-list {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px var(--gap);
+}
+
+@media (max-width: 760px) {
+    .archive-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+.archive-row {
+    border-top: 1px solid var(--border);
+    padding-top: 10px;
+}
+
+.archive-name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05rem;
+    color: var(--text);
+}
+
+.archive-meta {
+    color: var(--muted);
+    font-size: var(--fs-small);
+    font-weight: 400;
+    margin-left: 2px;
+}
+
+.archive-row .card-desc {
+    font-size: 0.95rem;
+    margin-top: 4px;
 }
 
 /* ── WORK: FILTERS ── */

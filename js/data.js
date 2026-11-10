@@ -1,14 +1,16 @@
 /* ============================================================
    data.js — SINGLE SOURCE OF TRUTH for all site content.
-   Edit this file to update repos, certificates, posts & profile.
+   Mirrors CONTENT.md (the master content doc). Edit here.
+   Tier order everywhere: AI & R&D first, Stellar second.
    ============================================================ */
 
 /* ── PROFILE ─────────────────────────────────────────────── */
 const PROFILE = {
     name: 'Aditya Kadam',
     firstName: 'Aditya',
-    role: 'Web3 Developer',
-    tagline: 'Open Source Contributor · AI-Integrated Systems',
+    role: 'AI Systems & Agentic Engineering',
+    headline: 'Building assistants with a body — AI that senses, acts, and ships.',
+    subline: 'Agentic engineering across LLM orchestration, embodied AI, and applied study tools — with a production-discipline background in Stellar/Soroban open source.',
     githubUser: 'AdityaK9822',
     githubUrl: 'https://github.com/AdityaK9822',
     linkedinUrl: 'https://www.linkedin.com/in/aditya-kadam-7a5341373',
@@ -18,25 +20,147 @@ const PROFILE = {
     email: '',
     // TODO: get a key at https://web3forms.com (free, no backend) and paste it
     web3formsKey: '',
-    openToList: ['collaborations', 'open source contributions', 'freelance projects'],
-    bio: 'CS student at ITM Kharghar and open source contributor specializing in the Stellar blockchain ecosystem. I build AI-integrated Web3 applications — from gasless transaction infrastructure to decentralized payroll platforms — using TypeScript, Rust, and Claude AI.',
-    skills: [
-        'TypeScript / JavaScript', 'Rust', 'Python', 'C++', 'Stellar / Soroban',
-        'Smart Contracts (Rust)', 'Next.js / React', 'Node.js', 'PostgreSQL',
-        'Drizzle ORM', 'Claude API (Anthropic)', 'Docker / Kubernetes',
-        'GitHub Actions', 'Solidity / Web3.js', 'Ethical Hacking / CTF'
+    about:
+        'CS student at ITM Kharghar building agentic AI systems — an embodied LLM assistant wired into the physical world (APRIL), multi-provider agent infrastructure (Polyagent), and applied LLM apps. Background in Stellar/Soroban open source maintenance and security tooling: the systems discipline that ships production-grade AI.',
+    openToList: [
+        'AI/ML Engineering',
+        'AI Agent Infra',
+        'LLM Application Dev',
+        'Web3 Development',
+        'Security Research',
     ],
 };
 
+/* ── SKILLS — grouped, AI first (mirrors Resume layout) ──── */
+const SKILLS = [
+    {
+        group: 'ai & agents',
+        items: [
+            'Claude API (Anthropic)',
+            'Ollama / OpenAI-compatible endpoints',
+            'MCP (Model Context Protocol)',
+            'Multi-agent orchestration',
+            'Prompt engineering',
+            'Vision models for feed reasoning',
+        ],
+    },
+    {
+        group: 'languages',
+        items: ['Python', 'TypeScript / JavaScript', 'Rust', 'C++', 'Shell / Bash'],
+    },
+    {
+        group: 'web3 & blockchain',
+        items: ['Stellar / Soroban', 'Smart Contracts (Rust)', 'Fee-Bump Transactions', 'Solidity / Web3.js'],
+    },
+    {
+        group: 'frontend & backend',
+        items: ['Next.js / React', 'Node.js / REST APIs', 'PostgreSQL / Drizzle ORM', 'HTML / CSS / Tailwind'],
+    },
+    {
+        group: 'infra & tooling',
+        items: ['Docker / Kubernetes', 'Git / GitHub Actions', 'Ethical Hacking / CTF'],
+    },
+];
+
+/* flat list (skills marquee derives from this) */
+const SKILL_LIST = SKILLS.flatMap((g) => g.items);
+
 /* ── REPOS ─────────────────────────────────────────────────
-   category: 'open-source' | 'project'
-   web3:     adds the Web3 filter tag
-   featured: shows on the home page
-   url:      pass null to omit the link (card renders without one)
-   Stars/forks update automatically at runtime via github.js;
-   numbers shown before fetch / on failure come from `fallback`.
+   tier:     'ai' (Section A) | 'stellar' (Section B)
+   featured: shows on the home page AI grid (A only)
+   hidden:   true renders nowhere (AXIOM stays private until flipped)
+   badge:    short status strip shown on top of the card
+   Stars/forks update automatically via github.js after render.
    ─────────────────────────────────────────────────────────── */
 const REPOS = [
+    /* ── SECTION A — AI, Agents & R&D ── */
+    {
+        id: 'april',
+        org: 'AdityaK9822',
+        name: 'APRIL',
+        url: 'https://github.com/AdityaK9822/APRIL',
+        badge: ['Flagship R&D', 'Building in the open'],
+        desc: 'An LLM assistant with a body in the networked world — it senses, controls, and works with the physical devices around it. Organized into pillars: SEE through IP cameras with a vision model; SENSE ECG/EEG and telemetry via ESP32-connected sensors; ACT on lights, AC, switches, and robot arms; NETWORK discovery and authorized wifi audits; BUILD hardware from CAD → CNC → 3D print → flash. The body is whatever is reachable on the network right now — the ESP32 is the archetypal limb.',
+        tags: ['Python', 'AI Agents', 'IoT'],
+        tagTone: { 'Python': '', 'AI Agents': 'green', 'IoT': 'blue' },
+        tier: 'ai',
+        featured: true,
+        hidden: false,
+        fallback: { stars: null, forks: null },
+    },
+    {
+        id: 'synopsi',
+        org: 'AdityaK9822',
+        name: 'Synopsi',
+        url: 'https://github.com/AdityaK9822/synopsi-web',
+        badge: ['New · Nov 2026', 'Frontend App'],
+        desc: 'A smart academic notes assistant — paste or upload messy lecture notes (.txt/.md/.pdf) and get a structured study pack: Summary → Key Concepts → Revision Questions with an interactive click-to-reveal quiz mode. Runs gemma4:31b on Ollama Cloud, so no local GPU needed. A Fact-Check "Research mode" re-verifies claims from your output against the source notes with exact quoted fragments, and ends with a numbered sources list. Server-side text/PDF extraction, persisted chat threads, and a documented prompt-engineering pipeline (persona + strict output template + few-shot + grounding rules) as the graded core.',
+        tags: ['TypeScript', 'Next.js', 'Ollama'],
+        tagTone: { 'TypeScript': '', 'Next.js': 'blue', 'Ollama': 'green' },
+        tier: 'ai',
+        featured: true,
+        hidden: false,
+        fallback: { stars: null, forks: null },
+    },
+    {
+        id: 'polyagent',
+        org: 'AdityaK9822',
+        name: 'Polyagent',
+        url: 'https://github.com/AdityaK9822/Polyagent',
+        badge: ['MCP Server', 'Agent Infra'],
+        desc: 'A multi-provider AI agent bridge for Claude Desktop — an MCP server that lets Claude delegate specialized work (security scans, code review, analysis) to other agents: GLM, OpenAI, Anthropic, AWS Bedrock, Gemini, and Ollama Cloud over an OpenAI-compatible endpoint. Ships with dynamic agent registration, sequential / iterative / parallel pipeline modes, and real loop-prevention — max iterations, confidence thresholds, human approval gates — plus streaming, comprehensive error handling, logging, and metrics.',
+        tags: ['Python', 'MCP', 'Multi-Agent'],
+        tagTone: { 'Python': '', 'MCP': 'blue', 'Multi-Agent': 'green' },
+        tier: 'ai',
+        featured: true,
+        hidden: false,
+        fallback: { stars: null, forks: null },
+    },
+    /* hidden until AXIOM-Firmware is public — flip hidden: false when live */
+    {
+        id: 'axiom',
+        org: 'AdityaK9822',
+        name: 'AXIOM-Firmware',
+        url: 'https://github.com/AdityaK9822/AXIOM-Firmware',
+        badge: ['Embedded', 'Security'],
+        desc: 'ESP32-S3 Wi-Fi/BLE lab-controller firmware with a web dashboard and SH1106 OLED display — network monitoring, diagnostics, and authorized wireless security assessment. This is the reference hardware "limb" APRIL plugs compliance-tested radios, sensors, and actuation into: an entire programmable bridge, in a pocket form factor, to the physical side of an agentic system.',
+        tags: ['C++', 'ESP32-S3', 'Firmware'],
+        tagTone: { 'C++': '', 'ESP32-S3': 'blue', 'Firmware': 'green' },
+        tier: 'ai',
+        featured: true,
+        hidden: true,
+        fallback: { stars: null, forks: null },
+    },
+    {
+        id: 'claude-skills',
+        org: 'AdityaK9822',
+        name: 'Claude SKILLS',
+        url: 'https://github.com/AdityaK9822/Vibe-coding-Claude-SKILLS',
+        badge: ['Agent Tooling', 'Prompt Engineering'],
+        desc: 'A small library of Claude skills — practical, no-nonsense behavioral add-ons for AI coding agents that prevent the silly failures: skipping verification, sloppy naming, over-eager refactors. Each skill is a self-contained pattern distilled from real sessions into something any agent (Claude Code, Codex, Gemini, Cursor, OpenCode) can adopt.',
+        tags: ['Agent Tooling', 'Prompt Eng'],
+        tagTone: {},
+        tier: 'ai',
+        featured: true,
+        hidden: false,
+        fallback: { stars: null, forks: null },
+    },
+    {
+        id: 'codegraph',
+        org: 'AdityaK9822',
+        name: 'Codegraph for APRIL',
+        url: 'https://github.com/AdityaK9822/codegraph-for-APRIL',
+        badge: ['Fork', 'AI Dev Tooling'],
+        desc: "An edited fork of a pre-indexed code knowledge graph that auto-syncs on code changes, wired into the APRIL stack — giving participating coding agents (Claude Code, Codex, Gemini, Cursor, OpenCode) instant, accurate retrieval over a living codebase instead of stale grep. This is the memory surgery that lets an agentic system navigate its own 10k+ files without losing the plot.",
+        tags: ['TypeScript', 'Fork'],
+        tagTone: { 'TypeScript': '', 'Fork': 'red' },
+        tier: 'ai',
+        featured: true,
+        hidden: false,
+        fallback: { stars: null, forks: null },
+    },
+
+    /* ── SECTION B — Open Source · Stellar Ecosystem ── */
     {
         id: 'fluid',
         org: 'Stellar-Fluid',
@@ -45,9 +169,9 @@ const REPOS = [
         desc: 'Gas abstraction layer for Stellar. Wraps user transactions in fee-bump envelopes so apps can sponsor XLM fees.',
         tags: ['TypeScript / Rust', 'Fee-Bump', 'Production'],
         tagTone: { 'TypeScript / Rust': '', 'Fee-Bump': 'blue', 'Production': 'green' },
-        category: 'open-source',
-        web3: true,
-        featured: true,
+        tier: 'stellar',
+        featured: false,
+        hidden: false,
         fallback: { stars: null, forks: 92 },
     },
     {
@@ -58,9 +182,9 @@ const REPOS = [
         desc: 'Stablecoin & fiat payroll platform on Stellar Soroban. ZK-shielded payments, biometric auth (passkeys), NGN→USDC bridge.',
         tags: ['Next.js 15', 'ZK Proofs', 'Passkeys'],
         tagTone: { 'Next.js 15': '', 'ZK Proofs': 'red', 'Passkeys': 'blue' },
-        category: 'open-source',
-        web3: true,
-        featured: true,
+        tier: 'stellar',
+        featured: false,
+        hidden: false,
         fallback: { stars: null, forks: 103 },
     },
     {
@@ -71,9 +195,9 @@ const REPOS = [
         desc: 'Decentralized automation marketplace on Soroban. Rust smart contracts + Keeper bots that execute recurring on-chain tasks.',
         tags: ['Rust / Node.js', 'Smart Contracts'],
         tagTone: { 'Rust / Node.js': '', 'Smart Contracts': 'green' },
-        category: 'open-source',
-        web3: true,
-        featured: true,
+        tier: 'stellar',
+        featured: false,
+        hidden: false,
         fallback: { stars: null, forks: 39 },
     },
     {
@@ -84,9 +208,9 @@ const REPOS = [
         desc: 'Backend bridge connecting MTN, Airtel, and Orange mobile money providers with the Stellar network. REST API, PostgreSQL, K8s.',
         tags: ['TypeScript', 'PostgreSQL', 'Kubernetes'],
         tagTone: {},
-        category: 'open-source',
-        web3: true,
+        tier: 'stellar',
         featured: false,
+        hidden: false,
         fallback: { stars: null, forks: null },
     },
     {
@@ -97,91 +221,23 @@ const REPOS = [
         desc: 'Web3-powered DeFi currency exchange. Multi-currency swaps with TypeScript frontend and Stellar blockchain backend.',
         tags: ['Web3', 'Stellar'],
         tagTone: { 'Web3': 'red', 'Stellar': 'green' },
-        category: 'open-source',
-        web3: true,
+        tier: 'stellar',
         featured: false,
+        hidden: false,
         fallback: { stars: null, forks: null },
     },
-    /* ── own projects (repo: AdityaK9822) ── */
-    {
-        id: 'april',
-        org: 'AdityaK9822',
-        name: 'APRIL',
-        url: 'https://github.com/AdityaK9822/APRIL',
-        desc: 'An LLM assistant with a body in the networked world — senses, controls and works with physical devices (cams, sensors, appliances) end to end.',
-        tags: ['AI / Agents', 'IoT'],
-        tagTone: { 'AI / Agents': 'green', 'IoT': 'blue' },
-        category: 'project',
-        web3: false,
-        featured: false,
-        fallback: { stars: null, forks: null },
-    },
-    {
-        id: 'polyagent',
-        org: 'AdityaK9822',
-        name: 'Polyagent',
-        url: 'https://github.com/AdityaK9822/Polyagent',
-        desc: 'Multi-provider AI agent bridge — an MCP server letting Claude delegate scans, reviews and analysis to Gemini, Bedrock & OpenAI models.',
-        tags: ['MCP', 'Python'],
-        tagTone: { 'MCP': 'blue', 'Python': '' },
-        category: 'project',
-        web3: false,
-        featured: false,
-        fallback: { stars: null, forks: null },
-    },
-    {
-        id: 'hash-cracker',
-        org: 'AdityaK9822',
-        name: 'Cryptographic-Hash-Cracker',
-        url: 'https://github.com/AdityaK9822/Cryptographic-Hash-Cracker',
-        desc: 'CLI tool for cracking MD5, SHA-1/2/3, BLAKE2 hashes via wordlist or brute-force. Built for CTF challenges and ethical security research.',
-        tags: ['Security', 'Python'],
-        tagTone: { 'Security': 'red', 'Python': '' },
-        category: 'project',
-        web3: false,
-        featured: false,
-        fallback: { stars: 1, forks: null },
-    },
-    {
-        id: 'lumnova',
-        org: 'AdityaK9822',
-        name: 'Lumnova',
-        url: 'https://github.com/AdityaK9822/Lumnova',
-        desc: 'Modern, responsive digital wallet application built with React and Vite, featuring a streamlined payment interface.',
-        tags: ['React / Vite'],
-        tagTone: {},
-        category: 'project',
-        web3: false,
-        featured: false,
-        fallback: { stars: null, forks: null },
-    },
-    {
-        id: 'buildtrack',
-        org: 'AdityaK9822',
-        name: 'buildtrack',
-        url: 'https://github.com/AdityaK9822/buildtrack',
-        desc: 'Construction project management platform with API and client.',
-        tags: ['Full-Stack'],
-        tagTone: { 'Full-Stack': 'green' },
-        category: 'project',
-        web3: false,
-        featured: false,
-        fallback: { stars: null, forks: null },
-    },
-    /* TODO: add repo URL when public (link rendered only when set) */
-    {
-        id: 'petad',
-        org: null,
-        name: 'PetAd Frontend',
-        url: null,
-        desc: 'Blockchain-backed pet adoption & temporary custody platform. On-chain transaction support with TypeScript.',
-        tags: ['Blockchain', 'TypeScript'],
-        tagTone: { 'Blockchain': 'green', 'TypeScript': '' },
-        category: 'project',
-        web3: true,
-        featured: false,
-        fallback: { stars: 15, forks: 85 },
-    },
+];
+
+/* ── ARCHIVE (Section C) — compact track record, no spotlight ── */
+const ARCHIVE = [
+    { name: 'Hash Cracker', desc: 'CLI tool for cracking MD5, SHA-1/2/3, BLAKE2 hashes via wordlist or brute force. Built for CTF challenges and ethical security research.', meta: 'Python · Security' },
+    { name: 'Port Scanner', desc: 'Simple Python TCP port scanner for checking open ports on a target host.', meta: 'Python · Network Security' },
+    { name: 'Network Mapper', desc: 'ARP-scan tool using Scapy to discover active devices (IP + MAC) on a local subnet.', meta: 'Python · Network Security' },
+    { name: 'DSA E-commerce', desc: 'E-commerce platform in pure C++ demonstrating BST/AVL trees, hash tables, BFS/DFS, 0/1 knapsack, and sorting algorithms.', meta: 'C++ · DSA' },
+    { name: 'Smart Insurance Claim Processor', desc: 'Terminal-based (FTXUI) insurance claim processing & risk assessment system in C++.', meta: 'C++ · Terminal UI' },
+    { name: 'MedInventory-Desk', desc: 'Clinic/hospital pharmacy inventory system: stock tracking, batch management, expiry alerts.', meta: 'JavaScript · Healthcare' },
+    { name: 'Lumnova', desc: 'Digital-wallet frontend with a streamlined payment interface.', meta: 'React · Vite · Fintech' },
+    { name: 'buildtrack', desc: 'Construction project management platform with an API and client.', meta: 'JavaScript · Full-stack' },
 ];
 
 /* ── CERTIFICATES ─────────────────────────────────────────
@@ -207,30 +263,38 @@ const CERTIFICATES = [
 ];
 
 /* ── JOURNAL POSTS (newest first) ─────────────────────────
-   Each points to posts/<slug>.html. Create the file when
-   publishing a post; everything renders from this list.
+   Each points to posts/<slug>.html. Everything renders from
+   this list: journal page, featured post, home teaser.
    ───────────────────────────────────────────────────────── */
 const POSTS = [
+    {
+        slug: 'april-embodied-ai',
+        title: 'APRIL: building an assistant with a body',
+        date: '2026-11-04',
+        tags: ['research', 'agentic-ai'],
+        pinned: true,
+        excerpt: 'Why "an assistant that can only answer is a chatbot" — the case for embodiment, the SEE/SENSE/ACT/NETWORK/BUILD pillar architecture, and an honest status report.',
+    },
     {
         slug: 'new-portfolio',
         title: 'Rebuilding my portfolio in the open',
         date: '2026-11-10',
         tags: ['site'],
-        pinned: true,
+        pinned: false,
         excerpt: 'Why I rebuilt this site as plain HTML/CSS with a live-stats engine — and what is shipping next.',
     },
     {
-        slug: 'upcoming-stellar-project',
-        title: 'Coming soon: a new Soroban automation tool',
-        date: '',
-        tags: ['upcoming', 'web3'],
+        slug: 'polyagent-many-brains',
+        title: 'Polyagent: one orchestrator, many brains',
+        date: '2026-10-20',
+        tags: ['agents', 'mcp'],
         pinned: false,
-        excerpt: 'A teaser for the next thing I am building in the Stellar ecosystem. Details drop here first.',
+        excerpt: 'One agent can\'t do security scans, code review, and analysis equally well. An MCP orchestrator that delegates to six providers — with real loop prevention.',
     },
 ];
 
 /* ── JOURNAL PAGE HEADLINE ──────────────────────────────── */
 const JOURNAL_META = {
     heading: 'journal.log',
-    blurb: 'Project announcements, build notes and community updates — published as plain files in the repo.',
+    blurb: 'Research notes, build logs and honest status reports — published as plain files in the repo.',
 };

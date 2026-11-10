@@ -13,10 +13,10 @@ function ghGet(path) {
 }
 
 async function ghLiveStats() {
-    /* 1. fetch every linked repo exactly once */
+    /* 1. fetch every linked repo exactly once (private/hidden excluded) */
     const metas = [...document.querySelectorAll('[data-repo]')];
     const targetRepos = new Map(
-        REPOS.filter((r) => r.url).map((r) => [
+        REPOS.filter((r) => r.url && !r.hidden).map((r) => [
             `${r.org || PROFILE.githubUser}/${r.name}`,
             r,
         ])
