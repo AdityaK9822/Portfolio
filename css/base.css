@@ -277,6 +277,11 @@ main > section {
    journal.latest is a slim headline band directly under the hero.
    Everything below runs with minimal gutters (.home-main). */
 
+/* home breaks out of the 90rem shell cap: full width, hairline gutters */
+[data-page="home"] .container {
+    max-width: none;
+}
+
 .home-main {
     padding-inline: clamp(4px, 0.5vw, 8px);
 }

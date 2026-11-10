@@ -131,7 +131,7 @@ const REPOS = [
         tagTone: { 'C++': '', 'ESP32-S3': 'blue', 'Firmware': 'green' },
         tier: 'ai',
         featured: true,
-        hidden: true,
+        hidden: false,
         fallback: { stars: null, forks: null },
         short: 'ESP32-S3 lab-controller firmware — the pocket-sized Wi-Fi bridge APRIL plugs compliance-tested radios and sensors into.',
     },
