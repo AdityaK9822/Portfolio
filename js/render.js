@@ -1,0 +1,203 @@
+/* ============================================================
+   render.js — renders repos / certificates / posts from data.js
+   into the page. Auto-detects mount points by id; pages without
+   them are untouched. Runs after data.js (defer order).
+   ============================================================ */
+
+/* ── repo card markup ──
+   cats: optional list for the work-grid filter (e.g. ['open-source','web3']) */
+function repoCard(r, cats) {
+    const catAttr = cats ? ` data-cat="${cats.join(' ')}"` : '';
+    const orgLine = r.org ? `<span class="org">${r.org} /</span> ` : '';
+    const link = r.url
+        ? `<a class="stretched" href="${r.url}" target="_blank" rel="noopener" aria-label="${r.name} on GitHub">${r.name}</a>`
+        : '';
+    const tags = r.tags
+        .map((t) => `<span class="tag ${r.tagTone?.[t] || ''}">${t}</span>`)
+        .join('');
+    const meta = r.url
+        ? `<div class="card-meta" data-repo="${r.org || PROFILE.githubUser}/${r.name}">
+             <span>★ <span class="live-stars">—</span></span>
+             <span>⑂ <span class="live-forks">—</span></span></div>`
+        : `<div class="card-meta"><span>${
+              r.fallback.forks ? `${r.fallback.forks} forks` : 'local project'
+          }</span></div>`;
+    return `<article class="card reveal"${catAttr} data-id="${r.id}">
+      <div class="card-top">
+        <div class="card-name">${orgLine}${r.name}</div>
+        <span class="card-arrow" aria-hidden="true">↗</span>
+      </div>
+      <p class="card-desc">${r.desc}</p>
+      ${meta}
+      <div class="card-tags">${tags}</div>
+      ${link}
+    </article>`;
+}
+
+/* ── mounts ── */
+function renderFeatured() {
+    const grid = document.getElementById('featured-grid');
+    if (!grid) return;
+    grid.innerHTML = REPOS.filter((r) => r.featured).map(repoCard).join('');
+}
+
+function renderWorkGrid() {
+    const grid = document.getElementById('work-grid');
+    if (!grid) return;
+    grid.innerHTML = REPOS.map(
+        (r) => repoCard(r, [r.category, r.web3 ? 'web3' : 'all'])
+    ).join('');
+}
+
+function renderCerts() {
+    const grid = document.getElementById('certs-grid');
+    if (!grid) return;
+    if (!CERTIFICATES.length) {
+        grid.outerHTML =
+            '<div class="note-box">No certificates published yet — add entries to <code>js/data.js → CERTIFICATES</code> and they appear here automatically.</div>';
+        return;
+    }
+    grid.innerHTML = CERTIFICATES.map((c) => {
+        const initials =
+            c.title
+                .split(' ')
+                .filter((w) => /^[A-Z]/.test(w))
+                .map((w) => w[0])
+                .slice(0, 2)
+                .join('') || 'CE';
+        const badge = c.badge ? `<img src="${c.badge}" alt="${c.title} badge">` : initials;
+        const link = c.url ? `<a href="${c.url}" target="_blank" rel="noopener">↗ verify</a>` : '';
+        return `<article class="card reveal cert-card">
+        <div class="cert-badge" aria-hidden="true">${badge}</div>
+        <div class="card-name">${c.title}</div>
+        <p class="card-desc">${c.issuer}${c.issuer && c.date ? ' · ' + c.date : c.date}</p>
+        ${link ? `<div class="cert-meta">${c.date || ''}${link}</div>` : ''}
+      </article>`;
+    }).join('');
+}
+
+/* ── journal ── */
+function fmtDate(iso) {
+    if (!iso) return '';
+    const d = new Date(iso + 'T00:00:00');
+    return isNaN(d) ? iso : d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+}
+
+function postTags(p) {
+    if (p.date) return p.tags.map((t) => `<span class="tag blue">${t}</span>`).join('');
+    return p.tags.map((t) => `<span class="tag upcoming">${t === 'upcoming' ? 'in the making' : t}</span>`).join('');
+}
+
+function renderPosts() {
+    const feat = document.getElementById('post-featured');
+    const list = document.getElementById('post-list');
+    if (feat)
+        feat.innerHTML = POSTS.filter((p) => p.pinned)
+            .map(
+                (p) => `<a class="post-featured reveal" href="posts/${p.slug}.html">
+        <div class="post-meta"><span class="tag green">pinned</span>${postTags(p)}</div>
+        <div class="post-title">${p.title}</div>
+        <p class="card-desc">${p.excerpt}</p>
+        <div class="post-meta">${fmtDate(p.date)}</div>
+      </a>`
+            )
+            .join('');
+
+    if (list)
+        list.innerHTML = POSTS.filter((p) => !p.pinned)
+            .map(
+                (p) => `<a class="post-row reveal" href="posts/${p.slug}.html">
+        <div><div class="post-title">${p.title}</div><p class="card-desc">${p.excerpt}</p></div>
+        <span class="post-date">${fmtDate(p.date) || 'draft'}</span>
+      </a>`
+            )
+            .join('');
+
+    /* home teaser — latest dated posts as cards */
+    const teaser = document.getElementById('journal-teaser');
+    if (teaser) {
+        const recent = POSTS.filter((p) => p.date).slice(0, 2);
+        teaser.innerHTML = recent.length
+            ? `<div class="card-grid">${recent
+                  .map(
+                      (p) => `<a class="card reveal" href="posts/${p.slug}.html">
+              <div class="card-top"><div class="card-name">${p.title}</div>
+              <span class="card-arrow" aria-hidden="true">↗</span></div>
+              <p class="card-desc">${p.excerpt}</p>
+              <div class="card-tags">${postTags(p) || `<span class="tag">${fmtDate(p.date)}</span>`}</div>
+            </a>`
+                  )
+                  .join('')}</div>`
+            : '<div class="note-box">First post drops soon — see <code>posts/</code>.</div>';
+    }
+
+    const blur = document.getElementById('journal-blurb');
+    if (blur) blur.textContent = JOURNAL_META.blurb;
+}
+
+/* ── filter bar (work page) ── */
+function setupFilters() {
+    const bar = document.getElementById('filters');
+    const grid = document.getElementById('work-grid');
+    if (!bar || !grid) return;
+
+    const cats = {
+        all: 'All',
+        'open-source': 'Open Source',
+        project: 'Own Projects',
+        web3: 'Web3',
+    };
+    const count = (cat) =>
+        cat === 'all'
+            ? REPOS.length
+            : cat === 'web3'
+            ? REPOS.filter((r) => r.web3).length
+            : REPOS.filter((r) => r.category === cat).length;
+
+    bar.innerHTML = Object.entries(cats)
+        .map(
+            ([key, label]) =>
+                `<button class="filter-btn${key === 'all' ? ' active' : ''}" data-cat="${key}">${label}<span class="count">${count(key)}</span></button>`
+        )
+        .join('');
+
+    bar.addEventListener('click', (e) => {
+        const btn = e.target.closest('.filter-btn');
+        if (!btn) return;
+        const cat = btn.dataset.cat;
+        bar.querySelectorAll('.filter-btn').forEach((b) => b.classList.toggle('active', b === btn));
+        grid.querySelectorAll('[data-cat]').forEach((card) => {
+            const show = cat === 'all' || card.dataset.cat.split(' ').includes(cat);
+            card.style.display = show ? '' : 'none';
+        });
+    });
+}
+
+/* ── skills marquee (home) ── */
+function renderSkills() {
+    const track = document.getElementById('skills-track');
+    if (!track) return;
+    const items = PROFILE.skills.map((s) => `<span>${s}</span>`).join('');
+    /* duplicate content for seamless -50% marquee loop */
+    track.innerHTML = items + items;
+    track.setAttribute('aria-hidden', 'true');
+    track.parentElement.insertAdjacentHTML(
+        'beforeend',
+        `<span class="sr-only" style="position:absolute;left:-9999px;">${PROFILE.skills.join(', ')}</span>`
+    );
+}
+
+/* ── contact page: availability list ── */
+function renderOpenList() {
+    const list = document.getElementById('open-list');
+    if (!list) return;
+    list.innerHTML = PROFILE.openToList.map((item) => `<li>${item}</li>`).join('');
+}
+
+renderFeatured();
+renderWorkGrid();
+renderCerts();
+renderPosts();
+renderSkills();
+renderOpenList();
+setupFilters();

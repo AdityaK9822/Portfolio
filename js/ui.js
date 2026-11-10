@@ -1,0 +1,144 @@
+/* ============================================================
+   ui.js — navbar state, mobile menu, scroll reveals, copy email,
+   footer year, toast helper.
+   ============================================================ */
+
+/* ── active nav link ── */
+(function setActiveNav() {
+    const page = document.body.dataset.page;
+    if (!page) return;
+    document.querySelectorAll('.nav-links a').forEach((a) => {
+        if (a.dataset.nav === page) a.setAttribute('aria-current', 'page');
+    });
+})();
+
+/* ── mobile menu ── */
+(function mobileMenu() {
+    const burger = document.querySelector('.nav-burger');
+    const nav = document.querySelector('.nav');
+    if (!burger || !nav) return;
+    burger.addEventListener('click', () => {
+        const open = nav.classList.toggle('open');
+        burger.setAttribute('aria-expanded', String(open));
+    });
+    // close when a link is clicked
+    nav.querySelectorAll('.nav-links a').forEach((a) =>
+        a.addEventListener('click', () => nav.classList.remove('open'))
+    );
+})();
+
+/* ── scroll reveal ── */
+(function setupReveals() {
+    const els = document.querySelectorAll('.reveal');
+    if (!els.length) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        els.forEach((el) => el.classList.add('in'));
+        return;
+    }
+    const io = new IntersectionObserver(
+        (entries) =>
+            entries.forEach((en) => {
+                if (en.isIntersecting) {
+                    en.target.classList.add('in');
+                    io.unobserve(en.target);
+                }
+            }),
+        { threshold: 0.12 }
+    );
+    els.forEach((el) => io.observe(el));
+})();
+
+/* ── toast ── */
+function toast(msg, tone = 'ok') {
+    let t = document.querySelector('.toast');
+    if (!t) {
+        t = document.createElement('div');
+        t.className = 'toast';
+        t.setAttribute('role', 'status');
+        document.body.appendChild(t);
+    }
+    if (tone !== 'ok') t.dataset.tone = tone;
+    else delete t.dataset.tone;
+    t.textContent = msg;
+    requestAnimationFrame(() => t.classList.add('show'));
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+/* ── copy email ── */
+(function setupCopyEmail() {
+    document.querySelectorAll('[data-copy-email]').forEach((btn) => {
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            if (!PROFILE.email) {
+                toast('email not set — edit js/data.js → PROFILE.email', 'warn');
+                return;
+            }
+            try {
+                await navigator.clipboard.writeText(PROFILE.email);
+                toast(PROFILE.email + ' copied to clipboard');
+            } catch (_) {
+                toast('could not copy email', 'warn');
+            }
+        });
+    });
+})();
+
+/* ── dynamic profile bits (socials/email rows on any page) ── */
+(function hydrateProfile() {
+    document.querySelectorAll('[data-email]').forEach((el) => {
+        el.textContent = PROFILE.email || 'you@example.com (set email in js/data.js)';
+    });
+    document.querySelectorAll('[data-year]').forEach((el) => {
+        el.textContent = new Date().getFullYear();
+    });
+})();
+
+/* ── contact form (Web3Forms) ── */
+(function setupForm() {
+    const form = document.getElementById('contact-form');
+    if (!form) return;
+    const status = document.getElementById('form-status');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!PROFILE.web3formsKey) {
+            status.textContent = 'err: form disabled — paste your Web3Forms key in js/data.js → PROFILE.web3formsKey';
+            status.className = 'form-status err';
+            return;
+        }
+        const btn = form.querySelector('button[type="submit"]');
+        const original = btn.textContent;
+        btn.disabled = true;
+        btn.textContent = '[ transmitting… ]';
+        status.textContent = '';
+        status.className = 'form-status';
+
+        try {
+            const res = await fetch('https://api.web3forms.com/submit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                body: JSON.stringify({
+                    access_key: PROFILE.web3formsKey,
+                    name: form.elements.name.value,
+                    email: form.elements.email.value,
+                    message: form.elements.message.value,
+                }),
+            });
+            const data = await res.json();
+            if (data.success) {
+                status.textContent = 'ok > message received — I will get back to you soon.';
+                status.className = 'form-status ok';
+                form.reset();
+            } else {
+                throw new Error(data.message || 'unknown error');
+            }
+        } catch (err) {
+            status.textContent = 'err > transmission failed — ' + err.message;
+            status.className = 'form-status err';
+        } finally {
+            btn.disabled = false;
+            btn.textContent = original;
+        }
+    });
+})();
