@@ -48,6 +48,35 @@
     els.forEach((el) => io.observe(el));
 })();
 
+/* ── first user action → fade in everything still hidden ──
+   mirrors the blueprint rule: scroll reveals section-by-section,
+   but any wheel/touch/key action starts the whole cascade at once */
+(function firstActionReveal() {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const hidden = document.querySelectorAll('.reveal:not(.in)');
+    if (!hidden.length) return;
+    const begin = () => {
+        hidden.forEach((el, i) => {
+            el.style.transitionDelay = `${Math.min(i * 50, 300)}ms`;
+            el.classList.add('in');
+            el.addEventListener(
+                'transitionend',
+                function clear() {
+                    el.style.transitionDelay = '';
+                    el.removeEventListener('transitionend', clear);
+                },
+                { once: true }
+            );
+        });
+        ['wheel', 'touchstart', 'keydown'].forEach((evt) =>
+            window.removeEventListener(evt, begin)
+        );
+    };
+    ['wheel', 'touchstart', 'keydown'].forEach((evt) =>
+        window.addEventListener(evt, begin, { passive: true })
+    );
+})();
+
 /* ── toast ── */
 function toast(msg, tone = 'ok') {
     let t = document.querySelector('.toast');
