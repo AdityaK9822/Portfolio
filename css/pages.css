@@ -64,8 +64,7 @@
 
 .teaser-card {
     flex: none;
-    /* long cards: the banner rows stretch across the full tab width */
-    width: clamp(340px, 32vw, 480px);
+    width: clamp(300px, 30vw, 400px);
 }
 
 .ghost-card {
@@ -280,7 +279,7 @@
 
 .cta-box .cta-line {
     font-family: var(--font-display);
-    font-size: clamp(2rem, 5.5vw, 3.4rem);
+    font-size: clamp(1.9rem, 4vw, 2.8rem);
     font-weight: 800;
     letter-spacing: -0.02em;
     margin-bottom: 6px;
