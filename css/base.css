@@ -32,7 +32,7 @@
     /* Rhythm */
     --radius: 14px;
     --radius-sm: 8px;
-    --edge-pad: clamp(20px, 3.5vw, 48px);
+    --edge-pad: clamp(10px, 1.75vw, 24px);
     --shell-w: 90rem;
     --read-w: 72rem;
     --gap: clamp(1rem, 2.5vw, 1.75rem);

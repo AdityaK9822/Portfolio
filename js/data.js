@@ -68,7 +68,7 @@ const SKILL_LIST = SKILLS.flatMap((g) => g.items);
 /* ── REPOS ─────────────────────────────────────────────────
    tier:     'ai' (Section A) | 'stellar' (Section B)
    featured: shows on the home page AI grid (A only)
-   hidden:   true renders nowhere (AXIOM stays private until flipped)
+   hidden:   true renders nowhere (AXIOM-Firmware is public now)
    badge:    short status strip shown on top of the card
    Stars/forks update automatically via github.js after render.
    ─────────────────────────────────────────────────────────── */
@@ -119,7 +119,7 @@ const REPOS = [
         fallback: { stars: null, forks: null },
         short: 'MCP server that lets Claude delegate specialized work to six providers — with pipeline modes, loop prevention, and human approval gates.',
     },
-    /* hidden until AXIOM-Firmware is public — flip hidden: false when live */
+    /* repo flipped public — renders everywhere now */
     {
         id: 'axiom',
         org: 'AdityaK9822',
