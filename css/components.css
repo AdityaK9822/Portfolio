@@ -7,8 +7,8 @@
     position: fixed;
     top: 14px;
     /* edge-aligned with .container's fluid padding */
-    left: clamp(16px, 4vw, 56px);
-    right: clamp(16px, 4vw, 56px);
+    left: clamp(10px, 1vw, 18px);
+    right: clamp(10px, 1vw, 18px);
     width: auto;
     z-index: var(--z-nav);
     display: flex;

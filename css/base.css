@@ -142,7 +142,7 @@ h1, h2, h3 {
 .container {
     max-width: none;
     margin: 0 auto;
-    padding: 0 clamp(16px, 4vw, 56px);
+    padding: 0 clamp(10px, 1vw, 18px);
     position: relative;
     z-index: var(--z-content);
 }
