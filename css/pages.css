@@ -101,6 +101,7 @@
 .hero {
     position: relative;
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     overflow: hidden;
@@ -198,7 +199,7 @@
 /* ── HOME: STATS ── */
 .stats {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--gap);
 }
 
@@ -326,6 +327,7 @@
     border: 1px solid var(--border);
     border-radius: 999px;
     padding: 8px 16px;
+    min-height: 44px;
     cursor: pointer;
     transition: transform 150ms ease-out, color var(--dur), border-color var(--dur), background var(--dur);
     -webkit-tap-highlight-color: transparent;
@@ -468,7 +470,7 @@
 /* ── CONTACT ── */
 .contact-grid {
     display: grid;
-    grid-template-columns: 1fr 1.35fr;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.35fr);
     gap: var(--gap);
     align-items: start;
 }
@@ -543,6 +545,7 @@
     font-family: var(--font-mono);
     font-size: 0.75rem;
     padding: 6px 12px;
+    min-height: 44px;
     border-radius: 6px;
     cursor: pointer;
     transition: transform 150ms ease-out, color var(--dur), border-color var(--dur);
