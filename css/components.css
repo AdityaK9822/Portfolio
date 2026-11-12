@@ -406,6 +406,32 @@
     margin-top: auto;
 }
 
+/* feature points on the tall tiles: scan-first list, accent marker */
+.card-points {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    padding: 4px 0 2px;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: var(--muted);
+}
+
+.card-points li {
+    position: relative;
+    padding-left: 17px;
+}
+
+.card-points li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--accent);
+    font-size: 0.72em;
+}
+
 .card-meta b {
     color: var(--text);
     font-weight: 700;

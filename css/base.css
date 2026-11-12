@@ -535,6 +535,20 @@ main > section {
     }
 }
 
+/* ── TEXT HIGHLIGHT — solid accent block, contrasting text inside ──
+   Subtle emphasis only: one (max two) per view, never on body copy.
+   Uses --accent-bright so it stays the same bright green in BOTH themes,
+   with --on-accent (near-black) text inside for the contrast pop. */
+.hl {
+    background: var(--accent-bright);
+    color: var(--on-accent);
+    padding: 0.08em 0.26em;
+    margin: -0.08em -0.06em;
+    border-radius: 4px;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+}
+
 /* ── CAPABILITIES: grouped skills, 3-up ──
    AI & Agents | Languages | Web3 → then frontend/infra wrap below */
 .caps-grid {

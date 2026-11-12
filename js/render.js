@@ -23,6 +23,10 @@ function repoCard(r, cats, extraClass) {
     const tags = r.tags
         .map((t) => `<span class="tag ${r.tagTone?.[t] || ''}">${t}</span>`)
         .join('');
+    /* concrete feature points: fill the tall bento tiles, scan better than prose */
+    const points = r.points
+        ? `<ul class="card-points">${r.points.map((p) => `<li>${p}</li>`).join('')}</ul>`
+        : '';
     const meta = r.url
         ? `<div class="card-meta" data-repo="${r.org || PROFILE.githubUser}/${r.name}">
              <span>★ <span class="live-stars">—</span></span>
@@ -37,6 +41,7 @@ function repoCard(r, cats, extraClass) {
       </div>
       ${badges}
       <p class="card-desc">${r.desc}</p>
+      ${points}
       ${meta}
       <div class="card-tags">${tags}</div>
       ${link}
