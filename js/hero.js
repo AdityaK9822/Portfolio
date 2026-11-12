@@ -23,10 +23,11 @@
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(58, 1, 0.1, 200);
 
-    /* palette — matches the site tokens */
+    /* palette — follows the active theme; scenes bake these into vertex arrays */
+    const isDarkTheme = () => document.documentElement.dataset.theme === 'dark';
     const GREEN = new THREE.Color(0x22c55e);
-    const SLATE = new THREE.Color(0xd7dee8);
-    const FAINT = new THREE.Color(0x93a2b5);
+    const SLATE = new THREE.Color(isDarkTheme() ? 0x1e293b : 0xd7dee8);
+    const FAINT = new THREE.Color(isDarkTheme() ? 0x475569 : 0x93a2b5);
 
     /* pointer tracking (normalized -1..1) for gentle parallax */
     const mouse = { x: 0, y: 0, tx: 0, ty: 0 };
@@ -355,6 +356,15 @@
     io.observe(canvas);
 
     activate(0);
+
+    /* theme changed → re-sync the palette and rebuild the current scene
+       (scenes bake their colors into vertex arrays at build time) */
+    document.addEventListener('themechange', (e) => {
+        const dark = e.detail && e.detail.theme === 'dark';
+        SLATE.set(dark ? 0x1e293b : 0xd7dee8);
+        FAINT.set(dark ? 0x475569 : 0x93a2b5);
+        activate(idx);
+    });
 
     function loop(now) {
         if (!visible) {

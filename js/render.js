@@ -8,8 +8,9 @@
    tier-aware; hidden repos never render.
    r.badge: status strip (Flagship R&D / MCP Server / Fork …) shown
    above the title so honest state is part of the card. */
-function repoCard(r, cats) {
+function repoCard(r, cats, extraClass) {
     const catAttr = cats ? ` data-cat="${cats.join(' ')}"` : '';
+    const cls = `card reveal${r.tier === 'ai' ? ' ai-card' : ''}${extraClass ? ` ${extraClass}` : ''}`;
     const orgLine = r.org ? `<span class="org">${r.org} /</span> ` : '';
     const link = r.url
         ? `<a class="stretched" href="${r.url}" target="_blank" rel="noopener" aria-label="${r.name} on GitHub">${r.name}</a>`
@@ -29,7 +30,7 @@ function repoCard(r, cats) {
         : `<div class="card-meta"><span>${
               r.fallback.forks ? `${r.fallback.forks} forks` : 'local project'
           }</span></div>`;
-    return `<article class="card reveal${r.tier === 'ai' ? ' ai-card' : ''}"${catAttr} data-id="${r.id}">
+    return `<article class="${cls}"${catAttr} data-id="${r.id}">
       <div class="card-top">
         <div class="card-name">${orgLine}${r.name}</div>
         <span class="card-arrow" aria-hidden="true">↗</span>
@@ -48,11 +49,22 @@ const visible = REPOS.filter((r) => !r.hidden);
 function renderFeatured() {
     const grid = document.getElementById('featured-grid');
     if (!grid) return;
-    /* home shows the AI tier first (CONTENT.md navigation rule):
-       3-across, using the short blurb — work.html carries the full copy */
+    /* home bento layout (user wireframe):
+       APRIL 2×2 large · Synopsi + Polyagent stacked right ·
+       AXIOM small + Claude SKILLS wide · Codegraph full-width.
+       Large/full cards carry the full copy; the rest use short blurbs. */
+    const bento = {
+        april: 'bento-xl',
+        'claude-skills': 'bento-w2',
+        codegraph: 'bento-full',
+    };
     grid.innerHTML = visible
         .filter((r) => r.tier === 'ai' && r.featured)
-        .map((r) => repoCard({ ...r, desc: r.short || r.desc }))
+        .map((r) => {
+            const cls = bento[r.id] || '';
+            const big = cls === 'bento-xl' || cls === 'bento-full';
+            return repoCard({ ...r, desc: big ? r.desc : r.short || r.desc }, undefined, cls);
+        })
         .join('');
 }
 

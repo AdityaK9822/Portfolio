@@ -354,178 +354,132 @@ main > section {
     margin-top: clamp(2.6rem, 6vw, 4.4rem);
 }
 
-/* ── CONTENT.md home wireframe: left hero + status, headline band,
-   3/4 + 1/4 split, CTA, footer ─────────────────────────────────
-   Hero text is left-aligned; status.read sits inside the hero.
-   journal.latest is a slim headline band directly under the hero.
-   Everything below runs with minimal gutters (.home-main). */
+/* ── HOME: user wireframe ─────────────────────────────────────
+   navbar → journal ticker → selected.work (bento grid) →
+   open.source · stellar (horizontal rows) → capabilities (3-up) */
 
-/* home breaks out of the 90rem shell cap: full width below the hero,
-   with real side margins — same gutter token as every page (--edge-pad).
-   Both divisions of the 3:1 split shrink equally, so the ratio holds. */
+/* home breaks out of the 90rem shell cap: full width, real gutters */
 [data-page="home"] .container {
     max-width: none;
 }
 
 .home-main {
+    padding-top: calc(var(--nav-h) + var(--gap));
     padding-inline: var(--edge-pad);
 }
 
-/* journal.latest headline band: title-only items, reduced height.
-   Lives INSIDE the hero now — pinned to its lowest edge (margin-top:auto
-   in the hero's flex column); lifted above the hero canvas + bottom fade */
+/* consecutive sections breathe */
+.home-main > section + section {
+    margin-top: var(--section-pad);
+}
+
+/* journal / activity ticker: full-bleed band right under the navbar */
 .headline-band {
     position: relative;
     z-index: var(--z-content);
-    margin-top: auto;
+    margin: 0 calc(-1 * var(--edge-pad)) calc(var(--gap) * 1.6);
     border-block: 1px solid var(--border);
-    padding: 10px 0 14px;
+    padding: 10px 0;
     overflow: hidden;
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
     mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent);
 }
 
-/* ── SHARED HEADER ROW ──
-   both column heads on ONE grid row with the same 3:1 tracks,
-   bottom-aligned: the card grid and the side panels below start at
-   exactly the same y — no height math, alignment is structural */
-.home-grid-head {
-    margin-top: calc(var(--gap) * 1.4);
-    margin-bottom: calc(var(--gap) * 1.1);
+/* ── SELECTED.WORK: bento grid ──
+   APRIL 2×2 lead · Synopsi + Polyagent stacked right ·
+   AXIOM small + Claude SKILLS wide · Codegraph full width.
+   DOM order (data.js) + grid-auto-flow:dense places everything. */
+.bento-grid {
     display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
-    gap: var(--gap);
-    align-items: end;
-}
-
-.home-grid-head .section-head {
-    margin-bottom: 0;
-}
-
-/* 3/4 + 1/4 split — both columns stretch to equal vertical length */
-.home-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
-    gap: var(--gap);
-    align-items: stretch;
-}
-
-.home-col {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: var(--section-pad);
-}
-
-.home-side {
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-auto-flow: dense;
     gap: var(--gap);
 }
 
-/* equal vertical length: panels share the leftover height */
-.home-side .side-panel {
-    flex: 1 1 auto;
+.bento-xl {
+    grid-column: span 2;
+    grid-row: span 2;
 }
 
-/* ── RIGHT-COLUMN GRAPHICS HEADER ──
-   decorative circuit trace + brandline; lives in the shared header
-   row, bottom-aligned with the featured.repos title */
-.home-side-head {
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-end;   /* hugs the right column's edge */
-    gap: 14px;
-    min-width: 0;
+.bento-w2 {
+    grid-column: span 2;
 }
 
-.side-trace {
-    flex: 0 0 auto;
-    width: 132px;
-    height: 28px;
+.bento-full {
+    grid-column: 1 / -1;
 }
 
-.trace-line {
-    stroke: var(--border-strong);
-    stroke-width: 1.5;
+/* the 2×2 lead card earns display treatment: multi-line title,
+   longer description allowance */
+.bento-xl .card-name {
+    font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+    white-space: normal;
 }
 
-.trace-node {
-    fill: var(--accent);
+.bento-xl .card-desc {
+    font-size: 0.95rem;
+    -webkit-line-clamp: 6;
 }
 
-.trace-node.pulse {
-    animation: trace-pulse 2.4s var(--ease) infinite;
+.bento-full .card-desc {
+    -webkit-line-clamp: 2;
 }
 
-@keyframes trace-pulse {
-    50% { opacity: 0.25; }
-}
+@media (max-width: 900px) {
+    .bento-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 
-.side-trace-label {
-    font-family: var(--font-mono);
-    font-size: var(--fs-small);
-    color: var(--muted);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    padding-bottom: 4px;
-    min-width: 0;
-}
+    .bento-xl {
+        grid-column: span 2;
+        grid-row: auto;
+    }
 
-@media (prefers-reduced-motion: reduce) {
-    .trace-node.pulse {
-        animation: none;
+    .bento-w2,
+    .bento-full {
+        grid-column: span 2;
     }
 }
 
-@media (max-width: 1060px) {
-    .home-grid {
+@media (max-width: 600px) {
+    .bento-grid {
         grid-template-columns: 1fr;
     }
 
-    /* split collapses: the decorative header row goes too */
-    .home-grid-head {
+    .bento-xl,
+    .bento-w2,
+    .bento-full {
+        grid-column: auto;
+    }
+
+    .bento-xl .card-desc {
+        -webkit-line-clamp: 3;
+    }
+}
+
+/* ── CAPABILITIES: grouped skills, 3-up ──
+   AI & Agents | Languages | Web3 → then frontend/infra wrap below */
+.caps-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gap) calc(var(--gap) * 1.6);
+}
+
+/* the sidebar-era sibling rule doesn't apply inside a grid */
+.caps-grid .skill-group + .skill-group {
+    margin-top: 0;
+}
+
+@media (max-width: 900px) {
+    .caps-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 600px) {
+    .caps-grid {
         grid-template-columns: 1fr;
     }
-
-    .home-side-head {
-        display: none;
-    }
-}
-
-/* full-width CTA at the shell edge (no 72rem read cap here) */
-.home-cta {
-    margin-top: var(--section-pad);
-}
-
-/* status.read inline in the hero: mono stat strip under the CTAs */
-.hero-status {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 8px 26px;
-    margin-top: 34px;
-    font-family: var(--font-mono);
-    font-size: var(--fs-small);
-}
-
-.hs-label {
-    color: var(--muted);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    font-size: 0.8rem;
-}
-
-.hs-item {
-    color: var(--text);
-}
-
-.stat-n {
-    color: var(--accent);
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: 1.05em;
 }
 
 /* section-head note + page-level intro line (grouping with space, not lines) */
