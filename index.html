@@ -22,9 +22,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@500;600;700;800&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="css/base.css?v=30">
-    <link rel="stylesheet" href="css/components.css?v=30">
-    <link rel="stylesheet" href="css/pages.css?v=30">
+    <link rel="stylesheet" href="css/base.css?v=31">
+    <link rel="stylesheet" href="css/components.css?v=31">
+    <link rel="stylesheet" href="css/pages.css?v=31">
 </head>
 
 <body data-page="home">
@@ -87,16 +87,32 @@
 
     <main id="main" class="container home-main">
 
+        <!-- SHARED HEADER ROW: both column heads sit on ONE grid row
+             (same 3:1 tracks, bottom-aligned) — the card grid and the
+             side panels below start at exactly the same y -->
+        <div class="home-grid-head">
+            <div class="section-head">
+                <h2 class="section-title">featured.repos <span class="head-note">— AI, Agents &amp; R&amp;D</span></h2>
+                <a class="section-link" href="work.html">→ all work</a>
+            </div>
+            <div class="home-side-head" aria-hidden="true">
+                <svg class="side-trace" viewBox="0 0 132 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <line x1="4" y1="14" x2="128" y2="14" class="trace-line" />
+                    <circle cx="18" cy="14" r="3.5" class="trace-node" />
+                    <circle cx="52" cy="14" r="3.5" class="trace-node" />
+                    <circle cx="86" cy="14" r="3.5" class="trace-node pulse" />
+                    <circle cx="116" cy="14" r="3.5" class="trace-node" />
+                </svg>
+                <span class="side-trace-label">llm-first · agents · embodied ai · open source</span>
+            </div>
+        </div>
+
         <!-- 3/4 + 1/4 SPLIT -->
         <div class="home-grid">
 
             <!-- LEFT — featured AI tier + stellar open source -->
             <div class="home-col">
                 <section aria-label="Featured AI and R&D projects">
-                    <div class="section-head">
-                        <h2 class="section-title">featured.repos <span class="head-note">— AI, Agents &amp; R&amp;D</span></h2>
-                        <a class="section-link" href="work.html">→ all work</a>
-                    </div>
                     <div class="ai-grid" id="featured-grid"></div>
                 </section>
 
@@ -113,20 +129,6 @@
 
             <!-- RIGHT — availability + grouped skills -->
             <aside class="home-side" aria-label="Availability and skills">
-                <!-- graphics header: fills the gap the left column's
-                     section title occupies, so the first panel below
-                     aligns with the left column's first card row -->
-                <div class="home-side-head" aria-hidden="true">
-                    <svg class="side-trace" viewBox="0 0 132 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <line x1="4" y1="14" x2="128" y2="14" class="trace-line" />
-                        <circle cx="18" cy="14" r="3.5" class="trace-node" />
-                        <circle cx="52" cy="14" r="3.5" class="trace-node" />
-                        <circle cx="86" cy="14" r="3.5" class="trace-node pulse" />
-                        <circle cx="116" cy="14" r="3.5" class="trace-node" />
-                    </svg>
-                    <span class="side-trace-label">llm-first · agents · embodied ai · open source</span>
-                </div>
-
                 <section class="side-panel" aria-label="Availability">
                     <div class="panel-label">open.to</div>
                     <ul class="open-list" id="open-list"></ul>
@@ -172,11 +174,11 @@
     <!-- External: three.js for the hero -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- Scripts (defer keeps order) -->
-    <script defer src="js/data.js?v=30"></script>
-    <script defer src="js/render.js?v=30"></script>
-    <script defer src="js/github.js?v=30"></script>
-    <script defer src="js/ui.js?v=30"></script>
-    <script defer src="js/hero.js?v=30"></script>
+    <script defer src="js/data.js?v=31"></script>
+    <script defer src="js/render.js?v=31"></script>
+    <script defer src="js/github.js?v=31"></script>
+    <script defer src="js/ui.js?v=31"></script>
+    <script defer src="js/hero.js?v=31"></script>
 </body>
 
 </html>
