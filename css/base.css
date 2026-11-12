@@ -419,9 +419,11 @@ main > section {
 }
 
 /* ── SELECTED.WORK: bento grid ──
-   AXIOM 2×2 lead · Synopsi + Polyagent stacked right ·
-   APRIL small + Claude SKILLS wide · Codegraph full width.
-   Box shapes fixed; DOM order (render.js) + grid-auto-flow:dense. */
+   Box size ∝ project priority (strict gradation, zero holes on 3×4):
+   #1 APRIL 2×2 lead (hero tile) · #2 AXIOM 1-col × 3-row tall column ·
+   #3 Synopsi 2-wide · #4-6 Polyagent / Claude SKILLS / Codegraph small.
+   One gap value, one radius, no two adjacent tiles share a fill.
+   DOM order (render.js) + grid-auto-flow:dense places everything. */
 .bento-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -434,12 +436,42 @@ main > section {
     grid-row: span 2;
 }
 
+.bento-tall {
+    grid-row: span 3;
+}
+
 .bento-w2 {
     grid-column: span 2;
 }
 
 .bento-full {
     grid-column: 1 / -1;
+}
+
+/* #1 — the one dominant tile: accent wash + accent edge, brightest title */
+.bento-xl {
+    background:
+        radial-gradient(120% 100% at 100% 0%, var(--accent-glow-strong), transparent 55%),
+        var(--surface);
+    border-color: var(--accent-border);
+}
+
+/* #2 — solid elev fill; #3 — blue wash (matches its Next.js tone) */
+.bento-tall {
+    background: var(--bg-elev);
+}
+
+.bento-w2 {
+    background: linear-gradient(var(--accent2-bg), var(--accent2-bg)), var(--surface);
+}
+
+/* small trio stay distinct from their neighbors: surface · elev · fork-red */
+.bento-quiet {
+    background: var(--bg-elev);
+}
+
+.bento-fork {
+    background: linear-gradient(var(--red-bg), var(--red-bg)), var(--surface);
 }
 
 /* the 2×2 lead card earns display treatment: multi-line title,
@@ -454,6 +486,10 @@ main > section {
     -webkit-line-clamp: 6;
 }
 
+.bento-tall .card-desc {
+    -webkit-line-clamp: 10;
+}
+
 .bento-full .card-desc {
     -webkit-line-clamp: 2;
 }
@@ -465,6 +501,10 @@ main > section {
 
     .bento-xl {
         grid-column: span 2;
+        grid-row: auto;
+    }
+
+    .bento-tall {
         grid-row: auto;
     }
 
