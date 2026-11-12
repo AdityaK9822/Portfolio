@@ -420,8 +420,9 @@ main > section {
 
 /* ── SELECTED.WORK: bento grid ──
    Box size ∝ project priority (strict gradation, zero holes on 3×4):
-   #1 APRIL 2×2 lead (hero tile) · #2 AXIOM 1-col × 3-row tall column ·
-   #3 Synopsi 2-wide · #4-6 Polyagent / Claude SKILLS / Codegraph small.
+   #1 APRIL 2×2 lead (hero tile) · #2 AXIOM 1-col × 2-row tall ·
+   #3 Synopsi 2-wide · #4 Polyagent small · #5 Claude SKILLS small ·
+   #6 Codegraph 2-wide bottom row.
    One gap value, one radius, no two adjacent tiles share a fill.
    DOM order (render.js) + grid-auto-flow:dense places everything. */
 .bento-grid {
@@ -437,7 +438,7 @@ main > section {
 }
 
 .bento-tall {
-    grid-row: span 3;
+    grid-row: span 2;
 }
 
 .bento-w2 {
@@ -470,12 +471,14 @@ main > section {
     -webkit-line-clamp: 6;
 }
 
-/* small trio stay distinct from their neighbors: surface · elev · fork-red */
+/* small pair stay distinct from their neighbors: elev · fork-red wide */
 .bento-quiet {
     background: var(--bg-elev);
 }
 
+/* the fork tile is 2-wide on the bottom row (fills the grid, no holes) */
 .bento-fork {
+    grid-column: span 2;
     background: linear-gradient(var(--red-bg), var(--red-bg)), var(--surface);
 }
 
@@ -514,6 +517,7 @@ main > section {
     }
 
     .bento-w2,
+    .bento-fork,
     .bento-full {
         grid-column: span 2;
     }
@@ -526,6 +530,7 @@ main > section {
 
     .bento-xl,
     .bento-w2,
+    .bento-fork,
     .bento-full {
         grid-column: auto;
     }
@@ -544,7 +549,7 @@ main > section {
     color: var(--on-accent);
     padding: 0.08em 0.26em;
     margin: -0.08em -0.06em;
-    border-radius: 4px;
+    border-radius: 2px;
     box-decoration-break: clone;
     -webkit-box-decoration-break: clone;
 }

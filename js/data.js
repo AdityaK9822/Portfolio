@@ -9,7 +9,7 @@ const PROFILE = {
     name: 'Aditya Kadam',
     firstName: 'Aditya',
     role: 'AI Systems & Agentic Engineering',
-    headline: 'Building assistants with a body — AI that senses, acts, and ships.',
+    headline: 'Curious by default, engineer by habit — I teach AI to see, sense, and act on the real world.',
     subline: 'Agentic AI systems and the hardware they run on.',
     githubUser: 'AdityaK9822',
     githubUrl: 'https://github.com/AdityaK9822',

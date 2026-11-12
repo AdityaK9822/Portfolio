@@ -55,8 +55,9 @@ function renderFeatured() {
     const grid = document.getElementById('featured-grid');
     if (!grid) return;
     /* home bento — box size ∝ priority (CONTENT.md order):
-       #1 APRIL 2×2 hero · #2 AXIOM tall column · #3 Synopsi wide ·
-       #4-6 Polyagent / Claude SKILLS / Codegraph small.
+       #1 APRIL 2×2 hero · #2 AXIOM 1×2 tall (same column as Polyagent
+       below it) · #3 Synopsi wide · #4 Polyagent small · #5 SKILLS
+       small · #6 Codegraph 2-wide bottom row.
        Full copy only on the big tiles; the rest use short blurbs. */
     const bento = {
         april: 'bento-xl',

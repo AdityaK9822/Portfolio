@@ -311,7 +311,8 @@ Heading under this order: **AI/ML** as the first column, not last.
 
 ## 8. `index.html` / `work.html` headline copy
 
-Hero headline (index): **Building assistants with a body — AI that senses, acts, and ships.**
+Hero headline (index): **Curious by default, engineer by habit — I teach AI to see, sense, and act on the real world.**
+Highlight usage rule: the `.hl` accent-block class (sharp 2px edges) — max one per view, my pick on the home hero is **"see, sense, and act"**.
 Hero subline: *Agentic engineering across LLM orchestration, embodied AI, and applied study tools — with a production-discipline background in Stellar/Soroban open source.*
 
 Work page top headline: **What I'm building now** → AI tier first, then the Stellar open-source section.
