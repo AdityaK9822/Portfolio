@@ -442,9 +442,7 @@ main > section {
 }
 
 .bento-w2 {
-    /* pinned to the RIGHT pair of columns: row 3 mirrors row 1
-       (big-left + narrow-right becomes narrow-left + big-right) */
-    grid-column: 2 / 4;
+    grid-column: span 2;
 }
 
 .bento-full {

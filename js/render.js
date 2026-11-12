@@ -55,8 +55,8 @@ function renderFeatured() {
     const grid = document.getElementById('featured-grid');
     if (!grid) return;
     /* home bento — box size ∝ priority:
-       #1 APRIL 2×2 hero (big-left) · #2 AXIOM 1×2 tall ·
-       #3 row 3 inverts row 1: Polyagent small-left, Synopsi 2-wide RIGHT ·
+       #1 APRIL 2×2 hero (big-left) · #2 AXIOM 1×2 tall (narrow-right) ·
+       #3 row 3 matches row 1: Synopsi 2-wide LEFT, Polyagent small-right ·
        #4 SKILLS small · #5 Codegraph 2-wide.
        Full copy only on the big tiles; the rest use short blurbs. */
     const bento = {
