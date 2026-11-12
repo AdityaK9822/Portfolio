@@ -442,7 +442,9 @@ main > section {
 }
 
 .bento-w2 {
-    grid-column: span 2;
+    /* pinned to the RIGHT pair of columns: row 3 mirrors row 1
+       (big-left + narrow-right becomes narrow-left + big-right) */
+    grid-column: 2 / 4;
 }
 
 .bento-full {
@@ -457,7 +459,7 @@ main > section {
     border-color: var(--accent-border);
 }
 
-/* #2 — solid elev fill; #3 — blue wash (agent-infra tone) */
+/* #2 — solid elev fill; #3 — blue wash (matches its Next.js tone) */
 .bento-tall {
     background: var(--bg-elev);
 }
