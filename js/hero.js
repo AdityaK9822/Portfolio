@@ -25,8 +25,8 @@
 
     /* palette — matches the site tokens */
     const GREEN = new THREE.Color(0x22c55e);
-    const SLATE = new THREE.Color(0x1e293b);
-    const FAINT = new THREE.Color(0x475569);
+    const SLATE = new THREE.Color(0xd7dee8);
+    const FAINT = new THREE.Color(0x93a2b5);
 
     /* pointer tracking (normalized -1..1) for gentle parallax */
     const mouse = { x: 0, y: 0, tx: 0, ty: 0 };

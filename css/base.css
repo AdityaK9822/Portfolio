@@ -1,23 +1,26 @@
 /* ============================================================
    base.css — design tokens, reset, typography, foundations
-   Palette: code-dark (#080c14 / #0F172A) + run-green (#22C55E)
+   Palette: LIGHT GREEN — day mode of the run-green scheme
+            bg #F4F6F1 · surfaces #FFFFFF · deep-green accent #15803D
+            bright green #22C55E reserved for fills/cursors
    Fonts:   Syne (display) + Space Mono (body/terminal)
    ============================================================ */
 
 :root {
     /* Colors */
-    --bg: #080c14;
-    --bg-elev: #0f172a;
-    --surface: rgba(17, 24, 39, 0.72);
-    --border: rgba(148, 163, 184, 0.16);
-    --border-strong: rgba(148, 163, 184, 0.30);
-    --text: #f8fafc;
-    --muted: #8fa3bf;
-    --accent: #22c55e;
-    --accent-dim: rgba(34, 197, 94, 0.14);
-    --accent2: #38bdf8;
-    --red: #f87171;
-    --amber: #fbbf24;
+    --bg: #F4F6F1;
+    --bg-elev: #FFFFFF;
+    --surface: rgba(255, 255, 255, 0.80);
+    --border: rgba(15, 23, 42, 0.12);
+    --border-strong: rgba(15, 23, 42, 0.24);
+    --text: #0F172A;
+    --muted: #5B6B80;
+    --accent: #15803D;                             /* deep green — text-safe on light */
+    --accent-bright: #22C55E;                      /* bright green — fills, cursors, glow */
+    --accent-dim: rgba(21, 128, 61, 0.10);
+    --accent2: #0369A1;
+    --red: #B91C1C;
+    --amber: #B45309;
 
     /* Type */
     --font-display: 'Syne', sans-serif;
@@ -79,9 +82,9 @@ html {
 
 body {
     background:
-        radial-gradient(ellipse 90% 60% at 50% -10%, rgba(34, 197, 94, 0.06), transparent 70%),
-        linear-gradient(rgba(148, 163, 184, 0.04) 1px, transparent 1px) 0 0 / 100% 48px,
-        linear-gradient(90deg, rgba(148, 163, 184, 0.04) 1px, transparent 1px) 0 0 / 48px 100%,
+        radial-gradient(ellipse 90% 60% at 50% -10%, rgba(21, 128, 61, 0.05), transparent 70%),
+        linear-gradient(rgba(15, 23, 42, 0.045) 1px, transparent 1px) 0 0 / 100% 48px,
+        linear-gradient(90deg, rgba(15, 23, 42, 0.045) 1px, transparent 1px) 0 0 / 48px 100%,
         var(--bg);
     color: var(--text);
     font-family: var(--font-mono);
@@ -115,7 +118,7 @@ h1, h2, h3 {
 }
 
 ::selection {
-    background: var(--accent);
+    background: var(--accent-bright);
     color: #04120a;
 }
 
@@ -314,6 +317,67 @@ main > section {
 /* equal vertical length: panels share the leftover height */
 .home-side .side-panel {
     flex: 1 1 auto;
+}
+
+/* ── RIGHT-COLUMN GRAPHICS HEADER ──
+   fills the vertical space the left column's section title occupies,
+   so the first panel (open.to) lines up with the first card row.
+   min-height mirrors .section-head: one fs-h2 line + its margin. */
+.home-side-head {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    min-height: calc(var(--fs-h2) * 1.2);
+    margin-bottom: calc(var(--gap) * 1.1);
+}
+
+.side-trace {
+    flex: 0 0 auto;
+    width: 132px;
+    height: 28px;
+}
+
+.trace-line {
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+}
+
+.trace-node {
+    fill: var(--accent);
+}
+
+.trace-node.pulse {
+    animation: trace-pulse 2.4s var(--ease) infinite;
+}
+
+@keyframes trace-pulse {
+    50% { opacity: 0.25; }
+}
+
+.side-trace-label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding-bottom: 4px;
+    min-width: 0;
+}
+
+@media (max-width: 900px) {
+    .home-side-head {
+        min-height: 0;
+    }
+
+    .side-trace {
+        display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .trace-node.pulse {
+        animation: none;
+    }
 }
 
 @media (max-width: 1060px) {
