@@ -49,17 +49,21 @@ const visible = REPOS.filter((r) => !r.hidden);
 function renderFeatured() {
     const grid = document.getElementById('featured-grid');
     if (!grid) return;
-    /* home bento layout (user wireframe):
-       APRIL 2×2 large · Synopsi + Polyagent stacked right ·
-       AXIOM small + Claude SKILLS wide · Codegraph full-width.
+    /* home bento layout (box shapes unchanged, content swapped):
+       AXIOM 2×2 large · Synopsi + Polyagent stacked right ·
+       APRIL small + Claude SKILLS wide · Codegraph full-width.
        Large/full cards carry the full copy; the rest use short blurbs. */
     const bento = {
-        april: 'bento-xl',
+        axiom: 'bento-xl',
         'claude-skills': 'bento-w2',
         codegraph: 'bento-full',
     };
-    grid.innerHTML = visible
-        .filter((r) => r.tier === 'ai' && r.featured)
+    /* render order puts the 2×2 lead first so dense packing has no holes;
+       work.html keeps its own order (APRIL first) via renderWorkGrid */
+    const order = ['axiom', 'synopsi', 'polyagent', 'april', 'claude-skills', 'codegraph'];
+    grid.innerHTML = order
+        .map((id) => visible.find((r) => r.id === id))
+        .filter((r) => r && r.tier === 'ai' && r.featured)
         .map((r) => {
             const cls = bento[r.id] || '';
             const big = cls === 'bento-xl' || cls === 'bento-full';
