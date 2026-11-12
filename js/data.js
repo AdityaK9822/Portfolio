@@ -10,7 +10,7 @@ const PROFILE = {
     firstName: 'Aditya',
     role: 'AI Systems & Agentic Engineering',
     headline: 'Building assistants with a body — AI that senses, acts, and ships.',
-    subline: 'Agentic AI systems, open source on the Stellar network, and the hardware in between.',
+    subline: 'Agentic AI systems and the hardware they run on.',
     githubUser: 'AdityaK9822',
     githubUrl: 'https://github.com/AdityaK9822',
     linkedinUrl: 'https://www.linkedin.com/in/aditya-kadam-7a5341373',
@@ -21,7 +21,7 @@ const PROFILE = {
     // TODO: get a key at https://web3forms.com (free, no backend) and paste it
     web3formsKey: '',
     about:
-        'CS undergraduate at ITM Skills University, Kharghar, Navi Mumbai. Freelance developer earning online through open source work on the Stellar network under the Stellar Waves program (fluid, vestroll, SoroTask, mobile-money). Current focus is agentic AI: APRIL, an LLM brain that plans while real hardware runs its own deterministic procedures; Polyagent, a multi-provider MCP server; and Synopsi, an AI study-notes app. On the hardware side, AXIOM: ESP32-S3 controller firmware at v26 with an 11-tab dashboard, BLE/WiFi scanning and packet sniffing. I prefer concise, direct communication, free-tier or self-hosted tools, and iterating over planning everything upfront.',
+        'CS undergraduate at ITM Skills University, Kharghar, Navi Mumbai. I spend most of my time building agentic AI systems and the hardware they run on: APRIL, an LLM brain that plans while real devices run their own deterministic procedures; Polyagent, a multi-provider MCP server; Synopsi, an AI study-notes app; and AXIOM, ESP32-S3 controller firmware at v26 with an 11-tab dashboard, BLE/WiFi scanning and packet sniffing. Late-night hands-on sessions are where I learn the most. I prefer concise, direct communication and iterating over planning everything upfront.',
     openToList: [
         'AI/ML Engineering',
         'AI Agent Infra',
