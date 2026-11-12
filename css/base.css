@@ -393,7 +393,9 @@ main > section {
 }
 
 .home-main {
-    padding-top: calc(var(--nav-h) + var(--gap));
+    /* hero sits above and already clears the fixed nav —
+       main just needs a comfortable gap below the hero */
+    padding-top: calc(var(--gap) * 1.4);
     padding-inline: var(--edge-pad);
 }
 
@@ -402,11 +404,13 @@ main > section {
     margin-top: var(--section-pad);
 }
 
-/* journal / activity ticker: full-bleed band right under the navbar */
+/* journal / activity ticker: full-width band pinned to the hero's
+   bottom edge (hero is a flex column — margin-top:auto pushes it
+   down); lifted above the canvas + bottom fade */
 .headline-band {
     position: relative;
     z-index: var(--z-content);
-    margin: 0 calc(-1 * var(--edge-pad)) calc(var(--gap) * 1.6);
+    margin-top: auto;
     border-block: 1px solid var(--border);
     padding: 10px 0;
     overflow: hidden;

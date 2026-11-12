@@ -91,36 +91,6 @@
     opacity: 0.7;
     margin-left: 2px;
 }
-
-/* Status pill */
-.nav-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: var(--fs-small);
-    color: var(--accent);
-    border: 1px solid var(--accent-border);
-    background: var(--accent-dim);
-    padding: 6px 12px;
-    border-radius: 999px;
-    white-space: nowrap;
-}
-
-.nav-status .dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--accent-bright);
-    box-shadow: 0 0 8px var(--accent-bright);
-    animation: pulse 2.2s var(--ease) infinite;
-}
-
-@keyframes pulse {
-    50% {
-        opacity: 0.35;
-    }
-}
-
 .nav-burger {
     display: none;
     background: none;
@@ -196,12 +166,6 @@
 
 .nav-theme:not(:disabled):active {
     transform: scale(0.94);
-}
-
-@media (max-width: 900px) {
-    .nav-status {
-        display: none;
-    }
 }
 
 @media (max-width: 760px) {
