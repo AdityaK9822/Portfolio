@@ -1,67 +1,67 @@
 /* ============================================================
    base.css — design tokens, reset, typography, foundations
-   Palette: RUN GREEN — light day mode (default) + dark night mode
-            light: bg #F4F6F1 · surfaces #FFFFFF · accent #15803D
-            dark:  bg #080c14 · surfaces #0F172A · accent #22C55E
-   Toggle: [data-theme="dark"] on <html> flips every token.
+   Palette: RUN GREEN — dark night mode (default) + light day mode
+            dark (default): bg #080c14 · surfaces #0F172A · accent #22C55E
+            light (opt-in): bg #F4F6F1 · surfaces #FFFFFF · accent #15803D
+   Toggle: [data-theme="light"] on <html> flips every token.
    Fonts:   Syne (display) + Space Mono (body/terminal)
    ============================================================ */
 
 :root {
-    /* Colors — light (default) */
-    --bg: #F4F6F1;
-    --bg-elev: #FFFFFF;
-    --surface: rgba(255, 255, 255, 0.80);
-    --border: rgba(15, 23, 42, 0.12);
-    --border-strong: rgba(15, 23, 42, 0.24);
-    --text: #0F172A;
-    --muted: #5B6B80;
-    --accent: #15803D;                             /* deep green — text-safe on light */
-    --accent-bright: #22C55E;                      /* bright green — fills, cursors, glow */
-    --accent-dim: rgba(21, 128, 61, 0.10);
-    --accent2: #0369A1;
-    --red: #B91C1C;
-    --amber: #B45309;
-    --on-accent: #04120a;                          /* text on bright-green fills */
+    /* Colors — dark (default) */
+    --bg: #080c14;
+    --bg-elev: #0f172a;
+    --surface: rgba(17, 24, 39, 0.72);
+    --border: rgba(148, 163, 184, 0.16);
+    --border-strong: rgba(148, 163, 184, 0.30);
+    --text: #f8fafc;
+    --muted: #8fa3bf;
+    --accent: #22c55e;
+    --accent-bright: #22c55e;
+    --accent-dim: rgba(34, 197, 94, 0.14);
+    --accent2: #38bdf8;
+    --red: #f87171;
+    --amber: #fbbf24;
+    --on-accent: #04120a;
 
     /* Surfaces & overlays (theme-relative) */
-    --nav-bg: rgba(255, 255, 255, 0.78);
-    --nav-bg-solid: rgba(255, 255, 255, 0.97);
-    --nav-hover-bg: rgba(15, 23, 42, 0.05);
-    --ghost-bg: rgba(15, 23, 42, 0.03);
-    --strip-hover-bg: rgba(15, 23, 42, 0.03);
-    --subtle-bg: rgba(15, 23, 42, 0.04);
-    --note-bg: rgba(241, 245, 249, 0.70);
-    --input-bg: rgba(255, 255, 255, 0.75);
-    --footer-bg: rgba(226, 231, 238, 0.55);
-    --card-shadow: rgba(15, 23, 42, 0.10);
+    --nav-bg: rgba(8, 12, 20, 0.72);
+    --nav-bg-solid: rgba(8, 12, 20, 0.96);
+    --nav-hover-bg: rgba(148, 163, 184, 0.08);
+    --ghost-bg: rgba(148, 163, 184, 0.04);
+    --strip-hover-bg: rgba(148, 163, 184, 0.04);
+    --subtle-bg: rgba(148, 163, 184, 0.05);
+    --note-bg: rgba(15, 23, 42, 0.4);
+    --input-bg: rgba(8, 12, 20, 0.6);
+    --footer-bg: rgba(15, 23, 42, 0.5);
+    --card-shadow: rgba(0, 0, 0, 0.45);
 
     /* Page wash */
-    --page-glow: rgba(21, 128, 61, 0.05);
-    --grid-line: rgba(15, 23, 42, 0.045);
+    --page-glow: rgba(34, 197, 94, 0.06);
+    --grid-line: rgba(148, 163, 184, 0.04);
 
     /* Accent edges & glows */
-    --accent-border: rgba(21, 128, 61, 0.40);
-    --accent-border-mid: rgba(21, 128, 61, 0.45);
-    --accent-border-strong: rgba(21, 128, 61, 0.50);
-    --accent-border-focus: rgba(21, 128, 61, 0.55);
-    --accent-ring: rgba(21, 128, 61, 0.10);
-    --accent-glow: rgba(21, 128, 61, 0.07);
-    --accent-glow-soft: rgba(21, 128, 61, 0.06);
-    --accent-glow-strong: rgba(21, 128, 61, 0.10);
-    --accent-shadow: rgba(21, 128, 61, 0.25);
-    --accent-shadow-none: rgba(21, 128, 61, 0);
+    --accent-border: rgba(34, 197, 94, 0.35);
+    --accent-border-mid: rgba(34, 197, 94, 0.45);
+    --accent-border-strong: rgba(34, 197, 94, 0.5);
+    --accent-border-focus: rgba(34, 197, 94, 0.55);
+    --accent-ring: rgba(34, 197, 94, 0.12);
+    --accent-glow: rgba(34, 197, 94, 0.09);
+    --accent-glow-soft: rgba(34, 197, 94, 0.08);
+    --accent-glow-strong: rgba(34, 197, 94, 0.12);
+    --accent-shadow: rgba(34, 197, 94, 0.28);
+    --accent-shadow-none: rgba(34, 197, 94, 0);
 
     /* Status tints */
-    --red-border: rgba(185, 28, 28, 0.40);
-    --red-bg: rgba(185, 28, 28, 0.08);
-    --accent2-border: rgba(3, 105, 161, 0.40);
-    --accent2-bg: rgba(3, 105, 161, 0.08);
-    --amber-border: rgba(180, 83, 9, 0.40);
-    --amber-border-strong: rgba(180, 83, 9, 0.50);
-    --amber-bg: rgba(180, 83, 9, 0.08);
+    --red-border: rgba(248, 113, 113, 0.4);
+    --red-bg: rgba(248, 113, 113, 0.1);
+    --accent2-border: rgba(56, 189, 248, 0.4);
+    --accent2-bg: rgba(56, 189, 248, 0.1);
+    --amber-border: rgba(251, 191, 36, 0.4);
+    --amber-border-strong: rgba(251, 191, 36, 0.55);
+    --amber-bg: rgba(251, 191, 36, 0.08);
 
-    color-scheme: light;
+    color-scheme: dark;
 
     /* Type */
     --font-display: 'Syne', sans-serif;
@@ -95,57 +95,57 @@
     --z-nav: 100;
 }
 
-/* ── DARK MODE — the original run-green night palette ── */
-[data-theme="dark"] {
-    --bg: #080c14;
-    --bg-elev: #0f172a;
-    --surface: rgba(17, 24, 39, 0.72);
-    --border: rgba(148, 163, 184, 0.16);
-    --border-strong: rgba(148, 163, 184, 0.30);
-    --text: #f8fafc;
-    --muted: #8fa3bf;
-    --accent: #22c55e;
-    --accent-bright: #22c55e;
-    --accent-dim: rgba(34, 197, 94, 0.14);
-    --accent2: #38bdf8;
-    --red: #f87171;
-    --amber: #fbbf24;
+/* ── LIGHT MODE — opt-in day palette; dark above is the default ── */
+[data-theme="light"] {
+    --bg: #F4F6F1;
+    --bg-elev: #FFFFFF;
+    --surface: rgba(255, 255, 255, 0.80);
+    --border: rgba(15, 23, 42, 0.12);
+    --border-strong: rgba(15, 23, 42, 0.24);
+    --text: #0F172A;
+    --muted: #5B6B80;
+    --accent: #15803D;
+    --accent-bright: #22C55E;
+    --accent-dim: rgba(21, 128, 61, 0.10);
+    --accent2: #0369A1;
+    --red: #B91C1C;
+    --amber: #B45309;
     --on-accent: #04120a;
 
-    --nav-bg: rgba(8, 12, 20, 0.72);
-    --nav-bg-solid: rgba(8, 12, 20, 0.96);
-    --nav-hover-bg: rgba(148, 163, 184, 0.08);
-    --ghost-bg: rgba(148, 163, 184, 0.04);
-    --strip-hover-bg: rgba(148, 163, 184, 0.04);
-    --subtle-bg: rgba(148, 163, 184, 0.05);
-    --note-bg: rgba(15, 23, 42, 0.4);
-    --input-bg: rgba(8, 12, 20, 0.6);
-    --footer-bg: rgba(15, 23, 42, 0.5);
-    --card-shadow: rgba(0, 0, 0, 0.45);
+    --nav-bg: rgba(255, 255, 255, 0.78);
+    --nav-bg-solid: rgba(255, 255, 255, 0.97);
+    --nav-hover-bg: rgba(15, 23, 42, 0.05);
+    --ghost-bg: rgba(15, 23, 42, 0.03);
+    --strip-hover-bg: rgba(15, 23, 42, 0.03);
+    --subtle-bg: rgba(15, 23, 42, 0.04);
+    --note-bg: rgba(241, 245, 249, 0.70);
+    --input-bg: rgba(255, 255, 255, 0.75);
+    --footer-bg: rgba(226, 231, 238, 0.55);
+    --card-shadow: rgba(15, 23, 42, 0.10);
 
-    --page-glow: rgba(34, 197, 94, 0.06);
-    --grid-line: rgba(148, 163, 184, 0.04);
+    --page-glow: rgba(21, 128, 61, 0.05);
+    --grid-line: rgba(15, 23, 42, 0.045);
 
-    --accent-border: rgba(34, 197, 94, 0.35);
-    --accent-border-mid: rgba(34, 197, 94, 0.45);
-    --accent-border-strong: rgba(34, 197, 94, 0.5);
-    --accent-border-focus: rgba(34, 197, 94, 0.55);
-    --accent-ring: rgba(34, 197, 94, 0.12);
-    --accent-glow: rgba(34, 197, 94, 0.09);
-    --accent-glow-soft: rgba(34, 197, 94, 0.08);
-    --accent-glow-strong: rgba(34, 197, 94, 0.12);
-    --accent-shadow: rgba(34, 197, 94, 0.28);
-    --accent-shadow-none: rgba(34, 197, 94, 0);
+    --accent-border: rgba(21, 128, 61, 0.40);
+    --accent-border-mid: rgba(21, 128, 61, 0.45);
+    --accent-border-strong: rgba(21, 128, 61, 0.50);
+    --accent-border-focus: rgba(21, 128, 61, 0.55);
+    --accent-ring: rgba(21, 128, 61, 0.10);
+    --accent-glow: rgba(21, 128, 61, 0.07);
+    --accent-glow-soft: rgba(21, 128, 61, 0.06);
+    --accent-glow-strong: rgba(21, 128, 61, 0.10);
+    --accent-shadow: rgba(21, 128, 61, 0.25);
+    --accent-shadow-none: rgba(21, 128, 61, 0);
 
-    --red-border: rgba(248, 113, 113, 0.4);
-    --red-bg: rgba(248, 113, 113, 0.1);
-    --accent2-border: rgba(56, 189, 248, 0.4);
-    --accent2-bg: rgba(56, 189, 248, 0.1);
-    --amber-border: rgba(251, 191, 36, 0.4);
-    --amber-border-strong: rgba(251, 191, 36, 0.55);
-    --amber-bg: rgba(251, 191, 36, 0.08);
+    --red-border: rgba(185, 28, 28, 0.40);
+    --red-bg: rgba(185, 28, 28, 0.08);
+    --accent2-border: rgba(3, 105, 161, 0.40);
+    --accent2-bg: rgba(3, 105, 161, 0.08);
+    --amber-border: rgba(180, 83, 9, 0.40);
+    --amber-border-strong: rgba(180, 83, 9, 0.50);
+    --amber-bg: rgba(180, 83, 9, 0.08);
 
-    color-scheme: dark;
+    color-scheme: light;
 }
 
 * {
@@ -419,9 +419,9 @@ main > section {
 }
 
 /* ── SELECTED.WORK: bento grid ──
-   APRIL 2×2 lead · Synopsi + Polyagent stacked right ·
-   AXIOM small + Claude SKILLS wide · Codegraph full width.
-   DOM order (data.js) + grid-auto-flow:dense places everything. */
+   AXIOM 2×2 lead · Synopsi + Polyagent stacked right ·
+   APRIL small + Claude SKILLS wide · Codegraph full width.
+   Box shapes fixed; DOM order (render.js) + grid-auto-flow:dense. */
 .bento-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));

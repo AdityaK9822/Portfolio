@@ -188,9 +188,10 @@ function toast(msg, tone = 'ok') {
 })();
 
 /* ── theme toggle (light ⇄ dark) ──
-   The <html data-theme> attribute is set pre-paint by the inline head
-   script; this keeps the button, meta theme-color and the WebGL hero in
-   sync, and persists an explicit choice in localStorage. */
+   Dark is the structural CSS default; light is the explicit opt-in
+   ([data-theme="light"] on <html>, set pre-paint by the inline head
+   script). This keeps the button, meta theme-color and the WebGL hero
+   in sync, and persists an explicit choice in localStorage. */
 (function themeToggle() {
     const root = document.documentElement;
     const btn = document.querySelector('.nav-theme');
@@ -198,18 +199,11 @@ function toast(msg, tone = 'ok') {
     const DARK = 'dark';
     const LIGHT = 'light';
 
-    function savedTheme() {
-        try {
-            return localStorage.getItem('theme');
-        } catch (_) {
-            return null;
-        }
-    }
-
     function applyTheme(mode, persist) {
-        const dark = mode === DARK;
-        if (dark) root.dataset.theme = DARK;
-        else delete root.dataset.theme;
+        const dark = mode !== LIGHT;
+        /* dark = attribute absent (the :root default); light = [data-theme="light"] */
+        if (dark) delete root.dataset.theme;
+        else root.dataset.theme = LIGHT;
         if (meta) meta.setAttribute('content', dark ? '#080c14' : '#F4F6F1');
         if (btn) {
             btn.setAttribute('aria-pressed', String(dark));
@@ -223,19 +217,12 @@ function toast(msg, tone = 'ok') {
         document.dispatchEvent(new CustomEvent('themechange', { detail: { theme: mode } }));
     }
 
-    applyTheme(root.dataset.theme === DARK ? DARK : LIGHT, false);
+    /* absence of the attribute = dark (the default) */
+    applyTheme(root.dataset.theme === LIGHT ? LIGHT : DARK, false);
 
     if (btn) {
         btn.addEventListener('click', () => {
-            applyTheme(root.dataset.theme === DARK ? LIGHT : DARK, true);
+            applyTheme(root.dataset.theme === LIGHT ? DARK : LIGHT, true);
         });
     }
-
-    /* follow the OS only while the visitor has not chosen explicitly */
-    const mq = window.matchMedia('(prefers-color-scheme: dark)');
-    const onScheme = (e) => {
-        if (!savedTheme()) applyTheme(e.matches ? DARK : LIGHT, false);
-    };
-    if (mq.addEventListener) mq.addEventListener('change', onScheme);
-    else if (mq.addListener) mq.addListener(onScheme);
 })();

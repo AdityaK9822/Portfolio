@@ -143,16 +143,17 @@
     height: 17px;
 }
 
-/* light mode shows the moon (switch to dark); dark shows the sun */
-.nav-theme .icon-sun {
+/* dark is the default: shows the sun (switch to light);
+   [data-theme="light"] shows the moon (switch to dark) */
+.nav-theme .icon-moon {
     display: none;
 }
 
-[data-theme="dark"] .nav-theme .icon-moon {
+[data-theme="light"] .nav-theme .icon-sun {
     display: none;
 }
 
-[data-theme="dark"] .nav-theme .icon-sun {
+[data-theme="light"] .nav-theme .icon-moon {
     display: block;
 }
 

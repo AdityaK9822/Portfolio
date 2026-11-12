@@ -8,13 +8,14 @@
     <title>Post Title — Aditya Kadam</title>
     <meta name="description" content="Post description here.">
     <meta name="theme-color" content="#080c14">
-    <!-- Theme boot: apply the saved/preferred theme before first paint (no FOUC) -->
+    <!-- Theme boot: dark is the CSS default; light is applied pre-paint only
+         if the visitor explicitly saved it (no FOUC) -->
     <script>
         (function () {
             try {
                 var saved = localStorage.getItem('theme');
-                var dark = saved ? saved === 'dark' : true; /* dark is the default */
-                if (dark) document.documentElement.dataset.theme = 'dark';
+                var light = saved === 'light'; /* dark is the structural default */
+                if (light) document.documentElement.dataset.theme = 'light';
             } catch (e) { /* storage blocked — default dark */ }
         })();
     </script>
@@ -24,9 +25,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../css/base.css?v=38">
-    <link rel="stylesheet" href="../css/components.css?v=38">
-    <link rel="stylesheet" href="../css/pages.css?v=38">
+    <link rel="stylesheet" href="../css/base.css?v=39">
+    <link rel="stylesheet" href="../css/components.css?v=39">
+    <link rel="stylesheet" href="../css/pages.css?v=39">
 </head>
 
 <body data-page="journal">
@@ -104,9 +105,9 @@
         </div>
     </footer>
 
-    <script defer src="../js/data.js?v=38"></script>
-    <script defer src="../js/render.js?v=38"></script>
-    <script defer src="../js/ui.js?v=38"></script>
+    <script defer src="../js/data.js?v=39"></script>
+    <script defer src="../js/render.js?v=39"></script>
+    <script defer src="../js/ui.js?v=39"></script>
 </body>
 
 </html>

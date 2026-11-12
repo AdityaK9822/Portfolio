@@ -24,7 +24,7 @@
     const camera = new THREE.PerspectiveCamera(58, 1, 0.1, 200);
 
     /* palette — follows the active theme; scenes bake these into vertex arrays */
-    const isDarkTheme = () => document.documentElement.dataset.theme === 'dark';
+    const isDarkTheme = () => document.documentElement.dataset.theme !== 'light';
     const GREEN = new THREE.Color(0x22c55e);
     const SLATE = new THREE.Color(isDarkTheme() ? 0x1e293b : 0xd7dee8);
     const FAINT = new THREE.Color(isDarkTheme() ? 0x475569 : 0x93a2b5);
