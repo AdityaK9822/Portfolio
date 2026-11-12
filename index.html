@@ -7,17 +7,15 @@
     <title>Aditya Kadam — Web3 Developer · Open Source</title>
     <meta name="description"
         content="Portfolio of Aditya Kadam — Web3 developer and open source contributor building AI-integrated systems on the Stellar blockchain.">
-    <meta name="theme-color" content="#F4F6F1">
+    <meta name="theme-color" content="#080c14">
     <!-- Theme boot: apply the saved/preferred theme before first paint (no FOUC) -->
     <script>
         (function () {
             try {
                 var saved = localStorage.getItem('theme');
-                var dark = saved
-                    ? saved === 'dark'
-                    : window.matchMedia('(prefers-color-scheme: dark)').matches;
+                var dark = saved ? saved === 'dark' : true; /* dark is the default */
                 if (dark) document.documentElement.dataset.theme = 'dark';
-            } catch (e) { /* storage blocked — stay light */ }
+            } catch (e) { /* storage blocked — default dark */ }
         })();
     </script>
     <!-- TODO: replace with real email later; og:image once assets/og.png exists -->
@@ -34,9 +32,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@500;600;700;800&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="css/base.css?v=37">
-    <link rel="stylesheet" href="css/components.css?v=37">
-    <link rel="stylesheet" href="css/pages.css?v=37">
+    <link rel="stylesheet" href="css/base.css?v=38">
+    <link rel="stylesheet" href="css/components.css?v=38">
+    <link rel="stylesheet" href="css/pages.css?v=38">
 </head>
 
 <body data-page="home">
@@ -163,11 +161,11 @@
     <!-- External: three.js for the hero -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- Scripts (defer keeps order) -->
-    <script defer src="js/data.js?v=37"></script>
-    <script defer src="js/render.js?v=37"></script>
-    <script defer src="js/github.js?v=37"></script>
-    <script defer src="js/ui.js?v=37"></script>
-    <script defer src="js/hero.js?v=37"></script>
+    <script defer src="js/data.js?v=38"></script>
+    <script defer src="js/render.js?v=38"></script>
+    <script defer src="js/github.js?v=38"></script>
+    <script defer src="js/ui.js?v=38"></script>
+    <script defer src="js/hero.js?v=38"></script>
 </body>
 
 </html>
