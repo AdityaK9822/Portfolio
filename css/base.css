@@ -354,6 +354,35 @@ main > section {
     margin-top: clamp(2.6rem, 6vw, 4.4rem);
 }
 
+/* status.read inline in the hero: mono stat strip under the CTAs */
+.hero-status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 26px;
+    margin-top: 34px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+}
+
+.hs-label {
+    color: var(--muted);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+}
+
+.hs-item {
+    color: var(--text);
+}
+
+.stat-n {
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 1.05em;
+}
+
 /* ── HOME: user wireframe ─────────────────────────────────────
    navbar → journal ticker → selected.work (bento grid) →
    open.source · stellar (horizontal rows) → capabilities (3-up) */
