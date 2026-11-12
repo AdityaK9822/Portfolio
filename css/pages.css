@@ -122,8 +122,8 @@
 /* ── HOME: HERO ── */
 .hero {
     position: relative;
-    min-height: 150vh;
-    min-height: 150dvh;
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -150,7 +150,12 @@
 
 .hero-inner {
     padding: 110px 0 40px;
-    /* flex column: auto margins center the copy in the space above the band */
+    /* flex column: auto margins center the copy in the space above the band;
+       items centered so the copy block sits mid-page, not left-hugging */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
     margin-block: auto;
 }
 
