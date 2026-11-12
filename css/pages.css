@@ -20,6 +20,53 @@
 .hero-cta[data-rise]    { animation-delay: 0.5s; }
 .hero-status[data-rise] { animation-delay: 0.55s; }
 
+/* ── HERO: BACKGROUND STYLE SWITCHER ──
+   preview CTA: cycles the WebGL scene; sits just above the band */
+.hero-bg-switch {
+    position: absolute;
+    left: var(--edge-pad);
+    bottom: 86px;
+    z-index: var(--z-content);
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    background: rgba(8, 12, 20, 0.72);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-small);
+    color: var(--muted);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+.bg-btn {
+    background: none;
+    border: none;
+    color: var(--accent);
+    font: inherit;
+    cursor: pointer;
+    padding: 10px 10px;   /* 44px tap target with the invisible pads */
+}
+
+@media (hover: hover) {
+    .bg-btn:hover {
+        color: var(--text);
+    }
+}
+
+.bg-btn:active {
+    transform: scale(0.96);
+}
+
+.bg-label {
+    min-width: 12ch;
+    text-align: center;
+    color: var(--text);
+    letter-spacing: 0.04em;
+}
+
 @keyframes riseIn {
     from {
         opacity: 0;

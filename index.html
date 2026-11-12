@@ -22,9 +22,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@500;600;700;800&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="css/base.css?v=21">
-    <link rel="stylesheet" href="css/components.css?v=21">
-    <link rel="stylesheet" href="css/pages.css?v=21">
+    <link rel="stylesheet" href="css/base.css?v=25">
+    <link rel="stylesheet" href="css/components.css?v=25">
+    <link rel="stylesheet" href="css/pages.css?v=25">
 </head>
 
 <body data-page="home">
@@ -70,6 +70,13 @@
                 <span class="hs-item"><span class="stat-n" id="stat-followers">…</span> followers</span>
                 <span class="hs-item"><span class="stat-n" id="stat-repos">…</span> public repos</span>
             </div>
+        </div>
+
+        <!-- hero background style switcher — cycle to preview, then pick one -->
+        <div class="hero-bg-switch" role="group" aria-label="Hero background style">
+            <button class="bg-btn" id="bg-prev" aria-label="Previous background style">‹</button>
+            <span class="bg-label" id="bg-label">wave grid</span>
+            <button class="bg-btn" id="bg-next" aria-label="Next background style">›</button>
         </div>
 
         <!-- journal.latest merged into the hero: headline band at the lowest edge -->
@@ -151,11 +158,11 @@
     <!-- External: three.js for the hero -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- Scripts (defer keeps order) -->
-    <script defer src="js/data.js?v=21"></script>
-    <script defer src="js/render.js?v=21"></script>
-    <script defer src="js/github.js?v=21"></script>
-    <script defer src="js/ui.js?v=21"></script>
-    <script defer src="js/hero.js?v=21"></script>
+    <script defer src="js/data.js?v=25"></script>
+    <script defer src="js/render.js?v=25"></script>
+    <script defer src="js/github.js?v=25"></script>
+    <script defer src="js/ui.js?v=25"></script>
+    <script defer src="js/hero.js?v=25"></script>
 </body>
 
 </html>
