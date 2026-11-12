@@ -54,21 +54,20 @@ const visible = REPOS.filter((r) => !r.hidden);
 function renderFeatured() {
     const grid = document.getElementById('featured-grid');
     if (!grid) return;
-    /* home bento — box size ∝ priority (CONTENT.md order):
-       #1 APRIL 2×2 hero · #2 AXIOM 1×2 tall (same column as Polyagent
-       below it) · #3 Synopsi wide · #4 Polyagent small · #5 SKILLS
-       small · #6 Codegraph 2-wide bottom row.
+    /* home bento — box size ∝ priority:
+       #1 APRIL 2×2 hero · #2 AXIOM 1×2 tall · #3 Polyagent wide ·
+       #4 Synopsi small · #5 SKILLS small · #6 Codegraph 2-wide.
        Full copy only on the big tiles; the rest use short blurbs. */
     const bento = {
         april: 'bento-xl',
         axiom: 'bento-tall',
-        synopsi: 'bento-w2',
+        polyagent: 'bento-w2',
         'claude-skills': 'bento-quiet',
         codegraph: 'bento-fork',
     };
     /* DOM order = pack order; the 2×2 leads so dense packing has no holes.
        work.html keeps its own order (APRIL first) via renderWorkGrid */
-    const order = ['april', 'axiom', 'synopsi', 'polyagent', 'claude-skills', 'codegraph'];
+    const order = ['april', 'axiom', 'polyagent', 'synopsi', 'claude-skills', 'codegraph'];
     grid.innerHTML = order
         .map((id) => visible.find((r) => r.id === id))
         .filter((r) => r && r.tier === 'ai' && r.featured)

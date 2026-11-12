@@ -188,10 +188,10 @@ function toast(msg, tone = 'ok') {
 })();
 
 /* ── theme toggle (light ⇄ dark) ──
-   Dark is the structural CSS default; light is the explicit opt-in
-   ([data-theme="light"] on <html>, set pre-paint by the inline head
-   script). This keeps the button, meta theme-color and the WebGL hero
-   in sync, and persists an explicit choice in localStorage. */
+   Dark on every fresh load (the :root default; the boot script discards
+   any saved preference). Light is an explicit in-session opt-in
+   ([data-theme="light"] on <html>) — it is NOT persisted, so visitors
+   always land on the dark theme. */
 (function themeToggle() {
     const root = document.documentElement;
     const btn = document.querySelector('.nav-theme');
@@ -199,7 +199,7 @@ function toast(msg, tone = 'ok') {
     const DARK = 'dark';
     const LIGHT = 'light';
 
-    function applyTheme(mode, persist) {
+    function applyTheme(mode) {
         const dark = mode !== LIGHT;
         /* dark = attribute absent (the :root default); light = [data-theme="light"] */
         if (dark) delete root.dataset.theme;
@@ -209,20 +209,15 @@ function toast(msg, tone = 'ok') {
             btn.setAttribute('aria-pressed', String(dark));
             btn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
         }
-        if (persist) {
-            try {
-                localStorage.setItem('theme', mode);
-            } catch (_) { /* storage blocked — session-only toggle */ }
-        }
         document.dispatchEvent(new CustomEvent('themechange', { detail: { theme: mode } }));
     }
 
     /* absence of the attribute = dark (the default) */
-    applyTheme(root.dataset.theme === LIGHT ? LIGHT : DARK, false);
+    applyTheme(root.dataset.theme === LIGHT ? LIGHT : DARK);
 
     if (btn) {
         btn.addEventListener('click', () => {
-            applyTheme(root.dataset.theme === LIGHT ? DARK : LIGHT, true);
+            applyTheme(root.dataset.theme === LIGHT ? DARK : LIGHT);
         });
     }
 })();

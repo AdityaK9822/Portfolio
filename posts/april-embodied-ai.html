@@ -7,15 +7,11 @@
     <title>APRIL: building an assistant with a body — Aditya Kadam</title>
     <meta name="description" content="Why an assistant that can only answer is a chatbot. APRIL's SEE/SENSE/ACT/NETWORK/BUILD pillar architecture, the ESP32 as the archetypal limb, and an honest status report.">
     <meta name="theme-color" content="#080c14">
-    <!-- Theme boot: dark is the CSS default; light is applied pre-paint only
-         if the visitor explicitly saved it (no FOUC) -->
+    <!-- Theme boot: dark on EVERY load (the :root default). Any previously
+         saved preference is discarded; the toggle is session-only. -->
     <script>
         (function () {
-            try {
-                var saved = localStorage.getItem('theme');
-                var light = saved === 'light'; /* dark is the structural default */
-                if (light) document.documentElement.dataset.theme = 'light';
-            } catch (e) { /* storage blocked — default dark */ }
+            try { localStorage.removeItem('theme'); } catch (e) { /* storage blocked */ }
         })();
     </script>
     <link rel="icon"
@@ -24,9 +20,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@500;600;700;800&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="../css/base.css?v=42">
-    <link rel="stylesheet" href="../css/components.css?v=42">
-    <link rel="stylesheet" href="../css/pages.css?v=42">
+    <link rel="stylesheet" href="../css/base.css?v=43">
+    <link rel="stylesheet" href="../css/components.css?v=43">
+    <link rel="stylesheet" href="../css/pages.css?v=43">
 </head>
 
 <body data-page="journal">
@@ -142,9 +138,9 @@
         </div>
     </footer>
 
-    <script defer src="../js/data.js?v=42"></script>
-    <script defer src="../js/render.js?v=42"></script>
-    <script defer src="../js/ui.js?v=42"></script>
+    <script defer src="../js/data.js?v=43"></script>
+    <script defer src="../js/render.js?v=43"></script>
+    <script defer src="../js/ui.js?v=43"></script>
 </body>
 
 </html>

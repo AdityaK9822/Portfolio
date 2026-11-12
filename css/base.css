@@ -457,7 +457,7 @@ main > section {
     border-color: var(--accent-border);
 }
 
-/* #2 — solid elev fill; #3 — blue wash (matches its Next.js tone) */
+/* #2 — solid elev fill; #3 — blue wash (agent-infra tone) */
 .bento-tall {
     background: var(--bg-elev);
 }
