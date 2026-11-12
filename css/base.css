@@ -465,6 +465,11 @@ main > section {
     background: linear-gradient(var(--accent2-bg), var(--accent2-bg)), var(--surface);
 }
 
+/* 2-wide tile: same generous copy allowance as the 2×2 lead */
+.bento-w2 .card-desc {
+    -webkit-line-clamp: 6;
+}
+
 /* small trio stay distinct from their neighbors: surface · elev · fork-red */
 .bento-quiet {
     background: var(--bg-elev);

@@ -68,7 +68,7 @@ function renderFeatured() {
         .filter((r) => r && r.tier === 'ai' && r.featured)
         .map((r) => {
             const cls = bento[r.id] || '';
-            const big = cls === 'bento-xl' || cls === 'bento-tall' || cls === 'bento-full';
+            const big = cls === 'bento-xl' || cls === 'bento-tall' || cls === 'bento-w2' || cls === 'bento-full';
             return repoCard({ ...r, desc: big ? r.desc : r.short || r.desc }, undefined, cls);
         })
         .join('');

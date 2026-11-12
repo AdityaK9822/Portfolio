@@ -80,14 +80,14 @@ const REPOS = [
         name: 'APRIL',
         url: 'https://github.com/AdityaK9822/APRIL',
         badge: ['Flagship R&D', 'Building in the open'],
-        desc: 'An LLM assistant with a body in the networked world — it senses, controls, and works with the physical devices around it. Organized into pillars: SEE through IP cameras with a vision model; SENSE ECG/EEG and telemetry via ESP32-connected sensors; ACT on lights, AC, switches, and robot arms; NETWORK discovery and authorized wifi audits; BUILD hardware from CAD → CNC → 3D print → flash. The body is whatever is reachable on the network right now — the ESP32 is the archetypal limb.',
+        desc: 'An LLM assistant with a body in the networked world: the LLM plans while each hardware unit runs its own deterministic procedures. Organized into pillars: SEE through IP cameras with a vision model; SENSE ECG/EEG and telemetry via ESP32-connected sensors; ACT on lights, AC, switches, and robot arms; NETWORK discovery and authorized wifi audits; BUILD hardware from CAD to CNC to 3D print to flash. The aim is enterprise-grade orchestration, one device first, then many coordinating, for manufacturing and plant automation. The body is whatever is reachable on the network right now, and the ESP32 is the archetypal limb.',
         tags: ['Python', 'AI Agents', 'IoT'],
         tagTone: { 'Python': '', 'AI Agents': 'green', 'IoT': 'blue' },
         tier: 'ai',
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
-        short: 'An LLM assistant wired into the physical world — it senses, acts, and ships.',
+        short: 'An LLM assistant wired into the physical world: the LLM plans, the hardware acts, and the body is whatever the network reaches.',
     },
     {
         id: 'synopsi',
@@ -102,7 +102,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
-        short: 'Paste messy lecture notes, get a structured study pack — powered by Ollama Cloud.',
+        short: 'Paste messy lecture notes, get a structured study pack: summary, key concepts, revision questions and a click-to-reveal quiz, powered by Ollama Cloud.',
     },
     {
         id: 'polyagent',
@@ -117,7 +117,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
-        short: 'MCP server that lets Claude delegate work to six AI providers — with real loop prevention.',
+        short: 'Multi-provider MCP bridge: Claude delegates security scans, code review and analysis to six AI providers, with pipeline modes and real loop prevention.',
     },
     /* repo flipped public — renders everywhere now */
     {
@@ -126,14 +126,14 @@ const REPOS = [
         name: 'AXIOM-Firmware',
         url: 'https://github.com/AdityaK9822/AXIOM-Firmware',
         badge: ['Embedded', 'Security'],
-        desc: 'ESP32-S3 Wi-Fi/BLE lab-controller firmware with a web dashboard and SH1106 OLED display — network monitoring, diagnostics, and authorized wireless security assessment. This is the reference hardware "limb" APRIL plugs compliance-tested radios, sensors, and actuation into: an entire programmable bridge, in a pocket form factor, to the physical side of an agentic system.',
+        desc: 'ESP32-S3 Wi-Fi and BLE lab-controller firmware, now at v26, with an 11-tab web dashboard and an SH1106 OLED display. Built for network monitoring, diagnostics, and authorized wireless security assessment: Wi-Fi and BLE scanning, packet sniffing, deauth detection, and port scanning, with the firmware audited repeatedly across versions. This is the reference hardware limb APRIL plugs compliance-tested radios, sensors, and actuation into: an entire programmable bridge, in a pocket form factor, to the physical side of an agentic system.',
         tags: ['C++', 'ESP32-S3', 'Firmware'],
         tagTone: { 'C++': '', 'ESP32-S3': 'blue', 'Firmware': 'green' },
         tier: 'ai',
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
-        short: 'ESP32-S3 lab-controller firmware — the pocket-sized Wi-Fi bridge APRIL plugs sensors into.',
+        short: 'ESP32-S3 firmware at v26: 11-tab dashboard, Wi-Fi/BLE scanning, packet sniffing, deauth detection, port scanning. The pocket limb APRIL plugs into.',
     },
     {
         id: 'claude-skills',
@@ -148,7 +148,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
-        short: 'Behavioral add-ons for AI coding agents that stop skipped verification and over-eager refactors.',
+        short: 'Behavioral add-ons for AI coding agents: self-contained patterns distilled from real sessions that stop skipped verification, sloppy naming and over-eager refactors.',
     },
     {
         id: 'codegraph',
@@ -163,7 +163,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
-        short: 'Pre-indexed code knowledge graph wired into APRIL — instant retrieval instead of stale grep.',
+        short: 'Pre-indexed code knowledge graph wired into APRIL: auto-syncs on code changes, so coding agents get instant accurate retrieval over a living codebase instead of stale grep.',
     },
 
     /* ── SECTION B — Open Source · Stellar Ecosystem ── */
