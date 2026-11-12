@@ -234,42 +234,22 @@ main > section {
 }
 
 .ai-card .card-name {
-    font-size: var(--fs-h2);
+    /* compact: the fs-h2 display size made boxes run tall */
+    font-size: clamp(1.05rem, 1.5vw, 1.2rem);
     letter-spacing: -0.01em;
 }
 
-/* home featured: 3-across (wireframe revision) + compact cards —
-   shorter blocks so the split's equal-height stretch carries less
-   dead whitespace in the right column. Full copy stays on work.html */
+/* home featured: 3-across (wireframe revision) — cards use the
+   global compact fixed-shape spec; no per-grid overrides needed */
 @media (min-width: 701px) {
     #featured-grid {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 }
 
-#featured-grid .card {
-    padding: 18px 20px;
-}
-
-#featured-grid .ai-card .card-name {
-    font-size: clamp(1.15rem, 1.8vw, 1.45rem);
-}
-
-#featured-grid .card-desc {
-    font-size: 0.95rem;
-    display: -webkit-box;
+/* work page: narrower 4-col cards get one extra description line */
+#ai-grid .card-desc {
     -webkit-line-clamp: 4;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-}
-
-#featured-grid .card-badges {
-    margin-top: 10px;
-}
-
-#featured-grid .badge-chip {
-    font-size: 0.72rem;
-    padding: 2px 7px;
 }
 
 /* work sections breathe (gap between groups ≥ 2× gap inside) */

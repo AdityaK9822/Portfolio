@@ -258,8 +258,8 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 22px;
+    gap: 8px;
+    padding: 18px 20px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
@@ -311,8 +311,13 @@
 .card-name {
     font-family: var(--font-display);
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     letter-spacing: 0.01em;
+    /* fixed shape rule 1: title is one line, no matter the length */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
 }
 
 .card-name .org {
@@ -328,14 +333,15 @@
 }
 
 .badge-chip {
-    font-size: 0.78rem;
+    font-size: 0.7rem;
     font-family: var(--font-mono);
     color: var(--accent);
     background: var(--accent-dim);
     border: 1px solid rgba(34, 197, 94, 0.35);
     border-radius: 5px;
-    padding: 2px 8px;
+    padding: 1px 7px;
     letter-spacing: 0.02em;
+    white-space: nowrap;
 }
 
 .card-arrow {
@@ -361,8 +367,13 @@
 
 .card-desc {
     color: var(--muted);
-    font-size: 0.95rem;
-    line-height: 1.65;
+    font-size: 0.9rem;
+    line-height: 1.55;
+    /* fixed shape rule 2: description holds exactly 3 lines */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }
 
 .card-meta {
@@ -387,9 +398,9 @@
 
 /* Tags */
 .tag {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     letter-spacing: 0.02em;
-    padding: 4px 10px;
+    padding: 3px 9px;
     border-radius: 999px;
     border: 1px solid var(--border-strong);
     color: var(--muted);

@@ -87,7 +87,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
-        short: 'An LLM assistant wired into the physical world — SEE, SENSE, ACT, NETWORK, BUILD. The body is whatever is reachable on the network right now.',
+        short: 'An LLM assistant wired into the physical world — it senses, acts, and ships.',
     },
     {
         id: 'synopsi',
@@ -102,7 +102,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
-        short: 'Paste messy lecture notes, get a structured study pack — summary, key concepts, revision quizzes. Runs gemma4 on Ollama Cloud; fact-check mode included.',
+        short: 'Paste messy lecture notes, get a structured study pack — powered by Ollama Cloud.',
     },
     {
         id: 'polyagent',
@@ -117,7 +117,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
-        short: 'MCP server that lets Claude delegate specialized work to six providers — with pipeline modes, loop prevention, and human approval gates.',
+        short: 'MCP server that lets Claude delegate work to six AI providers — with real loop prevention.',
     },
     /* repo flipped public — renders everywhere now */
     {
@@ -133,7 +133,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
-        short: 'ESP32-S3 lab-controller firmware — the pocket-sized Wi-Fi bridge APRIL plugs compliance-tested radios and sensors into.',
+        short: 'ESP32-S3 lab-controller firmware — the pocket-sized Wi-Fi bridge APRIL plugs sensors into.',
     },
     {
         id: 'claude-skills',
@@ -148,7 +148,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
-        short: 'Practical behavioral add-ons for AI coding agents — self-contained patterns that stop skipped verification and over-eager refactors.',
+        short: 'Behavioral add-ons for AI coding agents that stop skipped verification and over-eager refactors.',
     },
     {
         id: 'codegraph',
@@ -163,7 +163,7 @@ const REPOS = [
         featured: true,
         hidden: false,
         fallback: { stars: null, forks: null },
-        short: 'Pre-indexed code knowledge graph wired into the APRIL stack — instant, accurate retrieval for coding agents instead of stale grep.',
+        short: 'Pre-indexed code knowledge graph wired into APRIL — instant retrieval instead of stale grep.',
     },
 
     /* ── SECTION B — Open Source · Stellar Ecosystem ── */
