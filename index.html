@@ -29,9 +29,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@500;600;700;800&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet" href="css/base.css?v=46">
-    <link rel="stylesheet" href="css/components.css?v=46">
-    <link rel="stylesheet" href="css/pages.css?v=46">
+    <link rel="stylesheet" href="css/base.css?v=49">
+    <link rel="stylesheet" href="css/components.css?v=69">
+    <link rel="stylesheet" href="css/pages.css?v=65">
 </head>
 
 <body data-page="home">
@@ -65,19 +65,19 @@
         </button>
     </nav>
 
+
     <!-- HERO (restored from previous design) -->
     <header class="hero">
         <canvas id="hero-canvas" aria-hidden="true"></canvas>
+        <!-- Gradient ASCII background (React Bits, vanilla WebGL2 port) —
+             shown when its scene is active in the bg switcher -->
+        <div id="hero-ascii" aria-hidden="true"></div>
         <div class="hero-inner container">
-            <p class="hero-prompt" data-rise>whoami</p>
-            <h1 class="hero-name" data-rise>Aditya <span>Kadam</span></h1>
-            <p class="hero-role" data-rise>AI Systems &amp; Agentic Engineering</p>
-            <p class="hero-sub" data-rise>Curious by default, engineer by habit — I teach AI to <span
+            <p class="hero-prompt" data-rise data-cipher data-cipher-delay="0">whoami</p>
+            <h1 class="hero-name" data-rise data-cipher data-cipher-delay="150">Aditya <span>Kadam</span></h1>
+            <p class="hero-role" data-rise data-cipher data-cipher-delay="350">AI Systems &amp; Agentic Engineering</p>
+            <p class="hero-sub" data-rise>Curious by default, engineer by habit. I teach AI to <span
                     class="hl">see, sense, and act</span> on the real world.</p>
-            <p class="hero-bio" data-rise>CS undergraduate at ITM Skills University, Navi Mumbai. Most of my time
-                goes into agentic AI systems and the hardware they run on: an LLM assistant wired into real
-                devices, multi-agent infrastructure, and the firmware that gives it a body. Late-night hands-on
-                sessions are where I learn the most.</p>
             <div class="hero-cta" data-rise>
                 <a class="btn btn-solid" href="work.html">view work →</a>
                 <a class="btn btn-ghost" href="contact.html">get in touch</a>
@@ -106,13 +106,14 @@
 
     <main id="main" class="container home-main">
 
-        <!-- SELECTED.WORK — bento grid -->
-        <section class="reveal" aria-label="Selected work">
-            <div class="section-head">
+        <!-- SELECTED.WORK — React Bits scroll stack (sticky cards pile
+             up while scrolling; no .reveal here — ancestor filters break sticky) -->
+        <section aria-label="Selected work" class="selected-work-section">
+            <div class="section-head selected-work-head">
                 <h2 class="section-title">selected.work</h2>
                 <a class="section-link" href="work.html">→ all work</a>
             </div>
-            <div class="bento-grid" id="featured-grid"></div>
+            <div class="scroll-stack" id="featured-grid"></div>
         </section>
 
         <!-- OPEN.SOURCE · STELLAR — horizontal contribution rows -->
@@ -159,11 +160,15 @@
     <!-- External: three.js for the hero -->
     <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <!-- Scripts (defer keeps order) -->
-    <script defer src="js/data.js?v=46"></script>
-    <script defer src="js/render.js?v=46"></script>
-    <script defer src="js/github.js?v=46"></script>
-    <script defer src="js/ui.js?v=46"></script>
-    <script defer src="js/hero.js?v=46"></script>
+    <script defer src="js/data.js?v=47"></script>
+    <script defer src="js/render.js?v=51"></script>
+    <script defer src="js/github.js?v=47"></script>
+    <script defer src="js/gradient-ascii.js?v=47"></script>
+    <script defer src="js/cipher-reveal.js?v=62"></script>
+    <!-- scroll stack now CSS-driven (no JS) -->
+    <script defer src="js/gooey-nav.js?v=1"></script>
+    <script defer src="js/ui.js?v=51"></script>
+    <script defer src="js/hero.js?v=58"></script>
 </body>
 
 </html>

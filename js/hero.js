@@ -319,14 +319,102 @@
     let idx = 0;
     let current = null;
 
+    /* ── 6 · GRADIENT ASCII (React Bits, vanilla WebGL2 port in js/gradient-ascii.js) ──
+       Runs on its own canvas + context (not three.js). Added as the DEFAULT
+       scene; the switcher cycles back to the three.js scenes as before. */
+    const asciiPalette = () =>
+        isDarkTheme()
+            ? ['#064e3b', '#16a34a', '#4ade80', '#dcfce7'] /* dark: deep → accent → bright green */
+            : ['#0b3a20', '#166534', '#15803d', '#22c55e']; /* light: darker greens on #F4F6F1 */
+
+    let ascii = null;
+    const asciiHost = document.getElementById('hero-ascii');
+
+    function ensureAscii() {
+        if (ascii || !asciiHost || typeof GradientASCII === 'undefined') return;
+        ascii = new GradientASCII(asciiHost, {
+            colors: asciiPalette(),
+            lightMode: !isDarkTheme(),
+            shape: 'horizon',
+            cellSize: 16,
+            glow: 0.55,
+            gradientOpacity: 0.85,
+            fontFamily: "'Space Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+        });
+    }
+
+    function setAsciiVisible(show) {
+        if (!asciiHost) return;
+        if (show) {
+            ensureAscii();
+            if (!ascii) {
+                /* WebGL2 unavailable → stay on the three.js layer */
+                asciiHost.classList.remove('active');
+                canvas.style.visibility = 'visible';
+                return;
+            }
+            asciiHost.classList.add('active');
+            canvas.style.visibility = 'hidden';
+            ascii.wake(true);
+            return;
+        }
+        asciiHost.classList.remove('active');
+        canvas.style.visibility = 'visible';
+    }
+
+    /* theme changed while the ascii scene is active → rebuild with the new palette */
+    function rebuildAsciiForTheme() {
+        if (!ascii) {
+            ensureAscii();
+            return;
+        }
+        ascii.destroy();
+        ascii = null;
+        ensureAscii();
+        if (ascii) ascii.wake(true);
+    }
+
+    VARIANTS.unshift({
+        name: 'gradient ascii',
+        ascii: true,
+        build() {
+            return {
+                group: null,
+                camBase: new THREE.Vector3(),
+                look: new THREE.Vector3(),
+                update() {},
+            };
+        },
+    });
+
     function activate(n) {
-        if (current) disposeGroup(current.group);
         idx = (n + VARIANTS.length) % VARIANTS.length;
-        current = VARIANTS[idx].build();
+        const variant = VARIANTS[idx];
+        const label = document.getElementById('bg-label');
+        if (label) label.textContent = variant.name;
+        if (variant.ascii) {
+            setAsciiVisible(true);
+            if (ascii) {
+                if (current && current.group) disposeGroup(current.group);
+                current = variant.build();
+                return;
+            }
+            /* no WebGL2 → fall back to the three.js wave grid instead */
+            if (current && current.group) disposeGroup(current.group);
+            current = VARIANTS[1].build();
+            camera.position.copy(current.camBase);
+            camera.lookAt(current.look);
+            if (reduced) {
+                current.update(0);
+                renderer.render(scene, camera);
+            }
+            return;
+        }
+        setAsciiVisible(false);
+        if (current && current.group) disposeGroup(current.group);
+        current = variant.build();
         camera.position.copy(current.camBase);
         camera.lookAt(current.look);
-        const label = document.getElementById('bg-label');
-        if (label) label.textContent = VARIANTS[idx].name;
         if (reduced) {
             current.update(0);
             renderer.render(scene, camera);
@@ -364,10 +452,16 @@
         SLATE.set(dark ? 0x1e293b : 0xd7dee8);
         FAINT.set(dark ? 0x475569 : 0x93a2b5);
         activate(idx);
+        rebuildAsciiForTheme();
     });
 
     function loop(now) {
         if (!visible) {
+            requestAnimationFrame(loop);
+            return;
+        }
+        /* gradient ascii scene runs on its own canvas — three.js loop idles */
+        if (VARIANTS[idx].ascii) {
             requestAnimationFrame(loop);
             return;
         }

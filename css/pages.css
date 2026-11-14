@@ -16,7 +16,6 @@
 .hero-role[data-rise]   { animation-delay: 0.1s; }
 .hero-name[data-rise]   { animation-delay: 0.2s; }
 .hero-sub[data-rise]    { animation-delay: 0.3s; }
-.hero-bio[data-rise]    { animation-delay: 0.4s; }
 .hero-cta[data-rise]    { animation-delay: 0.5s; }
 .hero-status[data-rise] { animation-delay: 0.55s; }
 
@@ -26,7 +25,7 @@
     position: absolute;
     left: var(--edge-pad);
     bottom: 86px;
-    z-index: var(--z-content);
+    z-index: calc(var(--z-content) + 1);
     display: inline-flex;
     align-items: center;
     gap: 2px;
@@ -48,6 +47,7 @@
     font: inherit;
     cursor: pointer;
     padding: 10px 10px;   /* 44px tap target with the invisible pads */
+    border-radius: 999px;
 }
 
 @media (hover: hover) {
@@ -205,6 +205,48 @@
     pointer-events: none;
 }
 
+/* Gradient ASCII host (js/gradient-ascii.js) — sibling layer to
+   #hero-canvas, toggled by the bg switcher via .active */
+#hero-ascii {
+    position: absolute;
+    inset: 0;
+    display: none;
+    z-index: var(--z-canvas);
+    pointer-events: none;
+}
+
+#hero-ascii.active {
+    display: block;
+}
+
+#hero-ascii .gradient-ascii-canvas {
+    position: absolute;
+    inset: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.hero::before {
+    /* tight corner vignette: only the top-left / top-right corners are
+       darkened — the dynamic island (top centre) and the hero headlines
+       (centre) stay completely clear */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at 0% 0%, rgba(0, 0, 0, 0.5) 0%, transparent 30%),
+        radial-gradient(circle at 100% 0%, rgba(0, 0, 0, 0.5) 0%, transparent 30%);
+    pointer-events: none;
+    z-index: var(--z-content);
+}
+
+[data-theme="light"] .hero::before {
+    background:
+        radial-gradient(circle at 0% 0%, rgba(15, 23, 42, 0.28) 0%, transparent 30%),
+        radial-gradient(circle at 100% 0%, rgba(15, 23, 42, 0.28) 0%, transparent 30%);
+}
+
 .hero::after {
     /* soft fade at bottom so canvas blends into page */
     content: '';
@@ -213,12 +255,30 @@
     height: 30vh;
     background: linear-gradient(transparent, var(--bg));
     pointer-events: none;
+    z-index: var(--z-content);
+}
+
+/* fade the hero background out at the top so the transparent nav's
+   logo + theme toggle stay legible without a hard scrim band */
+#hero-canvas,
+#hero-ascii {
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, black 100px);
+    mask-image: linear-gradient(to bottom, transparent 0%, black 100px);
+}
+
+.hero-inner {
+    position: relative;
+    z-index: calc(var(--z-content) + 1);
 }
 
 .hero-inner {
     padding: 110px 0 40px;
     /* flex column: auto margins center the copy in the space above the band */
     margin-block: auto;
+    /* center the copy block horizontally on the page */
+    max-width: 40rem;
+    margin-inline: auto;
+    text-align: center;
     /* never let the copy's min-content widen the flex column past the viewport */
     min-width: 0;
 }
@@ -232,8 +292,11 @@
 
 .hero-prompt {
     color: var(--accent);
-    font-size: 1.05rem;
-    margin-bottom: 14px;
+    font-size: 0.88rem;
+    margin-bottom: 12px;
+    text-align: center;
+    display: block;
+    margin-inline: auto;
 }
 
 /* role line: identity marker between prompt and headline */
@@ -241,18 +304,19 @@
     color: var(--muted);
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    font-size: 0.95rem;
-    margin-bottom: 10px;
+    font-size: 0.78rem;
+    margin-bottom: 8px;
 }
 
 .hero-sub {
     font-family: var(--font-display);
     font-weight: 800;
-    font-size: clamp(1.3rem, 3vw, 1.9rem);
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
     letter-spacing: -0.02em;
     color: var(--text);
-    max-width: 24ch;
-    margin-bottom: 16px;
+    max-width: 28ch;
+    margin-inline: auto;
+    margin-bottom: 14px;
 }
 
 .hero-prompt::before {
@@ -276,21 +340,11 @@
     margin: 0 6px;
 }
 
-.hero-bio {
-    max-width: 62ch;
-    color: var(--muted);
-    font-size: 1.02rem;
-    margin-bottom: 28px;
-}
-
-.hero-bio b {
-    color: var(--text);
-}
-
 .hero-cta {
     display: flex;
     gap: 14px;
     flex-wrap: wrap;
+    justify-content: center;
 }
 
 /* ── HOME: STATS ── */

@@ -7,10 +7,15 @@
    Fonts:   Syne (display) + Space Mono (body/terminal)
    ============================================================ */
 
+.theme-switching,
+.theme-switching * {
+    transition: none !important;
+}
+
 :root {
     /* Colors — dark (default) */
-    --bg: #080c14;
-    --bg-elev: #0f172a;
+    --bg: #000000;
+    --bg-elev: #0a0a0a;
     --surface: rgba(17, 24, 39, 0.72);
     --border: rgba(148, 163, 184, 0.16);
     --border-strong: rgba(148, 163, 184, 0.30);
@@ -29,6 +34,9 @@
     --nav-bg-solid: rgba(8, 12, 20, 0.96);
     --nav-hover-bg: rgba(148, 163, 184, 0.08);
     --ghost-bg: rgba(148, 163, 184, 0.04);
+    --glass-tint: rgba(255, 255, 255, 0.10);
+    --glass-edge: rgba(255, 255, 255, 0.22);
+    --glass-shine: rgba(255, 255, 255, 0.55);
     --strip-hover-bg: rgba(148, 163, 184, 0.04);
     --subtle-bg: rgba(148, 163, 184, 0.05);
     --note-bg: rgba(15, 23, 42, 0.4);
@@ -68,7 +76,7 @@
     --font-mono: 'Space Mono', monospace;
 
     /* Scale (fluid) */
-    --fs-hero: clamp(2.6rem, 7vw, 4.6rem);
+    --fs-hero: clamp(1.8rem, 4.2vw, 2.8rem);
     --fs-h2: clamp(1.55rem, 3.5vw, 2.3rem);
     --fs-body: clamp(1.02rem, 1.5vw, 1.15rem);
     --fs-small: 0.92rem;
@@ -116,6 +124,9 @@
     --nav-bg-solid: rgba(255, 255, 255, 0.97);
     --nav-hover-bg: rgba(15, 23, 42, 0.05);
     --ghost-bg: rgba(15, 23, 42, 0.03);
+    --glass-tint: rgba(15, 23, 42, 0.06);
+    --glass-edge: rgba(15, 23, 42, 0.18);
+    --glass-shine: rgba(255, 255, 255, 0.90);
     --strip-hover-bg: rgba(15, 23, 42, 0.03);
     --subtle-bg: rgba(15, 23, 42, 0.04);
     --note-bg: rgba(241, 245, 249, 0.70);
@@ -187,6 +198,9 @@ body {
     min-height: 100vh;
     min-height: 100dvh;
     overflow-x: hidden;
+    /* clip (not hidden) — hidden makes body a scroll container, which
+       breaks position: sticky inside the home scroll-stack */
+    overflow-x: clip;
     -webkit-font-smoothing: antialiased;
 }
 
@@ -409,8 +423,7 @@ main > section {
    down); lifted above the canvas + bottom fade */
 .headline-band {
     position: relative;
-    z-index: var(--z-content);
-    margin-top: auto;
+    z-index: calc(var(--z-content) + 1);
     border-block: 1px solid var(--border);
     padding: 10px 0;
     overflow: hidden;
@@ -598,6 +611,14 @@ main > section {
     gap: 1rem;
     margin-bottom: calc(var(--gap) * 1.1);
     flex-wrap: wrap;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 .section-title {
@@ -650,6 +671,10 @@ main > section {
         opacity: 1;
         transform: none;
         filter: blur(0);
+    }
+    .nav-logo,
+    .nav-theme svg {
+        transition: none;
     }
 }
 

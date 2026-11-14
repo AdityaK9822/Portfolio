@@ -2,32 +2,86 @@
    components.css — navbar, footer, buttons, cards, badges, toast
    ============================================================ */
 
-/* ── NAVBAR (floating) ── */
+/* ── NAVBAR (transparent top bar — children are their own islands) ── */
 .nav {
     position: fixed;
-    top: 14px;
-    /* floats centered over the same shell width as .container */
-    left: 50%;
-    transform: translateX(-50%);
-    width: min(var(--shell-w), calc(100% - 16px));
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     z-index: var(--z-nav);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 10px 18px;
-    background: var(--nav-bg);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
+    padding: 14px var(--edge-pad, 24px);
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    transition: transform 320ms cubic-bezier(.4, 0, .2, 1), opacity 320ms cubic-bezier(.4, 0, .2, 1);
+    will-change: transform;
 }
+
+.nav.nav-hidden {
+    transform: translateY(-110%);
+}
+
+.nav.open.nav-hidden {
+    transform: none;
+}
+
+.nav.nav-hidden {
+    transform: translateY(calc(-100% - 24px));
+}
+
+/* ── GOOEY NAV (inside the notch) ── */
+.nav-gooey {
+    display: none;
+}
+
+@media (min-width: 761px) {
+    .nav-gooey {
+        display: block;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+
 
 .nav-logo {
     font-family: var(--font-mono);
     font-size: 1rem;
     color: var(--text);
     white-space: nowrap;
+    padding: 8px 14px;
+    background: var(--glass-tint);
+    border: 1px solid var(--glass-edge);
+    border-radius: 999px;
+    backdrop-filter: blur(6px) saturate(1.6);
+    -webkit-backdrop-filter: blur(6px) saturate(1.6);
+    box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 var(--glass-shine),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+    transition: color 150ms ease-out, transform 150ms ease-out, border-color var(--dur), background var(--dur);
+    -webkit-tap-highlight-color: transparent;
+}
+
+@media (hover: hover) {
+    .nav-logo:hover {
+        color: var(--accent);
+        border-color: var(--accent-border-mid, var(--glass-edge));
+        background: var(--nav-hover-bg);
+        text-decoration: none;
+    }
+}
+
+.nav-logo:not(:disabled):active {
+    transform: scale(0.96);
 }
 
 .nav-logo .path {
@@ -51,17 +105,22 @@
 }
 
 .nav-links {
-    display: flex;
+    /* desktop: replaced by the gooey nav; mobile dropdown handled below */
+    display: none;
     align-items: center;
     gap: 0.35rem;
 }
 
+/* ── auto-hide: keep mobile menu usable while hidden ── */
+.nav.open.nav-hidden {
+    transform: none;
+}
 .nav-links a {
     font-family: var(--font-mono);
     font-size: var(--fs-small);
     color: var(--muted);
     padding: 10px 13px;
-    border-radius: var(--radius-sm);
+    border-radius: 999px;
     transition: color var(--dur), background var(--dur);
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
@@ -93,15 +152,20 @@
 }
 .nav-burger {
     display: none;
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
+    background: var(--glass-tint);
+    border: 1px solid var(--glass-edge);
+    border-radius: 999px;
     color: var(--text);
     font-family: var(--font-mono);
     font-size: 1.05rem;
     padding: 7px 12px;
     position: relative;
     cursor: pointer;
+    backdrop-filter: blur(6px) saturate(1.6);
+    -webkit-backdrop-filter: blur(6px) saturate(1.6);
+    box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 var(--glass-shine),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.06);
 }
 
 /* invisible hit pad — real touch area ≥44px without resizing the visible chip */
@@ -117,16 +181,22 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 34px;
-    height: 34px;
+    width: 42px;
+    height: 42px;
     padding: 0;
-    background: none;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
+    background: var(--glass-tint);
+    border: 1px solid var(--glass-edge);
+    border-radius: 999px;
     color: var(--muted);
     cursor: pointer;
     position: relative;
-    transition: color var(--dur), border-color var(--dur), background var(--dur);
+    backdrop-filter: blur(6px) saturate(1.6);
+    -webkit-backdrop-filter: blur(6px) saturate(1.6);
+    box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 var(--glass-shine),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.06);
+    transition: color var(--dur), border-color var(--dur), background var(--dur),
+        box-shadow var(--dur);
     -webkit-tap-highlight-color: transparent;
 }
 
@@ -138,23 +208,35 @@
 }
 
 .nav-theme svg {
-    display: block;
-    width: 17px;
-    height: 17px;
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 20px;
+    height: 20px;
+    transition: opacity 300ms cubic-bezier(0.2, 0, 0, 1),
+                transform 300ms cubic-bezier(0.2, 0, 0, 1),
+                filter 300ms cubic-bezier(0.2, 0, 0, 1);
+    filter: blur(0);
 }
 
-/* dark is the default: shows the sun (switch to light);
-   [data-theme="light"] shows the moon (switch to dark) */
+/* cross-fade contextual icons (better-ui): scale 0.25→1, opacity 0→1,
+   blur 4px→0, 300ms cubic-bezier(0.2, 0, 0, 1), bounce 0 */
 .nav-theme .icon-moon {
-    display: none;
+    opacity: 0;
+    transform: scale(0.25);
+    filter: blur(4px);
 }
 
 [data-theme="light"] .nav-theme .icon-sun {
-    display: none;
+    opacity: 0;
+    transform: scale(0.25);
+    filter: blur(4px);
 }
 
 [data-theme="light"] .nav-theme .icon-moon {
-    display: block;
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
 }
 
 @media (hover: hover) {
@@ -178,14 +260,17 @@
         display: none;
         position: absolute;
         top: calc(100% + 8px);
-        left: 0;
         right: 0;
+        left: auto;
+        min-width: 220px;
         flex-direction: column;
         align-items: stretch;
         padding: 8px;
         background: var(--nav-bg-solid);
         border: 1px solid var(--border);
         border-radius: var(--radius);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
     }
 
     .nav.open .nav-links {
@@ -208,7 +293,7 @@
     font-weight: 700;
     letter-spacing: 0.03em;
     padding: 12px 22px;
-    border-radius: var(--radius-sm);
+    border-radius: 999px;
     border: 1px solid transparent;
     cursor: pointer;
     transition: transform var(--dur) var(--ease), background var(--dur),
@@ -221,9 +306,14 @@
 }
 
 .btn-solid {
-    background: var(--accent-bright);
+    background: color-mix(in srgb, var(--accent-bright) 88%, var(--glass-tint));
     color: var(--on-accent);
-    box-shadow: 0 0 0 var(--accent-shadow-none);
+    border: 1px solid color-mix(in srgb, var(--accent-bright) 60%, var(--glass-edge));
+    backdrop-filter: blur(6px) saturate(1.6);
+    -webkit-backdrop-filter: blur(6px) saturate(1.6);
+    box-shadow: 0 8px 22px -8px var(--accent-shadow),
+        inset 0 1px 0 var(--glass-shine),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.08);
 }
 
 /* press: scale 0.96 / 150ms ease-out (buttons here are never disabled) */
@@ -241,14 +331,20 @@
 }
 
 .btn-ghost {
-    border-color: var(--border-strong);
+    border-color: var(--glass-edge);
     color: var(--text);
-    background: var(--ghost-bg);
+    background: var(--glass-tint);
+    backdrop-filter: blur(6px) saturate(1.6);
+    -webkit-backdrop-filter: blur(6px) saturate(1.6);
+    box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.3),
+        inset 0 1px 0 var(--glass-shine),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.06);
 }
 
 .btn-ghost:hover {
     border-color: var(--accent);
     color: var(--accent);
+    background: var(--accent-dim);
 }
 
 /* ── CARDS ── */
@@ -529,7 +625,7 @@
     font-family: var(--font-mono);
     font-size: var(--fs-small);
     padding: 10px 18px;
-    border-radius: var(--radius-sm);
+    border-radius: 999px;
     z-index: var(--z-toast);
     opacity: 0;
     pointer-events: none;
@@ -557,4 +653,451 @@
 
 .note-box code {
     color: var(--accent2);
+}
+
+/* ── CIPHER REVEAL (React Bits "Decrypted Text" port, vanilla) ──
+   Stable layout: each cell keeps its real glyph's width via an
+   invisible anchor; the scrambled glyph is overlaid and scaleX-fit
+   to that width, so the line never re-centers while decoding.
+   Spaces are always spaces. */
+.cipher-cell {
+    position: relative;
+    display: inline-block;
+    vertical-align: baseline;
+}
+
+.cipher-anchor {
+    visibility: hidden;
+}
+
+.cipher-glyph {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: left center;
+    color: var(--muted);
+    opacity: 0.7;
+    transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.cipher-cell.is-revealed .cipher-glyph {
+    display: none;
+}
+
+.cipher-cell.is-revealed .cipher-anchor {
+    visibility: visible;
+    color: inherit;
+}
+
+/* ── SCROLL STACK (React Bits Pro port, vanilla) ──
+   Port of ScrollStack.css: translate-based pinning (no sticky) —
+   js/scroll-stack.js writes transform/filter directly. Geometry
+   mirrors the official card: max-width 56rem, 24px radius, deep
+   shadow; surfaces stay on the site's tokens (opaque --bg-elev so
+   dimmed layers behind don't show through). */
+.scroll-stack {
+    position: relative;
+    width: 100%;
+    padding-bottom: 6rem;
+}
+
+/* selected.work section: anchor the header at the top while the
+   card stack animates in place below it */
+.selected-work-section {
+    position: relative;
+}
+
+.selected-work-head {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--bg);
+    padding-top: 1rem;
+    padding-bottom: 0.75rem;
+    backdrop-filter: blur(8px);
+}
+
+.scroll-stack-card {
+    position: sticky;
+    top: calc(90px + (var(--i, 0) * 16px));
+    transform-origin: top center;
+    will-change: transform, filter;
+    backface-visibility: hidden;
+    box-shadow: 0 30px 60px -34px rgba(20, 24, 50, 0.7);
+    width: 100%;
+    max-width: 880px;
+    min-height: 68vh;
+    margin: 0 auto 60px;
+    /* opaque surface */
+    background: var(--bg-elev);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    box-sizing: border-box;
+    animation: scd-stack-shrink linear both;
+    animation-timeline: view();
+    animation-range: exit;
+}
+
+@keyframes scd-stack-shrink {
+    to {
+        transform: scale(0.9);
+        filter: brightness(0.72);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .scroll-stack-card {
+        animation: none;
+        position: relative;
+    }
+}
+
+/* the JS drives transform per frame → only the official 150ms filter
+   transition is kept; hover lift would fight the inline transform */
+.scroll-stack-card {
+    transition: filter 0.15s ease-out;
+}
+
+.scroll-stack .scroll-stack-card:hover {
+    transform: none;
+}
+
+.scroll-stack-end {
+    width: 100%;
+    height: 1px;
+}
+
+/* ── TIMEFRAME SCRUBBER (5 reference frames) ── */
+.timeframe-scrubber {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    max-width: 880px;
+    margin: 1.25rem auto 0;
+}
+
+.timeframe-tick {
+    flex: 1;
+    padding: 0.5rem 0;
+    border: 1px solid var(--border);
+    background: var(--bg-elev);
+    color: var(--muted);
+    border-radius: 999px;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.timeframe-tick:hover {
+    border-color: var(--border-strong);
+    color: var(--text);
+}
+
+.timeframe-tick.is-active {
+    background: var(--accent);
+    color: #0a0f1a;
+    border-color: var(--accent);
+    font-weight: 700;
+}
+
+/* the old bento modifiers no longer apply to the home grid */
+.scroll-stack .bento-xl,
+.scroll-stack .bento-tall,
+.scroll-stack .bento-w2,
+.scroll-stack .bento-quiet,
+.scroll-stack .bento-fork {
+    grid-column: auto;
+    grid-row: auto;
+}
+
+@media (max-width: 720px) {
+    .scroll-stack {
+        padding-bottom: 4rem;
+    }
+
+    .scroll-stack-card {
+        min-height: 300px;
+        border-radius: 18px;
+        padding: 1.25rem;
+    }
+}
+
+/* ── GOOEY NAV (React Bits port) ── */
+.gooey-nav {
+  --gn-pad: 6px;
+  --gn-gap: 4px;
+  --gn-font: var(--fs-small);
+  --gn-x: 14px;
+  --gn-y: 9px;
+  /* site palette mapping */
+  --gn-frame: var(--nav-bg);
+  --gn-frame-edge: var(--border);
+  --gn-frame-highlight: var(--nav-hover-bg);
+  --gn-frame-shadow: 0 22px 44px -20px rgba(0, 0, 0, 0.55), 0 6px 16px -8px rgba(0, 0, 0, 0.35);
+  --gn-ink: var(--text);
+  --gn-muted: var(--muted);
+  --gn-pill: var(--accent-bright);
+  --gn-active-ink: #0b1220;
+  --gn-hover: var(--nav-hover-bg);
+  --gn-shadow: 0.35;
+  position: relative;
+  display: inline-flex;
+  max-width: 100%;
+  font-family: var(--font-mono);
+  font-size: var(--gn-font);
+  line-height: 1.2;
+}
+
+[data-theme="light"] .gooey-nav {
+  --gn-frame: var(--nav-bg);
+  --gn-frame-edge: var(--border);
+  --gn-frame-highlight: rgba(255, 255, 255, 0.95);
+  --gn-frame-shadow: 0 22px 44px -22px rgba(15, 23, 42, 0.25), 0 6px 16px -10px rgba(15, 23, 42, 0.12);
+  --gn-ink: var(--text);
+  --gn-muted: var(--muted);
+  --gn-pill: var(--accent-bright);
+  --gn-active-ink: #0b1220;
+  --gn-hover: var(--nav-hover-bg);
+  --gn-shadow: 0.2;
+}
+
+.gooey-nav--sm {
+  --gn-pad: 5px;
+  --gn-gap: 2px;
+  --gn-font: 0.85rem;
+  --gn-x: 11px;
+  --gn-y: 7px;
+}
+
+.gooey-nav--lg {
+  --gn-pad: 7px;
+  --gn-gap: 6px;
+  --gn-font: 1rem;
+  --gn-x: 18px;
+  --gn-y: 11px;
+}
+
+.gooey-nav--framed {
+  padding: var(--gn-pad);
+  border-radius: 999px;
+  background: var(--glass-tint);
+  border: 1px solid var(--glass-edge);
+  box-shadow:
+    0 14px 34px -12px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 var(--glass-shine),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.08);
+  -webkit-backdrop-filter: blur(6px) saturate(1.6);
+  backdrop-filter: blur(6px) saturate(1.6);
+}
+
+.gooey-nav__stage {
+  position: relative;
+  max-width: 100%;
+}
+
+.gooey-nav__canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.gooey-nav__fallback {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: none;
+  border-radius: 999px;
+  background: var(--gn-pill);
+  pointer-events: none;
+}
+
+.gooey-nav__list {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  gap: var(--gn-gap);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  white-space: nowrap;
+}
+
+.gooey-nav__list--active {
+  position: absolute;
+  inset: 0;
+  color: var(--gn-active-ink);
+  visibility: hidden;
+  clip-path: inset(100%);
+  pointer-events: none;
+}
+
+.gooey-nav__item {
+  display: flex;
+}
+
+.gooey-nav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: var(--gn-y) var(--gn-x);
+  border: none;
+  border-radius: 999px;
+  background: none;
+  color: var(--gn-muted);
+  font: inherit;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gooey-nav__list--active .gooey-nav__link {
+  color: inherit;
+}
+
+.gooey-nav__item[data-active] .gooey-nav__link {
+  color: var(--gn-ink);
+}
+
+.gooey-nav__link:hover {
+  text-decoration: none;
+}
+
+.gooey-nav__icon {
+  display: inline-flex;
+  flex: none;
+}
+
+.gooey-nav__icon svg {
+  width: 1.15em;
+  height: 1.15em;
+}
+
+.gooey-nav__rim {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 0 0 1px var(--gn-frame-edge),
+    inset 0 1px 0 var(--gn-frame-highlight);
+  pointer-events: none;
+}
+
+@media (hover: hover) {
+  .gooey-nav__link:hover {
+    color: var(--gn-ink);
+  }
+}
+
+
+
+
+/* ── SCROLL STACK CARD REDESIGN ── */
+.scroll-stack-card {
+    position: sticky;
+    top: calc(90px + (var(--i, 0) * 16px));
+    transform-origin: top center;
+    will-change: transform, filter;
+    backface-visibility: hidden;
+    box-shadow: 0 30px 60px -34px rgba(20, 24, 50, 0.7);
+    width: 100%;
+    max-width: 880px;
+    min-height: 68vh;
+    margin: 0 auto 60px;
+    padding: 0;
+    overflow: hidden;
+    border-radius: 22px;
+    border: 1px solid var(--border);
+    background-image: var(--ssc-bg);
+    background-size: cover;
+    background-position: center;
+    color: #fff;
+    animation: scd-stack-shrink linear both;
+    animation-timeline: view();
+    animation-range: exit;
+}
+
+.scroll-stack-card .ssc-overlay {
+    position: absolute;
+    inset: 0;
+    padding: 2.2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    background: linear-gradient(to top,
+        rgba(0, 0, 0, 0.82) 0%,
+        rgba(0, 0, 0, 0.45) 45%,
+        rgba(0, 0, 0, 0.12) 75%,
+        transparent 100%);
+}
+
+.ssc-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.ssc-name {
+    font-family: var(--font-mono);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.ssc-badge {
+    font-size: 0.7rem;
+    padding: 0.25rem 0.6rem;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.3);
+    white-space: nowrap;
+    backdrop-filter: blur(4px);
+}
+
+.ssc-desc {
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: rgba(255,255,255,0.92);
+    max-width: 46ch;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.ssc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+}
+
+.ssc-tags .tag {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.25);
+}
+
+.ssc-link {
+    margin-top: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: #fff;
+    text-decoration: none;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+}
+
+.ssc-link:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 720px) {
+    .scroll-stack-card {
+        min-height: 320px;
+    }
 }

@@ -201,6 +201,11 @@ function toast(msg, tone = 'ok') {
 
     function applyTheme(mode) {
         const dark = mode !== LIGHT;
+        /* suppress all transitions during the swap so color transitions
+           don't smear (better-ui: theme-switch suppression recipe) */
+        root.classList.add('theme-switching');
+        /* force a style flush so the "before" state is committed */
+        void root.offsetHeight;
         /* dark = attribute absent (the :root default); light = [data-theme="light"] */
         if (dark) delete root.dataset.theme;
         else root.dataset.theme = LIGHT;
@@ -210,6 +215,10 @@ function toast(msg, tone = 'ok') {
             btn.setAttribute('aria-label', dark ? 'Switch to light theme' : 'Switch to dark theme');
         }
         document.dispatchEvent(new CustomEvent('themechange', { detail: { theme: mode } }));
+        /* restore transitions after the next frame */
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => root.classList.remove('theme-switching'));
+        });
     }
 
     /* absence of the attribute = dark (the default) */
@@ -220,4 +229,32 @@ function toast(msg, tone = 'ok') {
             applyTheme(root.dataset.theme === LIGHT ? DARK : LIGHT);
         });
     }
+})();
+
+/* ── auto-hide notch on scroll ── */
+(function autoHideNav() {
+    const nav = document.querySelector('.nav');
+    if (!nav) return;
+    let lastY = window.scrollY;
+    let ticking = false;
+    function update() {
+        const y = window.scrollY;
+        const menuOpen = nav.classList.contains('open');
+        if (menuOpen || y < 10) {
+            nav.classList.remove('nav-hidden');
+        } else if (y > lastY + 4 && y > 90) {
+            nav.classList.add('nav-hidden');
+        } else if (y < lastY - 4) {
+            nav.classList.remove('nav-hidden');
+        }
+        lastY = y;
+        ticking = false;
+    }
+    window.addEventListener('scroll', () => {
+        if (!ticking) {
+            requestAnimationFrame(update);
+            ticking = true;
+        }
+    }, { passive: true });
+    nav.addEventListener('focusin', () => nav.classList.remove('nav-hidden'));
 })();

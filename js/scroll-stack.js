@@ -1,0 +1,224 @@
+/* ============================================================
+   scroll-stack.js — React Bits Pro "Scroll Stack", vanilla port
+   (same approach as js/gradient-ascii.js). Faithful port of the
+   official updateCardTransforms algorithm in window-scroll mode:
+
+   • pinning via translate3d — cards are position:relative, the
+     top card sits at stackPosition (15% viewport) + peek per layer
+   • scale tweens from 1 → targetScale (baseScale, −itemScale/layer)
+     across the card's trigger window
+   • blur + brightness depth driven by the "cards on top" count
+   • transform writes skipped when nothing changed (official
+     lastTransforms change-detection)
+
+   Deliberately omitted from the official version: Lenis smooth
+   scrolling (the site scrolls natively) and rotation/tilt (both
+   configured to 0). End marker .scroll-stack-end + per-card
+   margin-bottom are handled here like the React setup effect.
+
+   Markup (render.js):
+     .scroll-stack > article.scroll-stack-card … + .scroll-stack-end
+   Reduced-motion → no-op: cards stay in natural flow.
+   ============================================================ */
+
+(function scrollStack() {
+    const container = document.querySelector('.scroll-stack');
+    if (!container) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const cards = Array.from(container.querySelectorAll('.scroll-stack-card'));
+    if (!cards.length) return;
+    const endMarker = container.querySelector('.scroll-stack-end');
+
+    /* config — mirrors the React component's props */
+    const ITEM_DISTANCE = 60;         /* gap between cards in flow (px) — tighter */
+    const ITEM_SCALE = 0.07;          /* scale lost per covering layer */
+    const ITEM_STACK_DISTANCE = 26;   /* peek offset per pinned layer */
+    const STACK_POSITION = 0.15;      /* stackPosition: '15%' of viewport */
+    const SCALE_END_POSITION = 0.1;   /* scaleEndPosition: '10%' of viewport */
+    const BASE_SCALE = 0.7;           /* floor for the deepest card */
+    const DIM_AMOUNT = 0.28;          /* brightness lost per covering layer */
+    const BLUR_AMOUNT = 4;            /* px of blur per covering layer */
+    const HOLD_DISTANCE = 200;        /* runway held after the last card pins */
+
+    /* reference frames extracted from the 5 design screenshots:
+       card-top positions (as a fraction of viewport height) and the
+       relative blur (px) applied to the pinned card at that step */
+    const TIMEFRAMES = [
+        { top: 0.085, blur: 0 },
+        { top: 0.153, peer: 0.349, blur: 2 },
+        { top: 0.139, peer: 0.505, blur: 2 },
+        { top: 0.308, blur: 1 },
+        { top: 0.174, peer: 0.821, blur: 2 },
+    ];
+
+    /* document-space offsets, cached per layout. offsetTop ignores CSS
+       transforms, so pinned cards never poison their own measurements
+       (getBoundingClientRect would include the translate3d). */
+    let cardTops = [];
+    let endTop = 0;
+
+    function measure() {
+        /* the container itself is never transformed → its rect is stable */
+        const containerTop = container.getBoundingClientRect().top + window.scrollY;
+        cardTops = cards.map((c) => containerTop + c.offsetTop);
+        endTop = endMarker ? containerTop + endMarker.offsetTop : 0;
+    }
+
+    const lastTransforms = new Map();
+    let stackCompleted = false;
+
+    const progress = (scrollTop, start, end) =>
+        scrollTop < start ? 0 : scrollTop > end ? 1 : (scrollTop - start) / (end - start);
+
+    function update() {
+        if (!cardTops.length) return;
+        const scrollTop = window.scrollY;
+        const containerHeight = window.innerHeight;
+        const stackPositionPx = STACK_POSITION * containerHeight;
+        const scaleEndPositionPx = SCALE_END_POSITION * containerHeight;
+        const pinEnd = endTop - containerHeight / 2 + HOLD_DISTANCE;
+
+        cards.forEach((card, i) => {
+            const cardTop = cardTops[i];
+            /* active card pins at stackPosition; older cards peek above it */
+            const triggerStart = cardTop - stackPositionPx;
+            const triggerEnd = cardTop - scaleEndPositionPx;
+
+            const scaleProgress = progress(scrollTop, triggerStart, triggerEnd);
+            const targetScale = Math.max(BASE_SCALE, 1 - (cards.length - 1 - i) * ITEM_SCALE);
+            const scale = 1 - scaleProgress * (1 - targetScale);
+
+            /* count how many cards have stacked on top of this one */
+            let cardsOnTop = 0;
+            for (let j = i + 1; j < cards.length; j++) {
+                const jTriggerStart = cardTops[j] - stackPositionPx;
+                if (scrollTop >= jTriggerStart) cardsOnTop++;
+            }
+
+            const blur = cardsOnTop * BLUR_AMOUNT;
+            const brightness = Math.max(0.2, 1 - cardsOnTop * DIM_AMOUNT);
+
+            let translateY = 0;
+            if (scrollTop >= triggerStart && scrollTop <= pinEnd) {
+                translateY = scrollTop - cardTop + stackPositionPx - cardsOnTop * ITEM_STACK_DISTANCE;
+            } else if (scrollTop > pinEnd) {
+                translateY = pinEnd - cardTop + stackPositionPx - cardsOnTop * ITEM_STACK_DISTANCE;
+            }
+
+            const next = {
+                translateY: Math.round(translateY * 100) / 100,
+                scale: Math.round(scale * 1000) / 1000,
+                blur: Math.round(blur * 10) / 10,
+                brightness: Math.round(brightness * 100) / 100,
+            };
+
+            const prev = lastTransforms.get(i);
+            const changed =
+                !prev ||
+                Math.abs(prev.translateY - next.translateY) > 0.1 ||
+                Math.abs(prev.scale - next.scale) > 0.001 ||
+                Math.abs(prev.blur - next.blur) > 0.1 ||
+                Math.abs(prev.brightness - next.brightness) > 0.01;
+            if (!changed) return;
+
+            card.style.transform =
+                `translate3d(0, ${next.translateY}px, 0) scale(${next.scale})`;
+            const filters = [];
+            if (next.blur > 0) filters.push(`blur(${next.blur}px)`);
+            if (next.brightness < 1) filters.push(`brightness(${next.brightness})`);
+            card.style.filter = filters.length ? filters.join(' ') : 'none';
+            lastTransforms.set(i, next);
+
+            /* last card pinned within the hold window → stack complete
+               (official onStackComplete, exposed as a DOM event) */
+            if (i === cards.length - 1) {
+                const inView = scrollTop >= triggerStart && scrollTop <= pinEnd;
+                if (inView && !stackCompleted) {
+                    stackCompleted = true;
+                    container.dispatchEvent(
+                        new CustomEvent('scrollstack:complete', { bubbles: true })
+                    );
+                } else if (!inView && stackCompleted) {
+                    stackCompleted = false;
+                }
+            }
+        });
+
+        /* keep timeframe ticks in sync */
+        if (typeof updateScrubber === 'function') updateScrubber(scrollTop);
+    }
+
+    function setup() {
+        /* official setup effect: spacing in flow; the last card needs no gap */
+        cards.forEach((card, i) => {
+            if (i < cards.length - 1) card.style.marginBottom = `${ITEM_DISTANCE}px`;
+        });
+        measure();
+        update();
+    }
+
+    /* ── timeframes scrubber ─────────────────────────────────────
+       Mimics the 5 reference frames (positions + blurs) as discrete
+       steps: each tick scrolls to the point where the corresponding
+       card begins to stack, and highlights the active frame. */
+    const FRAME_COUNT = Math.min(5, cards.length);
+    const scrubber = document.createElement('div');
+    scrubber.className = 'timeframe-scrubber';
+    scrubber.setAttribute('aria-label', 'Scroll timeframes');
+    const ticks = [];
+    for (let i = 0; i < FRAME_COUNT; i++) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'timeframe-tick';
+        btn.textContent = String(i + 1).padStart(2, '0');
+        btn.addEventListener('click', () => {
+            const spx = STACK_POSITION * window.innerHeight;
+            window.scrollTo({ top: Math.max(0, cardTops[i] - spx), behavior: 'smooth' });
+        });
+        scrubber.appendChild(btn);
+        ticks.push(btn);
+    }
+    container.insertAdjacentElement('afterend', scrubber);
+
+    function updateScrubber(scrollTop) {
+        const stackPositionPx = STACK_POSITION * window.innerHeight;
+        let active = 0;
+        for (let i = 0; i < FRAME_COUNT; i++) {
+            const triggerStart = cardTops[i] - stackPositionPx;
+            if (scrollTop >= triggerStart) active = i;
+        }
+        ticks.forEach((t, i) => t.classList.toggle('is-active', i === active));
+    }
+
+    let ticking = false;
+    function requestUpdate() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+            ticking = false;
+            update();
+        });
+    }
+
+    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('resize', () => {
+        measure();
+        requestUpdate();
+    });
+
+    /* layout shifts after first paint (webfonts, live GitHub stats,
+       tag wrapping) would invalidate cached offsets → remeasure */
+    window.addEventListener('load', () => {
+        measure();
+        requestUpdate();
+    });
+    if ('ResizeObserver' in window) {
+        new ResizeObserver(() => {
+            measure();
+            requestUpdate();
+        }).observe(container);
+    }
+
+    setup();
+})();

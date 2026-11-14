@@ -51,34 +51,41 @@ function repoCard(r, cats, extraClass) {
 /* ── mounts ── */
 const visible = REPOS.filter((r) => !r.hidden);
 
+const SCROLL_STACK_IMAGES = {
+    april: 'https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=80',
+    synopsi: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?auto=format&fit=crop&w=900&q=80',
+    polyagent: 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&w=900&q=80',
+    axiom: 'https://images.unsplash.com/photo-1555664424-778a1e5e1b48?auto=format&fit=crop&w=900&q=80',
+    'claude-skills': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=900&q=80',
+    codegraph: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=900&q=80',
+};
+
 function renderFeatured() {
     const grid = document.getElementById('featured-grid');
     if (!grid) return;
-    /* home bento — box size ∝ priority, bands ALTERNATE down the grid:
-       band 1 (rows 1-2): APRIL 2×2 big-LEFT · AXIOM 1×2 narrow-right
-       band 2 (row 3):    Polyagent small-LEFT · Synopsi 2-wide RIGHT
-       band 3 (row 4):    Codegraph 2-wide LEFT · Claude SKILLS small-right
-       Full copy only on the big tiles; the rest use short blurbs. */
-    const bento = {
-        april: 'bento-xl',
-        axiom: 'bento-tall',
-        synopsi: 'bento-w2',
-        'claude-skills': 'bento-quiet',
-        codegraph: 'bento-fork',
-    };
-    /* DOM order = pack order; the 2×2 leads, and the wide tiles lead their
-       bands so the pinned columns never collide (no holes).
-       work.html keeps its own order (APRIL first) via renderWorkGrid */
     const order = ['april', 'axiom', 'synopsi', 'polyagent', 'codegraph', 'claude-skills'];
-    grid.innerHTML = order
-        .map((id) => visible.find((r) => r.id === id))
-        .filter((r) => r && r.tier === 'ai' && r.featured)
-        .map((r) => {
-            const cls = bento[r.id] || '';
-            const big = cls === 'bento-xl' || cls === 'bento-tall' || cls === 'bento-w2' || cls === 'bento-full';
-            return repoCard({ ...r, desc: big ? r.desc : r.short || r.desc }, undefined, cls);
+    const cards = order
+        .map((id, idx) => {
+            const r = visible.find((x) => x.id === id);
+            if (!r || r.tier !== 'ai' || !r.featured) return '';
+            const img = SCROLL_STACK_IMAGES[r.id] || '';
+            const oneLiner = r.short || (r.desc.split('.')[0] + '.');
+            const badge = (r.badge && r.badge[0]) ? r.badge[0] : '';
+            return `<article class="scroll-stack-card" style="--i:${idx}; --ssc-bg: url('${img}')">
+  <div class="ssc-overlay">
+    <div class="ssc-top">
+      <span class="ssc-name">${r.org ? r.org + ' / ' : ''}${r.name}</span>
+      ${badge ? `<span class="ssc-badge">${badge}</span>` : ''}
+    </div>
+    <p class="ssc-desc">${oneLiner}</p>
+    <div class="ssc-tags">${r.tags.map((t) => `<span class="tag">${t}</span>`).join('')}</div>
+    <a class="ssc-link" href="${r.url}" target="_blank" rel="noopener">view on github ↗</a>
+  </div>
+</article>`;
         })
-        .join('');
+        .filter(Boolean);
+    grid.innerHTML =
+        cards.join('') + '<div class="scroll-stack-end" aria-hidden="true"></div>';
 }
 
 function renderStellarStrip() {
