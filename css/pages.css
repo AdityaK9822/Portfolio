@@ -247,6 +247,9 @@
     display: block;
     width: 100%;
     height: 100%;
+    /* a little blur — softened glyph edges; GPU-composited so it's free.
+       Heads stay readable via their shadow glow (terminal-rain.js). */
+    filter: blur(1.2px);
 }
 
 .hero::before {
