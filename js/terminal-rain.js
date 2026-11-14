@@ -22,9 +22,9 @@
     const GLYPHS = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝ0123456789ABCDEF<>{}[]=/\\*+-#$%&';
 
     const LAYER_DEFS = [
-        { fontSize: 11, speedMul: 0.45, opacity: 0.28, spacing: 13, trail: 9 },
-        { fontSize: 15, speedMul: 0.85, opacity: 0.58, spacing: 20, trail: 13 },
-        { fontSize: 21, speedMul: 1.35, opacity: 1.0,  spacing: 30, trail: 17 },
+        { fontSize: 11, speedMul: 0.45, opacity: 0.20, spacing: 13, trail: 9 },
+        { fontSize: 15, speedMul: 0.85, opacity: 0.40, spacing: 20, trail: 13 },
+        { fontSize: 21, speedMul: 1.35, opacity: 0.70, spacing: 30, trail: 17 },
     ];
 
     function randomGlyph() { return GLYPHS[(Math.random() * GLYPHS.length) | 0]; }
