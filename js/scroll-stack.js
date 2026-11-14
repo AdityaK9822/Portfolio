@@ -12,6 +12,10 @@
    • pile capped at PILE_SIZE (3) visible layers: peek offsets cap
      at the pile depth and buried cards fade + blur out as scroll
      continues, so the stack shows at most 3 cards
+   • entry (mirror of the exit): over the last stretch of its travel
+     each card rises a little faster, grows from ENTRY_SCALE to full
+     size and sharpens from ENTRY_BLUR to clear, lerping to neutral
+     exactly at the pin
    • transform writes skipped when nothing changed (official
      lastTransforms change-detection)
 
@@ -47,6 +51,15 @@
     const PILE_SIZE = 3;              /* cards kept visible in the pinned pile */
     const FADE_BLUR = 10;             /* extra blur px while a buried card fades out */
     const FADE_DISTANCE_FRAC = 0.35;  /* buried-card fade window, fraction of viewport */
+    /* entry (mirror of the post-complete exit): while a card makes its
+       final approach to the pin it rises the last stretch, grows to
+       full size and sharpens (blur → clear) */
+    const ENTRY_WINDOW_FRAC = 0.4;    /* entry runs over the last 40% of the
+                                         card's viewport travel (below the pin) */
+    const ENTRY_SCALE = 0.92;         /* size at entry start */
+    const ENTRY_BLUR = 10;            /* blur px at entry start */
+    const ENTRY_OFFSET_FRAC = 0.12;   /* extra descent at entry start, fraction
+                                         of viewport — decays to 0 at the pin */
     /* the CSS-driven era shipped without the scrubber — flip to true
        to restore the 5-frame ticker under the stack */
     const SHOW_SCRUBBER = false;
@@ -97,7 +110,8 @@
 
             const scaleProgress = progress(scrollTop, triggerStart, triggerEnd);
             const targetScale = Math.max(BASE_SCALE, 1 - (cards.length - 1 - i) * ITEM_SCALE);
-            const scale = 1 - scaleProgress * (1 - targetScale);
+            /* let — the entry animation scales this further down (below) */
+            let scale = 1 - scaleProgress * (1 - targetScale);
 
             /* count how many cards have stacked on top of this one */
             let cardsOnTop = 0;
@@ -141,6 +155,25 @@
                 translateY = scrollTop - cardTop + stackPositionPx - pileIndex * ITEM_STACK_DISTANCE;
             } else if (scrollTop > pinEnd) {
                 translateY = pinEnd - cardTop + stackPositionPx - pileIndex * ITEM_STACK_DISTANCE;
+            }
+
+            /* ── entry (mirror of the exit) ──
+               Before a card pins it is still in natural flow; over the
+               last stretch of its travel up the viewport it rises a
+               little faster, grows from ENTRY_SCALE to full size and
+               sharpens from ENTRY_BLUR to clear. Everything lerps to
+               neutral exactly at triggerStart, so the hand-off into
+               the pinned state is seamless. */
+            let entryT = 1;
+            if (scrollTop < triggerStart) {
+                entryT = progress(scrollTop,
+                    triggerStart - ENTRY_WINDOW_FRAC * containerHeight,
+                    triggerStart);
+            }
+            if (entryT < 1) {
+                translateY += (1 - entryT) * ENTRY_OFFSET_FRAC * containerHeight;
+                scale *= ENTRY_SCALE + (1 - ENTRY_SCALE) * entryT;
+                blur += (1 - entryT) * ENTRY_BLUR;
             }
 
             const next = {
