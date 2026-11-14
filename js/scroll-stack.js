@@ -14,8 +14,9 @@
      continues, so the stack shows at most 3 cards
    • entry (first card only): the lead card rises a little faster
      and sharpens (blur → clear) over its final approach — no scale
-   • exit: past the hold, the whole pinned pile drifts up and
-     scales down together over the exit window
+   • exit: as a card scrolls out the viewport top it shrinks to 0.9
+     and dims to 0.72 — port of the original scd-stack-shrink CSS
+     view() exit-range animation (lost in 2369201)
    • transform writes skipped when nothing changed (official
      lastTransforms change-detection)
 
@@ -58,11 +59,11 @@
     const ENTRY_BLUR = 10;            /* blur px at entry start */
     const ENTRY_OFFSET_FRAC = 0.12;   /* extra descent at entry start, fraction
                                          of viewport — decays to 0 at the pin */
-    /* exit: once the stack completes and the scroll passes the hold,
-       the whole pinned pile drifts up and scales down together */
-    const EXIT_SCALE = 0.85;          /* pile size at full exit */
-    const EXIT_RISE_FRAC = 0.1;       /* extra upward drift at full exit */
-    const EXIT_DISTANCE_FRAC = 0.6;   /* exit window, fraction of viewport */
+    /* exit — the original scd-stack-shrink keyframes (46bfaee CSS:
+       animation-timeline: view(), animation-range: exit):
+       scale → 0.9, brightness → 0.72 as the card scrolls out the top */
+    const EXIT_SCALE = 0.9;
+    const EXIT_BRIGHTNESS = 0.72;
     /* the CSS-driven era shipped without the scrubber — flip to true
        to restore the 5-frame ticker under the stack */
     const SHOW_SCRUBBER = false;
@@ -113,8 +114,7 @@
 
             const scaleProgress = progress(scrollTop, triggerStart, triggerEnd);
             const targetScale = Math.max(BASE_SCALE, 1 - (cards.length - 1 - i) * ITEM_SCALE);
-            /* let — the entry animation scales this further down (below) */
-            let scale = 1 - scaleProgress * (1 - targetScale);
+            const scale = 1 - scaleProgress * (1 - targetScale);
 
             /* count how many cards have stacked on top of this one */
             let cardsOnTop = 0;
@@ -177,24 +177,31 @@
                 }
             }
 
-            /* ── exit (whole pile) ──
-               Past the hold, the completed stack recedes: the whole
-               pinned pile drifts up and scales down together over the
-               exit window, then keeps scrolling off. */
-            if (scrollTop > pinEnd) {
-                const exitT = progress(scrollTop, pinEnd,
-                    pinEnd + EXIT_DISTANCE_FRAC * containerHeight);
-                if (exitT > 0) {
-                    translateY -= exitT * EXIT_RISE_FRAC * containerHeight;
-                    scale *= 1 - (1 - EXIT_SCALE) * exitT;
-                }
-            }
+            /* ── exit (port of the original scd-stack-shrink) ──
+               The pre-2369201 CSS gave every card
+                 animation: scd-stack-shrink linear both;
+                 animation-timeline: view();  animation-range: exit;
+                 @keyframes to { transform: scale(0.9); filter: brightness(0.72) }
+               i.e. while a card scrolls out through the viewport top
+               it shrinks to 0.9 and dims to 0.72. The JS pinning owns
+               the transform now (a CSS animation would override the
+               pinned translate and snap cards out of the pile), so the
+               same keyframes are scrubbed here over the card's own exit
+               range: visual top crossing the viewport top (exitT=0) →
+               visual bottom crossing it (exitT=1). Applied as separate
+               draw factors — the stacking scale/brightness above stays
+               const and untouched. */
+            const cardH = card.offsetHeight || 1;
+            const visualTop = cardTop + translateY - scrollTop;
+            const exitT = Math.max(0, Math.min(1, -visualTop / cardH));
+            const drawScale = scale * (1 - (1 - EXIT_SCALE) * exitT);
+            const drawBrightness = brightness * (1 - (1 - EXIT_BRIGHTNESS) * exitT);
 
             const next = {
                 translateY: Math.round(translateY * 100) / 100,
-                scale: Math.round(scale * 1000) / 1000,
+                scale: Math.round(drawScale * 1000) / 1000,
                 blur: Math.round(blur * 10) / 10,
-                brightness: Math.round(brightness * 100) / 100,
+                brightness: Math.round(drawBrightness * 100) / 100,
                 opacity: Math.round(opacity * 100) / 100,
             };
 
