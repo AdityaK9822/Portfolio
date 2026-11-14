@@ -64,22 +64,34 @@ function renderFeatured() {
     const grid = document.getElementById('featured-grid');
     if (!grid) return;
     const order = ['april', 'axiom', 'synopsi', 'polyagent', 'codegraph', 'claude-skills'];
+    let n = 0;
     const cards = order
-        .map((id, idx) => {
+        .map((id) => {
             const r = visible.find((x) => x.id === id);
             if (!r || r.tier !== 'ai' || !r.featured) return '';
+            n += 1;
             const img = SCROLL_STACK_IMAGES[r.id] || '';
             const oneLiner = r.short || (r.desc.split('.')[0] + '.');
-            const badge = (r.badge && r.badge[0]) ? r.badge[0] : '';
-            return `<article class="scroll-stack-card" style="--i:${idx}; --ssc-bg: url('${img}')">
+            const chips = (r.badge || []).slice(0, 2)
+                .map((b) => `<span class="ssc-badge">${b}</span>`).join('');
+            /* url-derived full name (r.name isn't always the repo slug)
+               — github.js keys live stats off data-repo */
+            const full = (r.url || '').replace(/^https?:\/\/github\.com\//, '');
+            const stats = full
+                ? `<span class="ssc-stats" data-repo="${full}">★ <span class="live-stars">—</span>&nbsp;·&nbsp;⑂ <span class="live-forks">—</span></span>`
+                : '';
+            return `<article class="scroll-stack-card" style="--i:${n - 1}; --ssc-bg: url('${img}')">
   <div class="ssc-overlay">
-    <div class="ssc-top">
-      <span class="ssc-name">${r.org ? r.org + ' / ' : ''}${r.name}</span>
-      ${badge ? `<span class="ssc-badge">${badge}</span>` : ''}
+    <div class="ssc-head">
+      <span class="ssc-index">${String(n).padStart(2, '0')}</span>
+      <div class="ssc-badges">${chips}</div>
     </div>
-    <p class="ssc-desc">${oneLiner}</p>
-    <div class="ssc-tags">${r.tags.map((t) => `<span class="tag">${t}</span>`).join('')}</div>
-    <a class="ssc-link" href="${r.url}" target="_blank" rel="noopener">view on github ↗</a>
+    <div class="ssc-foot">
+      <span class="ssc-name">${r.org ? `<span class="ssc-org">${r.org} /</span> ` : ''}${r.name}</span>
+      <p class="ssc-desc">${oneLiner}</p>
+      <div class="ssc-tags">${r.tags.map((t) => `<span class="tag">${t}</span>`).join('')}</div>
+      <div class="ssc-meta">${stats}<a class="ssc-link" href="${r.url}" target="_blank" rel="noopener">view on github ↗</a></div>
+    </div>
   </div>
 </article>`;
         })

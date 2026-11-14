@@ -418,6 +418,12 @@ main > section {
     margin-top: var(--section-pad);
 }
 
+/* the scroll-stack section already carries the scrubber below its
+   cards — tighten the gap to the next section */
+.selected-work-section + section {
+    margin-top: calc(var(--section-pad) * 0.35);
+}
+
 /* journal / activity ticker: full-width band pinned to the hero's
    bottom edge (hero is a flex column — margin-top:auto pushes it
    down); lifted above the canvas + bottom fade */

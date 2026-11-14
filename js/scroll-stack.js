@@ -7,7 +7,11 @@
      top card sits at stackPosition (15% viewport) + peek per layer
    • scale tweens from 1 → targetScale (baseScale, −itemScale/layer)
      across the card's trigger window
-   • blur + brightness depth driven by the "cards on top" count
+   • blur + brightness depth driven by the "cards on top" count,
+     ramped over the newest card's arrival window
+   • pile capped at PILE_SIZE (3) visible layers: peek offsets cap
+     at the pile depth and buried cards fade + blur out as scroll
+     continues, so the stack shows at most 3 cards
    • transform writes skipped when nothing changed (official
      lastTransforms change-detection)
 
@@ -40,6 +44,12 @@
     const DIM_AMOUNT = 0.28;          /* brightness lost per covering layer */
     const BLUR_AMOUNT = 4;            /* px of blur per covering layer */
     const HOLD_DISTANCE = 200;        /* runway held after the last card pins */
+    const PILE_SIZE = 3;              /* cards kept visible in the pinned pile */
+    const FADE_BLUR = 10;             /* extra blur px while a buried card fades out */
+    const FADE_DISTANCE_FRAC = 0.35;  /* buried-card fade window, fraction of viewport */
+    /* the CSS-driven era shipped without the scrubber — flip to true
+       to restore the 5-frame ticker under the stack */
+    const SHOW_SCRUBBER = false;
 
     /* reference frames extracted from the 5 design screenshots:
        card-top positions (as a fraction of viewport height) and the
@@ -96,14 +106,41 @@
                 if (scrollTop >= jTriggerStart) cardsOnTop++;
             }
 
-            const blur = cardsOnTop * BLUR_AMOUNT;
+            /* keep the pile at PILE_SIZE cards: peek offsets cap at the
+               pile depth; deeper cards fade + blur out with scroll and
+               free their slot (the visible stack never exceeds 3) */
+            const pileIndex = Math.min(cardsOnTop, PILE_SIZE - 1);
+
+            /* the newest covering card ramps this card's blur over its
+               arrival window — blur creeps in with scroll, no steps */
+            let blurProgress = 0;
+            if (cardsOnTop > 0) {
+                const arriveStart = cardTops[i + cardsOnTop] - stackPositionPx;
+                blurProgress = progress(scrollTop, arriveStart, arriveStart + scaleEndPositionPx);
+            }
+
+            let blur = (cardsOnTop - 1 + blurProgress) * BLUR_AMOUNT;
             const brightness = Math.max(0.2, 1 - cardsOnTop * DIM_AMOUNT);
+
+            /* buried past the pile → fade out slowly as scrolling
+               continues, starting when the card that pushed it pinned */
+            let opacity = 1;
+            if (cardsOnTop >= PILE_SIZE) {
+                const buryStart = cardTops[i + PILE_SIZE] - stackPositionPx;
+                const fadeT = progress(
+                    scrollTop,
+                    buryStart,
+                    buryStart + FADE_DISTANCE_FRAC * containerHeight
+                );
+                opacity = 1 - fadeT;
+                blur += fadeT * FADE_BLUR;
+            }
 
             let translateY = 0;
             if (scrollTop >= triggerStart && scrollTop <= pinEnd) {
-                translateY = scrollTop - cardTop + stackPositionPx - cardsOnTop * ITEM_STACK_DISTANCE;
+                translateY = scrollTop - cardTop + stackPositionPx - pileIndex * ITEM_STACK_DISTANCE;
             } else if (scrollTop > pinEnd) {
-                translateY = pinEnd - cardTop + stackPositionPx - cardsOnTop * ITEM_STACK_DISTANCE;
+                translateY = pinEnd - cardTop + stackPositionPx - pileIndex * ITEM_STACK_DISTANCE;
             }
 
             const next = {
@@ -111,6 +148,7 @@
                 scale: Math.round(scale * 1000) / 1000,
                 blur: Math.round(blur * 10) / 10,
                 brightness: Math.round(brightness * 100) / 100,
+                opacity: Math.round(opacity * 100) / 100,
             };
 
             const prev = lastTransforms.get(i);
@@ -119,7 +157,8 @@
                 Math.abs(prev.translateY - next.translateY) > 0.1 ||
                 Math.abs(prev.scale - next.scale) > 0.001 ||
                 Math.abs(prev.blur - next.blur) > 0.1 ||
-                Math.abs(prev.brightness - next.brightness) > 0.01;
+                Math.abs(prev.brightness - next.brightness) > 0.01 ||
+                Math.abs(prev.opacity - next.opacity) > 0.01;
             if (!changed) return;
 
             card.style.transform =
@@ -128,6 +167,7 @@
             if (next.blur > 0) filters.push(`blur(${next.blur}px)`);
             if (next.brightness < 1) filters.push(`brightness(${next.brightness})`);
             card.style.filter = filters.length ? filters.join(' ') : 'none';
+            card.style.opacity = next.opacity < 1 ? String(next.opacity) : '1';
             lastTransforms.set(i, next);
 
             /* last card pinned within the hold window → stack complete
@@ -161,30 +201,35 @@
     /* ── timeframes scrubber ─────────────────────────────────────
        Mimics the 5 reference frames (positions + blurs) as discrete
        steps: each tick scrolls to the point where the corresponding
-       card begins to stack, and highlights the active frame. */
-    const FRAME_COUNT = Math.min(5, cards.length);
-    const scrubber = document.createElement('div');
-    scrubber.className = 'timeframe-scrubber';
-    scrubber.setAttribute('aria-label', 'Scroll timeframes');
-    const ticks = [];
-    for (let i = 0; i < FRAME_COUNT; i++) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'timeframe-tick';
-        btn.textContent = String(i + 1).padStart(2, '0');
-        btn.addEventListener('click', () => {
-            const spx = STACK_POSITION * window.innerHeight;
-            window.scrollTo({ top: Math.max(0, cardTops[i] - spx), behavior: 'smooth' });
-        });
-        scrubber.appendChild(btn);
-        ticks.push(btn);
+       card begins to stack, and highlights the active frame.
+       Gated behind SHOW_SCRUBBER (off — see config). */
+    if (SHOW_SCRUBBER) {
+        const FRAME_COUNT = Math.min(5, cards.length);
+        const scrubber = document.createElement('div');
+        scrubber.className = 'timeframe-scrubber';
+        scrubber.setAttribute('aria-label', 'Scroll timeframes');
+        const ticks = [];
+        for (let i = 0; i < FRAME_COUNT; i++) {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'timeframe-tick';
+            btn.textContent = String(i + 1).padStart(2, '0');
+            btn.addEventListener('click', () => {
+                const spx = STACK_POSITION * window.innerHeight;
+                window.scrollTo({ top: Math.max(0, cardTops[i] - spx), behavior: 'smooth' });
+            });
+            scrubber.appendChild(btn);
+            ticks.push(btn);
+        }
+        container.insertAdjacentElement('afterend', scrubber);
     }
-    container.insertAdjacentElement('afterend', scrubber);
 
     function updateScrubber(scrollTop) {
+        if (!SHOW_SCRUBBER) return;
         const stackPositionPx = STACK_POSITION * window.innerHeight;
+        const ticks = document.querySelectorAll('.timeframe-tick');
         let active = 0;
-        for (let i = 0; i < FRAME_COUNT; i++) {
+        for (let i = 0; i < Math.min(5, cards.length); i++) {
             const triggerStart = cardTops[i] - stackPositionPx;
             if (scrollTop >= triggerStart) active = i;
         }
