@@ -8,6 +8,12 @@
    columns, each with a bright head and a fading trail. Reads the
    active theme for its accent color.
 
+   Start behavior: the field opens sparse — only START_LIVE_COLUMNS
+   columns are live on the first frame (hero reads near-black);
+   every other column is parked above the viewport and streams in
+   over the first START_SPREAD seconds. Resizes / theme rebuilds
+   mid-session restore a full field.
+
    Driven by the hero bg switcher in js/hero.js (scene name:
    "terminal rain"). Also usable standalone:
 
@@ -26,6 +32,11 @@
         { fontSize: 15, speedMul: 0.85, opacity: 0.40, spacing: 20, trail: 13 },
         { fontSize: 21, speedMul: 1.35, opacity: 0.70, spacing: 30, trail: 17 },
     ];
+
+    /* start state: only this many columns are on-screen at the first frame
+       (hero opens near-black); the rest stream in over START_SPREAD seconds */
+    const START_LIVE_COLUMNS = 25;
+    const START_SPREAD = 3.5;
 
     function randomGlyph() { return GLYPHS[(Math.random() * GLYPHS.length) | 0]; }
 
@@ -51,6 +62,14 @@
         let running = false;
         let lastTime = 0;
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        /* "settled" = the field has finished streaming in. Rebuilds
+           (ResizeObserver / window resize) seed a full field only once
+           settled — before that they keep the sparse start, so the
+           late layout settling right after page load (deferred scripts,
+           font swaps) never re-seeds a full field over it. Reduced-motion
+           users start settled: one full static field, no loop. */
+        let settled = reduced;
+        let startedAt = 0;
 
         function makeCol(x, ld) {
             const trail = ld.trail + ((Math.random() * 6) | 0);
@@ -59,27 +78,50 @@
             const step = ld.fontSize * 1.15;
             return {
                 x: x,
-                /* seed heads across the full travel range so the field is
-                   fully populated on the first frame — no empty warm-up */
-                y: Math.random() * (height + trail * step) - trail * step,
+                /* starts parked above the viewport — buildLayers seeding
+                   decides which columns are live on frame one */
+                y: -(trail * step) - Math.random() * height * 0.5,
                 speed: (70 + Math.random() * 130) * ld.speedMul,
                 trail: trail,
                 chars: chars,
+                delay: Math.random() * START_SPREAD,
             };
         }
 
-        function buildLayers() {
+        function buildLayers(fullField) {
             layers = [];
+            const allCols = [];
             LAYER_DEFS.forEach(function (ld, li) {
                 const colCount = Math.max(1, Math.floor(width / ld.spacing));
                 const cols = new Array(colCount);
                 for (let i = 0; i < colCount; i++) {
                     cols[i] = makeCol(i * ld.spacing + ld.spacing * 0.5, ld);
+                    allCols.push(cols[i]);
                 }
                 layers.push({ fontSize: ld.fontSize, speedMul: ld.speedMul,
                     opacity: ld.opacity, spacing: ld.spacing, trail: ld.trail,
                     layerIdx: li, cols: cols });
             });
+            if (fullField) {
+                /* resize/theme rebuilds mid-session: restore a full field */
+                allCols.forEach(function (col) {
+                    col.delay = 0;
+                    col.y = Math.random() * height;
+                });
+            } else {
+                /* first load: shuffle, then wake exactly START_LIVE_COLUMNS
+                   spread across the layers — everything else streams in */
+                for (let i = allCols.length - 1; i > 0; i--) {
+                    const j = (Math.random() * (i + 1)) | 0;
+                    const t = allCols[i]; allCols[i] = allCols[j]; allCols[j] = t;
+                }
+                for (let i = 0; i < allCols.length; i++) {
+                    if (i < START_LIVE_COLUMNS) {
+                        allCols[i].delay = 0;
+                        allCols[i].y = Math.random() * height;
+                    }
+                }
+            }
         }
 
         function resize() {
@@ -92,7 +134,7 @@
             canvas.style.width = width + 'px';
             canvas.style.height = height + 'px';
             ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-            buildLayers();
+            buildLayers(settled);
             if (reduced) drawFrame(0);
         }
 
@@ -111,6 +153,12 @@
 
                 for (let ci = 0; ci < layer.cols.length; ci++) {
                     const col = layer.cols[ci];
+                    /* still waiting to stream in — parked above the
+                       viewport; burn its delay in real time */
+                    if (col.delay > 0) {
+                        col.delay -= (dt > 0 ? dt : 0);
+                        continue;
+                    }
                     col.y += col.speed * (dt > 0 ? dt : 0);
                     /* reset when fully past the bottom */
                     if (col.y - col.trail * fs * 1.15 > height) {
@@ -152,6 +200,12 @@
             const dt = Math.min((now - lastTime) / 1000, 0.05);
             lastTime = now;
             drawFrame(dt);
+            /* the stream-in window has elapsed — later rebuilds seed a
+               full field (small margin past START_SPREAD so the last
+               columns are actually on-screen, not just unblocked) */
+            if (!settled && startedAt && now - startedAt > (START_SPREAD + 1) * 1000) {
+                settled = true;
+            }
             raf = requestAnimationFrame(loop);
         }
 
@@ -160,7 +214,8 @@
                 if (!running) {
                     running = true;
                     lastTime = performance.now();
-                    drawFrame(0);            /* populated field immediately */
+                    if (!startedAt) startedAt = performance.now();
+                    drawFrame(0);            /* sparse start frame */
                     if (!reduced) raf = requestAnimationFrame(loop);
                 }
             } else {
@@ -181,7 +236,14 @@
 
         let ro = null;
         if (typeof ResizeObserver !== 'undefined') {
-            ro = new ResizeObserver(function () { resize(); });
+            ro = new ResizeObserver(function () {
+                /* RO delivers an initial entry right after construction —
+                   same size we just built with. Ignore no-op deliveries so
+                   the sparse start survives; only real size changes rebuild. */
+                const rect = container.getBoundingClientRect();
+                if (Math.round(rect.width) === width && Math.round(rect.height) === height) return;
+                resize();
+            });
             ro.observe(container);
         }
         window.addEventListener('resize', onResize);
