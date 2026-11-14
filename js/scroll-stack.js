@@ -5,8 +5,9 @@
 
    • pinning via translate3d — cards are position:relative, the
      top card sits at stackPosition (15% viewport) + peek per layer
-   • scale tweens from 1 → targetScale (baseScale, −itemScale/layer)
-     across the card's trigger window
+   • cards scale in (ENTRY_SCALE → 1) while entering, hold scale 1
+     while pinned — no shrink while stacking — and scale out to
+     EXIT_SCALE during the buried-card fade
    • blur + brightness depth driven by the "cards on top" count,
      ramped over the newest card's arrival window
    • pile capped at PILE_SIZE (3) visible layers: peek offsets cap
@@ -41,19 +42,19 @@
 
     /* config — mirrors the React component's props */
     const ITEM_DISTANCE = 60;         /* gap between cards in flow (px) — tighter */
-    const ITEM_SCALE = 0.07;          /* scale lost per covering layer */
     const ITEM_STACK_DISTANCE = 26;   /* peek offset per pinned layer */
     const STACK_POSITION = 0.15;      /* stackPosition: '15%' of viewport */
-    const SCALE_END_POSITION = 0.1;   /* scaleEndPosition: '10%' of viewport */
-    const BASE_SCALE = 0.7;           /* floor for the deepest card */
+    const SCALE_END_POSITION = 0.1;   /* arrival ramp window ('10%' of viewport) */
     const DIM_AMOUNT = 0.28;          /* brightness lost per covering layer */
     const BLUR_AMOUNT = 4;            /* px of blur per covering layer */
     const HOLD_DISTANCE = 200;        /* runway held after the last card pins */
     const PILE_SIZE = 3;              /* cards kept visible in the pinned pile */
     const FADE_BLUR = 10;             /* extra blur px while a buried card fades out */
     const FADE_DISTANCE_FRAC = 0.35;  /* buried-card fade window, fraction of viewport */
-    /* entry (first card only): the lead card rises into place and
-       sharpens blur → clear on approach — no scale change */
+    /* entry (all cards): over the last stretch of travel below the pin
+       the card scales in from ENTRY_SCALE → 1 (the lead card also
+       rises faster + sharpens — see the entry block in update()) */
+    const ENTRY_SCALE = 0.9;          /* scale at entry start */
     const ENTRY_WINDOW_FRAC = 0.4;    /* entry runs over the last 40% of the
                                          card's viewport travel (below the pin) */
     const ENTRY_BLUR = 10;            /* blur px at entry start */
@@ -110,11 +111,6 @@
             const cardTop = cardTops[i];
             /* active card pins at stackPosition; older cards peek above it */
             const triggerStart = cardTop - stackPositionPx;
-            const triggerEnd = cardTop - scaleEndPositionPx;
-
-            const scaleProgress = progress(scrollTop, triggerStart, triggerEnd);
-            const targetScale = Math.max(BASE_SCALE, 1 - (cards.length - 1 - i) * ITEM_SCALE);
-            const scale = 1 - scaleProgress * (1 - targetScale);
 
             /* count how many cards have stacked on top of this one */
             let cardsOnTop = 0;
@@ -139,8 +135,16 @@
             let blur = (cardsOnTop - 1 + blurProgress) * BLUR_AMOUNT;
             const brightness = Math.max(0.2, 1 - cardsOnTop * DIM_AMOUNT);
 
-            /* buried past the pile → fade out slowly as scrolling
-               continues, starting when the card that pushed it pinned */
+            /* entry: cards scale in (ENTRY_SCALE → 1) over the same
+               last-stretch window as the rise/sharpen treatment.
+               Pinned cards hold full size — no shrink while stacking. */
+            const entryStart = triggerStart - ENTRY_WINDOW_FRAC * containerHeight;
+            const entryProgress = progress(scrollTop, entryStart, triggerStart);
+            let scale = ENTRY_SCALE + (1 - ENTRY_SCALE) * entryProgress;
+
+            /* buried past the pile → scale out + fade out slowly as
+               scrolling continues, starting when the card that pushed
+               it pinned */
             let opacity = 1;
             if (cardsOnTop >= PILE_SIZE) {
                 const buryStart = cardTops[i + PILE_SIZE] - stackPositionPx;
@@ -150,6 +154,7 @@
                     buryStart + FADE_DISTANCE_FRAC * containerHeight
                 );
                 opacity = 1 - fadeT;
+                scale = 1 - fadeT * (1 - EXIT_SCALE);
                 blur += fadeT * FADE_BLUR;
             }
 
@@ -160,13 +165,13 @@
                 translateY = pinEnd - cardTop + stackPositionPx - pileIndex * ITEM_STACK_DISTANCE;
             }
 
-            /* ── entry (first card only) ──
+            /* ── entry (lead card) ──
                Before the lead card pins it is still in natural flow;
                over the last stretch of its travel up the viewport it
                rises a little faster and sharpens from ENTRY_BLUR to
-               clear. No scale change. Lerps to neutral exactly at
-               triggerStart, so the hand-off into the pinned state is
-               seamless. */
+               clear (every card's scale-in is handled above). Lerps to
+               neutral exactly at triggerStart, so the hand-off into
+               the pinned state is seamless. */
             if (i === 0 && scrollTop < triggerStart) {
                 const entryT = progress(scrollTop,
                     triggerStart - ENTRY_WINDOW_FRAC * containerHeight,
