@@ -330,6 +330,9 @@
     let ascii = null;
     const asciiHost = document.getElementById('hero-ascii');
 
+    let rain = null;
+    const rainHost = document.getElementById('hero-terminal-rain');
+
     function ensureAscii() {
         if (ascii || !asciiHost || typeof GradientASCII === 'undefined') return;
         ascii = new GradientASCII(asciiHost, {
@@ -374,9 +377,57 @@
         if (ascii) ascii.wake(true);
     }
 
+    function ensureRain() {
+        if (rain || !rainHost || typeof TerminalRain === 'undefined') return;
+        rain = new TerminalRain(rainHost, {});
+    }
+
+    function setRainVisible(show) {
+        if (!rainHost) return;
+        if (show) {
+            ensureRain();
+            if (!rain) {
+                rainHost.classList.remove('active');
+                canvas.style.visibility = 'visible';
+                return;
+            }
+            rainHost.classList.add('active');
+            canvas.style.visibility = 'hidden';
+            rain.wake(true);
+            return;
+        }
+        rainHost.classList.remove('active');
+        canvas.style.visibility = 'visible';
+        if (rain) rain.wake(false);
+    }
+
+    function rebuildRainForTheme() {
+        if (!rain) {
+            ensureRain();
+            return;
+        }
+        rain.destroy();
+        rain = null;
+        ensureRain();
+        if (rain) rain.wake(true);
+    }
+
     VARIANTS.unshift({
         name: 'gradient ascii',
         ascii: true,
+        build() {
+            return {
+                group: null,
+                camBase: new THREE.Vector3(),
+                look: new THREE.Vector3(),
+                update() {},
+            };
+        },
+    });
+
+    VARIANTS.unshift({
+        name: 'terminal rain',
+        rain: true,
         build() {
             return {
                 group: null,
@@ -392,8 +443,28 @@
         const variant = VARIANTS[idx];
         const label = document.getElementById('bg-label');
         if (label) label.textContent = variant.name;
+        if (variant.rain) {
+            setRainVisible(true);
+            setAsciiVisible(false);
+            if (rain) {
+                if (current && current.group) disposeGroup(current.group);
+                current = variant.build();
+                return;
+            }
+            /* no canvas support → fall back to the three.js wave grid instead */
+            if (current && current.group) disposeGroup(current.group);
+            current = VARIANTS[2].build();
+            camera.position.copy(current.camBase);
+            camera.lookAt(current.look);
+            if (reduced) {
+                current.update(0);
+                renderer.render(scene, camera);
+            }
+            return;
+        }
         if (variant.ascii) {
             setAsciiVisible(true);
+            setRainVisible(false);
             if (ascii) {
                 if (current && current.group) disposeGroup(current.group);
                 current = variant.build();
@@ -401,7 +472,7 @@
             }
             /* no WebGL2 → fall back to the three.js wave grid instead */
             if (current && current.group) disposeGroup(current.group);
-            current = VARIANTS[1].build();
+            current = VARIANTS[2].build();
             camera.position.copy(current.camBase);
             camera.lookAt(current.look);
             if (reduced) {
@@ -411,6 +482,7 @@
             return;
         }
         setAsciiVisible(false);
+        setRainVisible(false);
         if (current && current.group) disposeGroup(current.group);
         current = variant.build();
         camera.position.copy(current.camBase);
@@ -438,7 +510,13 @@
 
     /* pause rendering when hero is off-screen */
     let visible = true;
-    const io = new IntersectionObserver((en) => (visible = en[0].isIntersecting), {
+    const io = new IntersectionObserver((en) => {
+        visible = en[0].isIntersecting;
+        if (rain) {
+            if (visible && VARIANTS[idx].rain) rain.wake(true);
+            else if (!visible) rain.wake(false);
+        }
+    }, {
         threshold: 0.02,
     });
     io.observe(canvas);
@@ -453,6 +531,7 @@
         FAINT.set(dark ? 0x475569 : 0x93a2b5);
         activate(idx);
         rebuildAsciiForTheme();
+        rebuildRainForTheme();
     });
 
     function loop(now) {
@@ -460,8 +539,8 @@
             requestAnimationFrame(loop);
             return;
         }
-        /* gradient ascii scene runs on its own canvas — three.js loop idles */
-        if (VARIANTS[idx].ascii) {
+        /* gradient ascii / terminal rain scenes run on their own canvas — three.js loop idles */
+        if (VARIANTS[idx].ascii || VARIANTS[idx].rain) {
             requestAnimationFrame(loop);
             return;
         }
