@@ -22,8 +22,8 @@
     const GLYPHS = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜｦﾝ0123456789ABCDEF<>{}[]=/\\*+-#$%&';
 
     const LAYER_DEFS = [
-        { fontSize: 11, speedMul: 0.45, opacity: 0.45, spacing: 13, trail: 9 },
-        { fontSize: 15, speedMul: 0.85, opacity: 0.82, spacing: 20, trail: 13 },
+        { fontSize: 11, speedMul: 0.45, opacity: 0.28, spacing: 13, trail: 9 },
+        { fontSize: 15, speedMul: 0.85, opacity: 0.58, spacing: 20, trail: 13 },
         { fontSize: 21, speedMul: 1.35, opacity: 1.0,  spacing: 30, trail: 17 },
     ];
 
@@ -128,9 +128,7 @@
                     for (let k = 0; k < col.trail; k++) {
                         const cy = col.y - k * step;
                         if (cy < -fs || cy > height + fs) continue;
-                        /* fade toward the tail but never fully transparent —
-                           keeps the column readable (0.15 floor) */
-                        const alpha = layer.opacity * (0.15 + 0.85 * (1 - k / col.trail));
+                        const alpha = layer.opacity * (1 - k / col.trail);
                         if (alpha <= 0.02) continue;
                         if (k === 0) {
                             ctx.shadowColor = p.glow;
