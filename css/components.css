@@ -724,12 +724,12 @@
 }
 
 .scroll-stack-card {
-    /* JS pinning (js/scroll-stack.js): cards stay position:relative and
-       are pinned with translate3d — no sticky, no CSS animation (an
-       animation would override the inline transform/filter writes) */
-    position: relative;
+    /* CSS-driven stack: sticky pinning + the view() exit animation
+       below (no JS on the home page) */
+    position: sticky;
+    top: calc(90px + (var(--i, 0) * 16px));
     transform-origin: top center;
-    will-change: transform, filter, opacity;
+    will-change: transform, filter;
     backface-visibility: hidden;
     box-shadow: 0 30px 60px -34px rgba(20, 24, 50, 0.7);
     /* 100vw (not %) so the gutters are 5vh from the true viewport
@@ -743,6 +743,23 @@
     border: 1px solid var(--border);
     border-radius: 22px;
     box-sizing: border-box;
+    animation: scd-stack-shrink linear both;
+    animation-timeline: view();
+    animation-range: exit;
+}
+
+@keyframes scd-stack-shrink {
+    to {
+        transform: scale(0.9);
+        filter: brightness(0.72);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .scroll-stack-card {
+        animation: none;
+        position: relative;
+    }
 }
 
 /* the JS drives transform per frame → only the official 150ms filter
@@ -992,12 +1009,10 @@
 
 /* ── SCROLL STACK CARD REDESIGN ── */
 .scroll-stack-card {
-    /* JS pinning (js/scroll-stack.js): cards stay position:relative and
-       are pinned with translate3d — no sticky, no CSS animation (an
-       animation would override the inline transform/filter writes) */
-    position: relative;
+    position: sticky;
+    top: calc(90px + (var(--i, 0) * 16px));
     transform-origin: top center;
-    will-change: transform, filter, opacity;
+    will-change: transform, filter;
     backface-visibility: hidden;
     box-shadow: 0 30px 60px -34px rgba(20, 24, 50, 0.7);
     width: calc(100vw - 10vh);
@@ -1012,6 +1027,9 @@
     background-size: cover;
     background-position: center;
     color: #fff;
+    animation: scd-stack-shrink linear both;
+    animation-timeline: view();
+    animation-range: exit;
 }
 
 .scroll-stack-card .ssc-overlay {
