@@ -227,6 +227,34 @@
     height: 100%;
 }
 
+/* ── Gradient ASCII: hero readability treatment ──
+   Carve a radial "cutout" behind the hero copy so the dense ascii glyphs
+   frame the text instead of crossing through it. Keys off .active
+   (~ sibling) — other scenes are untouched. */
+#hero-ascii.active::after {
+    /* radial cutout between the ascii canvas and the hero copy */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+        ellipse 60% 45% at 50% 42%,
+        rgba(9, 13, 12, 0.92) 0%,
+        rgba(9, 13, 12, 0.65) 55%,
+        transparent 100%
+    );
+    z-index: 1;
+}
+
+/* light theme: the clearing lightens to the page bg instead of darkening */
+[data-theme="light"] #hero-ascii.active::after {
+    background: radial-gradient(
+        ellipse 60% 45% at 50% 42%,
+        rgba(244, 246, 241, 0.92) 0%,
+        rgba(244, 246, 241, 0.65) 55%,
+        transparent 100%
+    );
+}
+
 /* Terminal Rain host (js/terminal-rain.js) — sibling layer to
    #hero-canvas, toggled by the bg switcher via .active */
 #hero-terminal-rain {
@@ -445,47 +473,187 @@
     color: var(--accent);
 }
 
-/* ── HOME: CTA BOX ── */
-/* horizontal length only: the "ready to collaborate?" line gets the
-   big display treatment (clamped so it never overflows); the box
-   itself keeps its natural height — not stretched */
-.cta-box {
-    text-align: center;
-    padding: clamp(2.4rem, 6vw, 4rem) 24px;
-    border: 1px solid var(--border);
+/* ── HOME: COLLAB CTA — "ready to collaborate?" as a terminal window ──
+   Accent-edged, green-glowing shell: window bar up top (traffic-light
+   dots + session path), centered payload below. Buttons reuse the
+   global .btn-solid / .btn-ghost pair from the hero CTAs. Spacing to
+   the previous section comes from .home-main > section + section;
+   the footer's own margin-top closes the gap below. */
+.collab-window {
+    max-width: 62rem;
+    margin-inline: auto;
+    border: 1px solid var(--accent-border);
     border-radius: var(--radius);
     background:
-        radial-gradient(ellipse 70% 100% at 50% 120%, var(--accent-glow-strong), transparent),
+        radial-gradient(ellipse 90% 130% at 50% 135%, var(--accent-glow-strong), transparent 70%),
         var(--surface);
+    box-shadow: 0 24px 60px -30px var(--card-shadow);
+    overflow: hidden;
 }
 
-.cta-box .cta-line {
-    font-family: var(--font-display);
-    font-size: clamp(1.9rem, 4vw, 2.8rem);
+/* window chrome bar */
+.collab-bar {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    background: var(--note-bg);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+}
+
+.collab-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex: none;
+}
+
+.collab-dot.r { background: var(--red); }
+.collab-dot.a { background: var(--amber); }
+.collab-dot.g { background: var(--accent); }
+
+.collab-path {
+    margin-left: 10px;
+    color: var(--text);
+}
+
+.collab-cmd {
+    margin-left: auto;
+    opacity: 0.7;
+}
+
+@media (max-width: 560px) {
+    .collab-cmd { display: none; }
+}
+
+/* payload */
+.collab-body {
+    text-align: center;
+    padding: clamp(2rem, 5.5vw, 3.4rem) clamp(1.2rem, 4vw, 3rem);
+}
+
+.collab-prompt {
+    color: var(--muted);
+    font-size: var(--fs-small);
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+}
+
+.collab-prompt::before {
+    content: '$ ';
+    color: var(--accent);
+}
+
+.collab-title {
+    font-size: clamp(1.9rem, 4.6vw, 3rem);
     font-weight: 800;
     letter-spacing: -0.02em;
-    margin-bottom: 6px;
+    margin-bottom: 12px;
 }
 
-.cta-box .cta-line::before {
-    content: '> ';
+/* the asked-for word takes the accent — mirrors hero-name span */
+.collab-title span {
     color: var(--accent);
-    font-family: var(--font-mono);
-    font-weight: 400;
 }
 
-.cta-box .cursor-wait {
+/* cipher cells are inline-blocks (stable-width decode trick), which
+   makes every character a wrap opportunity — on narrow screens the
+   title would break mid-word ("colla / borate?"). Inline here keeps
+   the decode overlay but restores normal word-boundary wrapping. */
+.collab-title .cipher-cell {
+    display: inline;
+}
+
+/* block cursor hanging off the question mark */
+.collab-title::after {
+    content: '';
     display: inline-block;
-    width: 9px;
-    height: 1em;
+    width: 0.5em;
+    height: 0.9em;
     background: var(--accent);
-    vertical-align: -0.12em;
+    margin-left: 0.14em;
+    vertical-align: -0.08em;
     animation: blink 1.1s steps(2, start) infinite;
 }
 
-.cta-box p {
+.collab-sub {
     color: var(--muted);
-    margin-bottom: 22px;
+    max-width: 52ch;
+    margin: 0 auto 22px;
+}
+
+/* availability pill — same accent-chip grammar as the tag system */
+.collab-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 100%;
+    margin-bottom: 24px;
+    padding: 8px 16px;
+    border: 1px solid var(--accent-border);
+    background: var(--accent-dim);
+    border-radius: 999px;
+    font-size: var(--fs-small);
+    color: var(--text);
+    /* when the line wraps on narrow screens, keep the pulse glued
+       to the first words and the rest as a tidy left-aligned block */
+    text-align: left;
+}
+
+@media (max-width: 560px) {
+    .collab-status {
+        font-size: 0.85rem;
+        padding: 7px 14px;
+    }
+}
+
+.collab-pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex: none;
+    animation: collab-pulse 2s var(--ease) infinite;
+}
+
+@keyframes collab-pulse {
+    0% {
+        box-shadow: 0 0 0 0 var(--accent-shadow);
+    }
+
+    70% {
+        box-shadow: 0 0 0 8px var(--accent-shadow-none);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 var(--accent-shadow-none);
+    }
+}
+
+.collab-cta {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.collab-foot {
+    margin-top: 18px;
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .collab-pulse {
+        animation: none;
+    }
+
+    .collab-title::after {
+        animation: none;
+    }
 }
 
 /* reading caps: these run one per line — cap them near the 45–75ch band

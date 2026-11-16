@@ -9,7 +9,9 @@
    Optional: data-cipher-speed="ms" (per-char reveal interval),
    data-cipher-duration="ms" (total reveal time, default 2000; per-char
    speed derived from text length so each element lands in ~0.75-1s),
-   data-cipher-delay="ms" (start delay, default cascades i*180).
+   data-cipher-delay="ms" (start delay, default cascades i*180),
+   data-cipher-scroll (reveal only when the element scrolls into view;
+   text stays scrambled until then — default delay 0 unless overridden).
    Degrades gracefully: reduced-motion → shows real text at once.
    ============================================================ */
 
@@ -114,27 +116,63 @@
         requestAnimationFrame(tick);
     }
 
+    const prepared = new Map(); /* el → { chars, speed, font, delay } */
+
+    function arm(el, i) {
+        el.dataset.cipherBound = '1';
+        const chars = collectNodes(el);
+        if (!chars.length) return false;
+        const font = readFont(el);
+        /* cover the text with scrambled glyphs up-front */
+        chars.forEach((c) => {
+            if (c.isSpace) return;
+            scrambleCell(c, font);
+        });
+        const duration = parseInt(el.dataset.cipherDuration || '2000', 10);
+        const speed = el.dataset.cipherSpeed
+            ? parseInt(el.dataset.cipherSpeed, 10)
+            : Math.max(20, Math.round(duration / chars.length));
+        /* load-trigger mode cascades i*180; scroll mode fires on its own */
+        const isScroll = el.dataset.cipherScroll !== undefined;
+        const defaultDelay = isScroll ? 0 : i * 180;
+        const delay = parseInt(el.dataset.cipherDelay || String(defaultDelay), 10);
+        prepared.set(el, { chars, speed, font, delay });
+        return isScroll;
+    }
+
+    function fire(el) {
+        const state = prepared.get(el);
+        prepared.delete(el);
+        if (!state) return;
+        setTimeout(() => decode(state.chars, state.speed, state.font), state.delay);
+    }
+
     function run() {
         const els = document.querySelectorAll('[data-cipher]');
+        const scrollEls = [];
         els.forEach((el, i) => {
             if (reduced) return; /* leave original text as-is */
             if (el.dataset.cipherBound) return;
-            el.dataset.cipherBound = '1';
-            const chars = collectNodes(el);
-            if (!chars.length) return;
-            const font = readFont(el);
-            /* cover the text with scrambled glyphs up-front */
-            chars.forEach((c) => {
-                if (c.isSpace) return;
-                scrambleCell(c, font);
-            });
-            const delay = parseInt(el.dataset.cipherDelay || String(i * 180), 10);
-            const duration = parseInt(el.dataset.cipherDuration || '2000', 10);
-            const speed = el.dataset.cipherSpeed
-                ? parseInt(el.dataset.cipherSpeed, 10)
-                : Math.max(20, Math.round(duration / chars.length));
-            setTimeout(() => decode(chars, speed, font), delay);
+            if (arm(el, i)) {
+                scrollEls.push(el); /* scroll mode: decode on intersection */
+            } else {
+                fire(el); /* load mode: decode on the cascade delay now */
+            }
         });
+        if (!scrollEls.length) return;
+        if (typeof IntersectionObserver === 'undefined') {
+            /* very old browsers: just play immediately */
+            scrollEls.forEach(fire);
+            return;
+        }
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (!entry.isIntersecting) return;
+                io.unobserve(entry.target);
+                fire(entry.target);
+            });
+        }, { threshold: 0.3 });
+        scrollEls.forEach((el) => io.observe(el));
     }
 
     if (document.readyState === 'loading') {

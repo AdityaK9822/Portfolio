@@ -175,48 +175,96 @@
     inset: -6px;
 }
 
-/* ── THEME TOGGLE (light ⇄ dark) ── */
-.nav-theme {
-    flex: 0 0 auto;
+/* ── NAV CHIPS — one glass bubble holding github + theme toggle ── */
+.nav-chips {
+    margin-left: auto;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    padding: 0;
+    gap: 3px;
+    padding: 5px;
     background: var(--glass-tint);
     border: 1px solid var(--glass-edge);
     border-radius: 999px;
-    color: var(--muted);
-    cursor: pointer;
-    position: relative;
     backdrop-filter: blur(6px) saturate(1.6);
     -webkit-backdrop-filter: blur(6px) saturate(1.6);
     box-shadow: 0 6px 18px -8px rgba(0, 0, 0, 0.4),
         inset 0 1px 0 var(--glass-shine),
         inset 0 -1px 0 rgba(0, 0, 0, 0.06);
-    transition: color var(--dur), border-color var(--dur), background var(--dur),
-        box-shadow var(--dur);
+    flex: 0 0 auto;
+}
+
+/* the two buttons inside share the round hit shape; the glass look
+   lives on .nav-chips above, not on the buttons themselves.
+   38px buttons + 5px pad + 1px border = 50px — matches the central
+   gooey nav pill's height (49.66px) so the corner bubble doesn't
+   read shorter than the navbar */
+.nav-chip-github,
+.nav-theme {
+    flex: 0 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    position: relative;
+    transition: color var(--dur), background var(--dur), border-color var(--dur),
+        box-shadow var(--dur), transform var(--dur);
     -webkit-tap-highlight-color: transparent;
 }
 
-/* invisible hit pad — ≥44px touch area, chip stays 34px */
+/* invisible hit pad — ≥44px touch area without growing the visible chip */
+.nav-chip-github::after,
 .nav-theme::after {
     content: '';
     position: absolute;
-    inset: -5px;
+    inset: -4px;
 }
 
+/* display:block kills the inline-baseline offset that pushed icons
+   a few px off vertical center inside the flex chip */
+.nav-chip-github svg,
 .nav-theme svg {
-    position: absolute;
-    inset: 0;
-    margin: auto;
+    display: block;
     width: 20px;
     height: 20px;
     transition: opacity 300ms cubic-bezier(0.2, 0, 0, 1),
                 transform 300ms cubic-bezier(0.2, 0, 0, 1),
                 filter 300ms cubic-bezier(0.2, 0, 0, 1);
     filter: blur(0);
+}
+
+/* the theme chip holds BOTH crossfade icons in the DOM — stack them
+   dead-center on top of each other, or the hidden one pushes the
+   visible one sideways in the row-flex */
+.nav-theme svg {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+}
+
+/* github — bare icon inside the pill, same as the theme toggle;
+   the shared hover rule above paints the circular hover background */
+.nav-chip-github svg path {
+    fill: currentColor;
+}
+
+@media (hover: hover) {
+    .nav-chip-github:hover,
+    .nav-theme:hover {
+        color: var(--accent);
+        background: var(--nav-hover-bg);
+    }
+}
+
+.nav-chip-github:active,
+.nav-theme:not(:disabled):active {
+    transform: scale(0.94);
 }
 
 /* cross-fade contextual icons (better-ui): scale 0.25→1, opacity 0→1,
@@ -237,18 +285,6 @@
     opacity: 1;
     transform: scale(1);
     filter: blur(0);
-}
-
-@media (hover: hover) {
-    .nav-theme:hover {
-        color: var(--accent);
-        border-color: var(--accent-border-mid);
-        background: var(--nav-hover-bg);
-    }
-}
-
-.nav-theme:not(:disabled):active {
-    transform: scale(0.94);
 }
 
 @media (max-width: 760px) {
@@ -737,7 +773,7 @@
     width: calc(100vw - 10vh);
     max-width: none;
     min-height: 81.5vh;
-    margin: 0 0 60px 5vh;
+    margin: 0 0 350px 5vh;
     /* opaque surface */
     background: var(--bg-elev);
     border: 1px solid var(--border);
@@ -1018,7 +1054,7 @@
     width: calc(100vw - 10vh);
     max-width: none;
     min-height: 81.5vh;
-    margin: 0 0 60px 5vh;
+    margin: 0 0 350px 5vh;
     padding: 0;
     overflow: hidden;
     border-radius: 22px;

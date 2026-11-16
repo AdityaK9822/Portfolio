@@ -810,9 +810,11 @@ void main() {
 
         const container = document.createElement('div');
         container.className = 'nav-gooey';
+        const chips = navEl.querySelector('.nav-chips');
         const themeBtn = navEl.querySelector('.nav-theme');
         const logo = navEl.querySelector('.nav-logo');
-        if (themeBtn) navEl.insertBefore(container, themeBtn);
+        if (chips) navEl.insertBefore(container, chips);
+        else if (themeBtn) navEl.insertBefore(container, themeBtn);
         else if (logo) logo.insertAdjacentElement('afterend', container);
         else navEl.appendChild(container);
 
