@@ -51,10 +51,7 @@ Opening `index.html` directly from the Finder also works for a quick look.
 
 ## Deploy (Vercel)
 
-```bash
-git init && git add -A && git commit -m "portfolio v2"
-```
-Push to GitHub → Vercel → "New Project" → import repo → Zero-config. Or drag the folder onto `vercel.com/new`.
+https://portfolio-pink-eight-52.vercel.app
 
 ## Notes
 
